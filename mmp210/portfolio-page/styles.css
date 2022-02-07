@@ -19,7 +19,7 @@
 }
 
 #main_content_p {
-  width: 55%;
+  width: 80%;
 }
 
 li,
@@ -27,4 +27,10 @@ a {
   text-decoration: none;
   display: inline;
   text-align: start;
+}
+
+@media (min-width: 1440px) {
+  #main_content_p {
+    width: 55%;
+  }
 }
