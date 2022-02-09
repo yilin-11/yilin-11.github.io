@@ -24,8 +24,8 @@
   list-style: none;
 }
 
+a:link,
 a:visited {
-  font-size: 12px;
   color: #ffffff;
   text-decoration: none;
 }
