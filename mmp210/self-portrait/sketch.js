@@ -1,18 +1,28 @@
+let img;
+let max = 8;
+
+function preload() {
+  img = loadImage("1.jpg");
+}
+
 function setup() {
-  createCanvas(400, 400);
+  createCanvas(img.width, img.height);
+  pixelDensity(1);
+  background(0);
 }
 
 function draw() {
-  background(110); 
-  fill(255,228,181); 
-  ellipse(200,200,180,200); 
-  fill(0); 
-  arc(200,190,180,180,-PI*0.9,-0.2,CHORD);
-  rect(210,180,40,40,5);    
-  rect(150,180,40,40,5);    
-  line(110,200,153,200);    
-  line(247,200,290,200);    
-  line(207,200,193,200);    
-  fill(255,65,65);    
-  triangle(215, 245, 190, 250,210,260);  
+  img.loadPixels();
+  for (let x = 0; x < width; x += max) {
+    for (let y = 0; y < height; y += max) {
+      let index = (x + y * width) * 4;
+      let r = img.pixels[index + 0];
+      let g = img.pixels[index + 1];
+      let b = img.pixels[index + 2];
+      let a = img.pixels[index + 3];
+      noStroke();
+      fill(r, g, b, a);
+      rect(x, y, max, max);
+    }
+  }
 }
