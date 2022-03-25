@@ -145,7 +145,7 @@ a:visited {
 
 #zipcode_search_input {
   margin: 0 auto;
-  /* grid-column: 1/5; */
+  grid-column: 1/5;
   margin-bottom: 1rem;
 }
 
@@ -213,8 +213,8 @@ a:visited {
 }
 .map {
   margin-top: 1rem;
-  height: 100%;
-  width: 100%;
+  margin: 1rem auto;
+  width: 90%;
 }
 
 #detail {
@@ -267,5 +267,19 @@ a:visited {
     display: block;
     width: 62rem;
     height: 100%;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .housing.logo {
+    grid-column: span 2;
+  }
+  .menu_icon {
+    display: none;
+  }
+
+  .housing_map {
+    margin: 1rem auto;
+    width: 90%;
   }
 }
