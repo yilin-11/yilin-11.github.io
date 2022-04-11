@@ -113,23 +113,22 @@ a:visited {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.5rem;
+  grid-template-columns: repeat(12, 1fr);
 }
 
-.menu_icon {
+.header_menu_icon {
   margin: 1.5rem auto;
+  grid-column: 9/11;
 }
 .housing.logo {
-  grid-column: 2/6;
+  grid-column: 1/6;
   grid-row: 1;
 }
 
 #signin {
-  grid-column: 6/7;
+  grid-column: 11/13;
   grid-row: 1;
   line-height: 5rem;
-  margin-right: 1rem;
 }
 
 #home_nav {
@@ -161,11 +160,14 @@ a:visited {
   margin: 0 auto;
 }
 
+.search_results li {
+  align-items: center;
+}
+
 #houses li {
-  max-width: 25rem;
   list-style: none;
   text-align: center;
-  grid-column: span 5;
+  grid-column: span 12;
   color: rgb(0, 0, 0);
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.253);
 }
@@ -213,8 +215,6 @@ a:visited {
 }
 .map {
   margin-top: 1rem;
-  margin: 1rem auto;
-  width: 90%;
 }
 
 #detail {
@@ -225,61 +225,24 @@ a:visited {
 
 /* small tablet styles */
 @media screen and (min-width: 620px) {
-  li {
-    list-style: none;
-  }
-
-  #home_nav {
-    margin: 5rem auto;
-    justify-content: flex-start;
-  }
-
-  #zipcode_search_input {
-    margin: 0 auto;
-    margin-bottom: 1rem;
-  }
-
-  #houses li {
-    margin: 0 auto;
-  }
-  .housedetail img {
-    height: 20rem;
-  }
-  #share {
-    margin-left: 70%;
+  .logo {
+    font-size: 8rem;
   }
 }
 
 @media screen and (min-width: 960px) {
   .logo {
+    margin: 2rem;
     font-size: 10rem;
-    margin: 2rem 0 2rem 0;
   }
-  #houses li {
-    grid-column: span 2;
-  }
-  .housedetail img {
-    width: 10rem;
-    height: 100%;
-  }
-  .housedetail img:first-child {
-    margin: -4rem auto 2rem;
-    display: block;
-    width: 62rem;
-    height: 100%;
+
+  #houses ul {
+    grid-column: span 6;
   }
 }
 
 @media screen and (min-width: 1200px) {
-  .housing.logo {
-    grid-column: span 2;
-  }
-  .menu_icon {
-    display: none;
-  }
-
-  .housing_map {
-    margin: 1rem auto;
-    width: 90%;
+  .logo {
+    font-size: 15rem;
   }
 }
