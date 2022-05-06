@@ -247,6 +247,7 @@ html, body{
 
 /* Testimonials starts here */
 .testimonials{
+    margin-top: 2rem;
     padding: 6rem;
     text-align: center;
     background: hsla(42, 92%, 90%, 0.192);
