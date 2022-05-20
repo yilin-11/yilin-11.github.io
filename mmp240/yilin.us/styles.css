@@ -21,6 +21,7 @@ li {
 
 /* base styles */
 body {
+  min-width: 375px;
   background: var(--secondary);
   overflow-x: hidden;
   font-family: "Rubik Regular";
@@ -73,7 +74,7 @@ li {
 }
 h1,
 h3 {
-  font-size: 2em;
+  font-size: 2.6em;
 }
 h2 {
   font-size: 1.6em;
@@ -82,7 +83,7 @@ h4 {
   font-size: 1.1em;
 }
 .leading {
-  font-size: 1.1em;
+  font-size: 1em;
 }
 
 /* mobile styles */
@@ -191,7 +192,7 @@ h4 {
 #contact form {
   grid-column: 1/8;
   width: 80%;
-  max-width: 375px;
+  max-width: 400px;
   margin: 20px auto;
   text-align: center;
 }
@@ -286,9 +287,6 @@ footer img {
     margin: 0 auto;
     width: 100%;
   }
-  .leading {
-    margin: 20px 0;
-  }
   .site-nav {
     padding: 0 20px;
   }
@@ -310,6 +308,12 @@ footer img {
   }
   #welcome {
     padding-bottom: 40px;
+  }
+  #welcome,
+  #portfolio,
+  #skills,
+  #contact {
+    padding: 90px 0;
   }
   .projects a:nth-child(1) {
     grid-column: 2/4;
@@ -351,12 +355,6 @@ footer img {
   }
   .site-nav {
     padding: 0;
-  }
-  #welcome,
-  #portfolio,
-  #skills,
-  #contact {
-    padding: 90px 0;
   }
   .leading {
     margin: 20px 0;
