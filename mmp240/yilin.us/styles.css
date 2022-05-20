@@ -238,7 +238,7 @@ footer img {
     grid-column: 1/5;
   }
   .welcome-img {
-    grid-column: 5/9;
+    grid-column: 5/8;
   }
   .welcome-img img {
     width: 125%;
