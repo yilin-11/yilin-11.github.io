@@ -123,10 +123,10 @@ h4 {
   width: 200%;
 }
 .contact-img {
-  grid-column: 2/5;
+  grid-column: 1/5;
 }
 .contact-img img {
-  margin: 125px 0;
+  margin: 100px 0;
   width: 210%;
 }
 
