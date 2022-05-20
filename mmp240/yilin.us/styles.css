@@ -21,7 +21,6 @@ li {
 
 /* base styles */
 body {
-  min-width: 375px;
   background: var(--secondary);
   overflow-x: hidden;
   font-family: "Rubik Regular";
@@ -180,9 +179,9 @@ h4 {
   text-align: center;
   margin: 0 20px;
 }
-#contact {
-  padding: 30px 20px;
-  background: #1a1a1a;
+#contact for {
+  margin: 0 auto;
+  /* background: #1a1a1a; */
 }
 #contact h3,
 #contact p {
@@ -190,7 +189,7 @@ h4 {
   text-align: center;
 }
 #contact form {
-  grid-column: 1/8;
+  grid-column: 1 / 8;
   width: 80%;
   max-width: 400px;
   margin: 20px auto;
@@ -217,12 +216,12 @@ footer {
   background-position: top center;
 }
 footer .copyright {
-  grid-column: 3/7;
+  grid-column: 2/7;
   text-align: center;
   font-size: 0.8em;
 }
 footer .social {
-  grid-column: 3/7;
+  grid-column: 2/7;
   display: flex;
   justify-content: center;
 }
@@ -283,7 +282,7 @@ footer img {
     font-size: 18px;
   }
   .grid {
-    max-width: 1060px;
+    max-width: 1200px;
     margin: 0 auto;
     width: 100%;
   }
