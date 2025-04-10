@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CityMail - CCNY</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Julius+Sans+One&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <img src="./ccny_cuny_web_icon.svg" alt="city icon" />
+      <nav class="nav"></nav>
+    </header>
+    <div class="container">
+      <a href="./index.html"><img src="./city_hero.jpg" /></a>
+      <h1>Password Reset Form</h1>
+      <!-- <form
+        role="form"
+        action=""
+        method="post"
+        id="r1"
+        autocomplete="off"
+        novalidate="novalidate"
+      >
+        <div class="col-md-12 instructions">
+          <p>Please enter the information below to reset your password.</p>
+          <p>
+            <small class="note"
+              >Note: This application is for CCNY students only. If you are a
+              <b>New</b> or <b>Transfer</b> student it may take 4 business days
+              up to a week to set up your account.</small
+            >
+          </p>
+        </div>
+        <div>
+          <div class="form-group">
+            <label for="LastName">Last Name</label>
+            <br />
+            <input
+              type="text"
+              maxlength="25"
+              class="form-control"
+              name="LastName"
+              id="LastName"
+              placeholder="Last Name"
+              required=""
+              aria-required="true"
+            />
+          </div>
+        </div>
+        <div>
+          <div class="form-group">
+            <label for="Last4">Last 4 Digits of SSN</label>
+            <br />
+            <input
+              type="password"
+              maxlength="4"
+              class="form-control"
+              name="Last4"
+              id="Last4"
+              placeholder="Last 4 Digits of SSN"
+              required=""
+              aria-required="true"
+            />
+          </div>
+        </div>
+        <div>
+          <label for="dob">Date of Birth</label>
+        </div>
+        <div class="col-sm-3 dob">
+          <input
+            type="text"
+            maxlength="2"
+            class="form-control"
+            name="dob_yy"
+            id="dob_yy"
+            placeholder="XX/YY/ZZZZ"
+            required=""
+            aria-required="true"
+          />
+        </div>
+        <br />
+        <div class="form-group">
+          <div>
+            <button type="submit">
+              Next <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+          </div>
+        </div>
+      </form> -->
+      <form action="" method="post" id="r1" autocomplete="off" novalidate>
+        <p>Please enter the information below to reset your password.</p>
+        <p>
+          <small class="note">
+            Note: This application is for CCNY students only. If you are a
+            <b>New</b> or <b>Transfer</b> student it may take 4 business days up
+            to a week to set up your account.
+          </small>
+        </p>
+
+        <div class="form-group">
+          <label for="LastName">Last Name</label>
+          <br />
+          <input
+            type="text"
+            maxlength="25"
+            class="form-control"
+            name="LastName"
+            id="LastName"
+            placeholder="Last Name"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="Last4">Last 4 Digits of SSN</label>
+          <br />
+          <input
+            type="password"
+            maxlength="4"
+            class="form-control"
+            name="Last4"
+            id="Last4"
+            placeholder="1234"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="dob">Date of Birth</label>
+          <br />
+          <input
+            type="date"
+            class="form-control"
+            name="dob"
+            id="dob"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn">
+          Next <span class="glyphicon glyphicon-chevron-right"></span>
+        </button>
+      </form>
+    </div>
+    <footer>
+      <p>&copy; 2025 City College of New York | All Rights Reserved</p>
+    </footer>
+  </body>
+</html>
