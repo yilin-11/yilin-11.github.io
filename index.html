@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yi Lin — UX/UI Designer & Educational Technologist</title>
+<meta name="description" content="Yi Lin is a New York–based UX/UI designer and educational technologist. Selected work: CUNY Arts, No Limit, Shelfie.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F5F1; --ink:#16181D; --ink-2:#5B5F68; --ink-3:#9A9DA5;
+  --line:#DDDCD6; --line-2:#C2C1BA; --card:#FFFFFF;
+  --cuny:#0033A1; --nolimit:#2A9D8F; --shelfie:#177245;
+  --sg:'Space Grotesk',system-ui,sans-serif;
+  --ss:'Source Serif 4',Georgia,serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#121316; --ink:#EDECE8; --ink-2:#A8ABB2; --ink-3:#6B6E76;
+    --line:#26282D; --line-2:#3A3D44; --card:#1A1C20;
+    --cuny:#5B82E0; --nolimit:#4DBFAF; --shelfie:#3FA372;
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sg);background:var(--paper);color:var(--ink);line-height:1.6}
+a{color:inherit}
+button{font-family:var(--sg);cursor:pointer;border:none;background:none;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+::selection{background:var(--ink);color:var(--paper)}
+
+.app{display:grid;grid-template-columns:264px 1fr;min-height:100vh}
+
+/* sidebar */
+.side{
+  border-right:1px solid var(--line);padding:44px 32px 32px;
+  position:sticky;top:0;height:100vh;display:flex;flex-direction:column;
+  background:var(--paper);
+}
+.who h1{font-weight:700;font-size:19px;letter-spacing:.02em;text-transform:uppercase}
+.who .disc{font-family:var(--ss);font-style:italic;font-size:14.5px;color:var(--ink-2);margin-top:2px}
+.reg-mini{width:14px;height:14px;border-top:1.5px solid var(--ink);border-left:1.5px solid var(--ink);margin-bottom:18px}
+nav.worknav{margin-top:40px;display:flex;flex-direction:column;gap:2px}
+nav.worknav .navlab{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px}
+nav.worknav a,nav.worknav button{
+  text-align:left;font-size:14.5px;padding:9px 0;color:var(--ink-2);
+  transition:color .15s;display:flex;gap:9px;min-height:44px;align-items:center;
+}
+nav.worknav a:hover,nav.worknav button:hover{color:var(--ink)}
+nav.worknav .num{font-size:10.5px;color:var(--ink-3);letter-spacing:.06em}
+nav.worknav .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.side .foot{margin-top:auto;font-size:12px;color:var(--ink-3);line-height:1.8}
+.side .foot a{text-decoration:underline;text-underline-offset:3px}
+
+.topbar{display:none}
+
+/* workspace */
+.main{padding:44px 48px 80px;min-width:0}
+.ws-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:26px}
+.ws-head h2{font-weight:500;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.viewtoggle{display:flex;border:1px solid var(--line-2);border-radius:8px;overflow:hidden}
+.viewtoggle button{padding:10px 16px;font-size:13px;color:var(--ink-2);min-width:44px;min-height:44px}
+.viewtoggle button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:22px}
+.workcard{
+  background:var(--card);border:1px solid var(--line);text-align:left;
+  display:flex;flex-direction:column;overflow:hidden;width:100%;
+  transition:border-color .2s, translate .2s;
+}
+.workcard:hover{border-color:var(--ink);translate:0 -3px}
+.thumb{aspect-ratio:16/9;position:relative;border-bottom:1px solid var(--line);background:var(--paper)}
+.thumb svg{position:absolute;inset:0;width:100%;height:100%}
+.wc-body{padding:18px 20px 16px}
+.wc-tag{display:flex;align-items:center;gap:7px;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);margin-bottom:8px}
+.wc-tag i{width:8px;height:8px;border-radius:50%;background:var(--acc)}
+.wc-body h3{font-weight:700;font-size:21px;letter-spacing:-.01em}
+.wc-body h3 .thin{font-weight:400;color:var(--ink-2)}
+.wc-body .hook{font-family:var(--ss);font-style:italic;font-size:14px;color:var(--ink-2);margin-top:4px}
+.wc-foot{border-top:1px solid var(--line);margin-top:14px;padding-top:10px;display:flex;justify-content:space-between;font-size:11px;letter-spacing:.08em;color:var(--ink-3)}
+
+.list{display:none;flex-direction:column}
+.list .row{
+  display:grid;grid-template-columns:64px 1fr auto auto;gap:20px;align-items:center;
+  padding:22px 4px;border-bottom:1px solid var(--line);text-align:left;width:100%;
+  transition:padding-left .2s;
+}
+.list .row:hover{padding-left:14px}
+.list .row:hover .r-name{text-decoration:underline;text-underline-offset:4px}
+.r-num{font-size:12px;color:var(--ink-3);letter-spacing:.08em}
+.r-name{font-weight:700;font-size:19px}
+.r-name .hook{display:block;font-family:var(--ss);font-style:italic;font-weight:400;font-size:13.5px;color:var(--ink-2);margin-top:2px}
+.r-type{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--acc);white-space:nowrap}
+.r-year{font-size:12px;color:var(--ink-3)}
+.workspace[data-view="list"] .grid{display:none}
+.workspace[data-view="list"] .list{display:flex}
+
+section.page{max-width:640px;margin-top:72px;scroll-margin-top:40px}
+section.page h2{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);margin-bottom:16px;display:flex;align-items:center;gap:12px}
+section.page h2::after{content:"";flex:1;height:1px;background:var(--line)}
+section.page p{font-family:var(--ss);font-size:16.5px;line-height:1.75;color:var(--ink-2)}
+section.page p b{color:var(--ink);font-weight:600}
+section.page p+p{margin-top:14px}
+.contact-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:18px}
+.contact-row a{
+  font-family:var(--sg);font-size:13.5px;font-weight:500;border:1px solid var(--line-2);
+  padding:11px 18px;text-decoration:none;transition:all .15s;min-height:44px;display:inline-flex;align-items:center;
+}
+.contact-row a:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* full-screen case viewer */
+.viewer{position:fixed;inset:0;background:var(--paper);z-index:100;display:none;flex-direction:column;overflow-y:auto}
+.viewer.open{display:flex}
+.v-bar{
+  position:sticky;top:0;background:var(--paper);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;padding:16px 28px;z-index:5;
+}
+.v-bar .v-crumb{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.v-bar .v-crumb b{color:var(--ink)}
+.v-actions{display:flex;gap:8px}
+.v-actions button{border:1px solid var(--line-2);padding:9px 16px;font-size:13px;min-height:44px;min-width:44px}
+.v-actions button:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.v-hero{border-bottom:1px solid var(--line)}
+.v-hero svg{display:block;width:100%;max-height:42vh}
+.v-content{max-width:780px;margin:0 auto;padding:48px 28px 100px;width:100%}
+.v-content .v-tag{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);margin-bottom:12px}
+.v-content .v-tag i{width:8px;height:8px;border-radius:50%;background:var(--acc)}
+.v-content h2{font-weight:700;font-size:clamp(34px,6vw,52px);letter-spacing:-.02em;line-height:1.05}
+.v-content .v-hook{font-family:var(--ss);font-style:italic;font-size:19px;margin-top:10px;color:var(--acc)}
+.v-meta{display:flex;border-top:1.5px solid var(--ink);border-bottom:1px solid var(--line);margin:26px 0 26px;flex-wrap:wrap}
+.v-meta div{padding:12px 26px 12px 0;margin-right:26px}
+.v-meta .lab{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);display:block}
+.v-meta .val{font-size:13.5px;font-weight:700}
+.v-content .lede{font-family:var(--ss);font-size:17.5px;line-height:1.75;color:var(--ink-2)}
+.v-content .lede+.lede{margin-top:14px}
+.proto-cta{
+  display:inline-flex;align-items:center;gap:10px;margin-top:22px;
+  font-family:var(--sg);font-size:14px;font-weight:700;letter-spacing:.02em;
+  border:1.5px solid var(--acc);color:var(--acc);padding:13px 22px;text-decoration:none;
+  transition:all .15s;min-height:44px;
+}
+.proto-cta:hover{background:var(--acc);color:var(--paper)}
+.proto-note{font-size:12px;color:var(--ink-3);margin-top:8px;line-height:1.55}
+
+/* chapter nav pills */
+.chapnav{display:flex;gap:8px;flex-wrap:wrap;margin:28px 0 8px;position:sticky;top:78px;background:var(--paper);padding:10px 0;z-index:4;border-bottom:1px solid var(--line)}
+.chapnav a{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line-2);padding:8px 13px;text-decoration:none;color:var(--ink-2);min-height:36px;display:inline-flex;align-items:center;transition:all .15s}
+.chapnav a:hover{border-color:var(--acc);color:var(--acc)}
+
+/* chapter sections */
+.chap{scroll-margin-top:150px;margin-top:44px}
+.chap>h3{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.chap>h3 b{color:var(--acc);font-weight:700}
+.chap>h3::after{content:"";flex:1;height:1px;background:var(--line)}
+.chap p{font-family:var(--ss);font-size:16px;line-height:1.75;color:var(--ink-2)}
+.chap p b{color:var(--ink);font-weight:600}
+.chap p+p{margin-top:12px}
+.chap h4{font-size:13.5px;font-weight:700;letter-spacing:.02em;margin:22px 0 10px}
+.chap ul{list-style:none;display:flex;flex-direction:column;gap:10px;margin:12px 0}
+.chap ul li{font-family:var(--ss);font-size:15.5px;color:var(--ink-2);padding-left:22px;position:relative;line-height:1.65}
+.chap ul li::before{content:"—";position:absolute;left:0;color:var(--acc)}
+.chap ul li b{color:var(--ink);font-weight:600}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin:16px 0}
+.statgrid div{background:var(--card);padding:14px 16px}
+.statgrid b{font-size:22px;font-weight:700;display:block;letter-spacing:-.01em}
+.statgrid span{font-size:11.5px;color:var(--ink-2);line-height:1.4;display:block;margin-top:2px}
+.iablock{font-family:var(--sg);font-size:12.5px;line-height:1.9;background:var(--card);border:1px solid var(--line);padding:18px 20px;margin:14px 0;overflow-x:auto;white-space:pre;color:var(--ink-2)}
+.iablock b{color:var(--ink)}
+.tasklist{border:1px solid var(--line);margin:14px 0}
+.tasklist .trow{display:grid;grid-template-columns:44px 1fr;border-bottom:1px solid var(--line)}
+.tasklist .trow:last-child{border-bottom:none}
+.tasklist .tn{background:var(--card);border-right:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--acc)}
+.tasklist .tb{padding:12px 16px}
+.tasklist .tb .task{font-family:var(--ss);font-size:15px;color:var(--ink)}
+.tasklist .tb .crit{font-size:12px;color:var(--ink-3);margin-top:3px}
+.v-nav{display:flex;justify-content:space-between;margin-top:56px;border-top:1px solid var(--line);padding-top:20px;gap:12px}
+.v-nav button{font-size:13.5px;color:var(--ink-2);min-height:44px;display:flex;align-items:center;gap:8px}
+.v-nav button:hover{color:var(--ink);text-decoration:underline;text-underline-offset:4px}
+
+/* mobile */
+.scrim{position:fixed;inset:0;background:rgb(0 0 0/.4);z-index:60;display:none}
+@media (max-width:880px){
+  .app{grid-template-columns:1fr}
+  .topbar{
+    display:flex;position:sticky;top:0;z-index:50;background:var(--paper);
+    border-bottom:1px solid var(--line);padding:14px 20px;align-items:center;justify-content:space-between;
+  }
+  .topbar .t-name{font-weight:700;font-size:15px;letter-spacing:.03em;text-transform:uppercase}
+  .burger{width:46px;height:46px;display:flex;flex-direction:column;justify-content:center;gap:5px;align-items:center;border:1px solid var(--line-2)}
+  .burger span{display:block;width:20px;height:1.8px;background:var(--ink);transition:all .2s}
+  body:has(.side.open) .burger span:nth-child(1){translate:0 6.8px;rotate:45deg}
+  body:has(.side.open) .burger span:nth-child(2){opacity:0}
+  body:has(.side.open) .burger span:nth-child(3){translate:0 -6.8px;rotate:-45deg}
+  .side{
+    position:fixed;left:0;top:0;bottom:0;width:min(300px,84vw);z-index:70;
+    translate:-102% 0;transition:translate .28s cubic-bezier(.2,.8,.2,1);
+    border-right:1px solid var(--line-2);box-shadow:12px 0 40px rgb(0 0 0/.12);
+  }
+  .side.open{translate:0 0}
+  body:has(.side.open) .scrim{display:block}
+  .main{padding:26px 20px 70px}
+  .grid{grid-template-columns:1fr}
+  .list .row{grid-template-columns:1fr auto;gap:8px}
+  .r-num,.r-year{display:none}
+  .v-bar{padding:12px 18px}
+  .v-content{padding:34px 20px 80px}
+  .v-meta div{padding-right:18px;margin-right:18px}
+  .chapnav{top:70px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+@view-transition{navigation:auto}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.22s}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="t-name">Yi Lin</span>
+  <button class="burger" aria-label="Open menu" aria-expanded="false" onclick="toggleDrawer()"><span></span><span></span><span></span></button>
+</header>
+<div class="scrim" onclick="toggleDrawer(false)"></div>
+
+<div class="app">
+  <aside class="side" id="side">
+    <div class="who">
+      <div class="reg-mini" aria-hidden="true"></div>
+      <h1>Yi Lin</h1>
+      <p class="disc">UX/UI Design + Educational Technology</p>
+    </div>
+    <nav class="worknav" aria-label="Work">
+      <span class="navlab">Selected work</span>
+      <button onclick="openCase(0)"><span class="num">01</span><span class="dot" style="background:var(--cuny)"></span>CUNY Arts</button>
+      <button onclick="openCase(1)"><span class="num">02</span><span class="dot" style="background:var(--nolimit)"></span>No Limit</button>
+      <button onclick="openCase(2)"><span class="num">03</span><span class="dot" style="background:var(--shelfie)"></span>Shelfie</button>
+      <span class="navlab" style="margin-top:28px">Info</span>
+      <a href="#about" onclick="toggleDrawer(false)">About</a>
+      <a href="#contact" onclick="toggleDrawer(false)">Contact</a>
+    </nav>
+    <div class="foot">
+      Based in New York City<br>
+      <a href="https://artyilin.com" target="_blank" rel="noopener">artyilin.com</a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="workspace" id="workspace" data-view="grid">
+      <div class="ws-head">
+        <h2>Selected work · 2026</h2>
+        <div class="viewtoggle" role="group" aria-label="View mode">
+          <button aria-pressed="true" id="vtGrid" onclick="setView('grid')" aria-label="Grid view">▦</button>
+          <button aria-pressed="false" id="vtList" onclick="setView('list')" aria-label="List view">☰</button>
+        </div>
+      </div>
+      <div class="grid" id="gridEl"></div>
+      <div class="list" id="listEl"></div>
+    </div>
+
+    <section class="page" id="about">
+      <h2>About</h2>
+      <p><b>I'm a maker and digital designer who helps people build things they didn't think they could.</b> My work sits where design meets teaching: makerspaces, digital fabrication labs, and now products that fold AI into everyday routines.</p>
+      <p>I hold a B.A. in Digital Design (Magna Cum Laude) from City College, and I've spent years on the floor of campus labs — troubleshooting hardware, training faculty, and turning intimidating tools into approachable ones. That instinct carries into my product work: reduce the cost of the first step, design the failure states, and make progress visible.</p>
+      <p>Every case here follows the same spine — <b>Research → Pain points → IA → Wireframes → Validation</b> — and each shipped as a working prototype, not just frames.</p>
+    </section>
+
+    <section class="page" id="contact">
+      <h2>Contact</h2>
+      <p>Open to instructional technology, UX/UI, and product design roles in New York.</p>
+      <div class="contact-row">
+        <a href="mailto:hello@artyilin.com">Email</a>
+        <a href="https://artyilin.com" target="_blank" rel="noopener">Website</a>
+        <a href="https://www.linkedin.com" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="#" onclick="return false">Résumé (PDF)</a>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-labelledby="vTitle">
+  <div class="v-bar">
+    <span class="v-crumb">Yi Lin / <b id="vCrumb">—</b></span>
+    <div class="v-actions">
+      <button onclick="stepCase(-1)" aria-label="Previous case">‹</button>
+      <button onclick="stepCase(1)" aria-label="Next case">›</button>
+      <button onclick="closeCase()" aria-label="Close">✕ Close</button>
+    </div>
+  </div>
+  <div class="v-hero" id="vHero"></div>
+  <div class="v-content" id="vContent"></div>
+</div>
+
+<script>
+/* ================= CASE DATA ================= */
+const CHAPS=['Research','Pain points','IA','Wireframes','Validation'];
+
+const CASES=[
+/* ---------- 01 · CUNY ARTS ---------- */
+{
+  key:'cuny', acc:'var(--cuny)', num:'01', name:'CUNY <span class="thin">Arts</span>', plain:'CUNY Arts',
+  type:'Responsive web redesign', year:'2026', stack:'HTML · Figma',
+  proto:'prototypes/cuny-arts.html', protoNote:'A fully interactive redesign — live filtering, borough map, and detail modals, all with real content from the original page.',
+  hook:'Your student ID is a museum pass.',
+  lede:['CUNY students can enter 20+ of New York\u2019s greatest museums free — but the official page buried that benefit in an 8,000-word single-page long-read with 23 partners, zero filters, and the critical "how do I get in" hidden in collapsed accordions.',
+        'I restructured it into a task-first index: a filterable card system, a map as a peer view, and a unified content model that promotes "how to use your benefit" to first-class information.'],
+  motif:`<svg viewBox="0 0 640 360" fill="none" role="img" aria-label="Ticket stub illustration"><rect x="150" y="110" width="340" height="140" rx="14" stroke="var(--cuny)" stroke-width="3" transform="rotate(-3 320 180)"/><circle cx="155" cy="176" r="13" fill="var(--paper)" stroke="var(--cuny)" stroke-width="3" transform="rotate(-3 320 180)"/><circle cx="485" cy="212" r="13" fill="var(--paper)" stroke="var(--cuny)" stroke-width="3" transform="rotate(-3 320 180)"/><text x="190" y="172" font-family="Space Grotesk" font-weight="700" font-size="30" fill="var(--cuny)" transform="rotate(-3 320 180)">ADMIT ONE</text><text x="190" y="204" font-family="Source Serif 4" font-style="italic" font-size="17" fill="var(--ink-2)" transform="rotate(-3 320 180)">$0 with a CUNY ID</text><line x1="408" y1="132" x2="408" y2="222" stroke="var(--cuny)" stroke-width="2.5" stroke-dasharray="4 8" transform="rotate(-3 320 180)"/></svg>`,
+  chapters:[
+  `<p>A quantitative content audit of the live page defined the problem before any sketching:</p>
+   <div class="statgrid">
+     <div><b>23</b><span>partner institutions on a single page</span></div>
+     <div><b>8,000+</b><span>words, mostly copied institutional boilerplate</span></div>
+     <div><b>341</b><span>links, including mega-footer lists</span></div>
+     <div><b>0</b><span>search or filter tools of any kind</span></div>
+   </div>
+   <p>A consistency analysis across all 23 partners showed no shared content model: some listed full addresses, phones, and day-by-day hours while others got only a URL; the same benefit appeared under four different label formats; annual events were marked with a literal "[Yearly]" text prefix inside titles.</p>
+   <p>Informal interviews with fellow students surfaced three high-frequency tasks: <b>"where can I go free this weekend," "which partners are near me,"</b> and <b>"how do I actually get in — do I need a reservation, can I bring a friend?"</b> A heuristic pass confirmed violations of visibility of status (accordions hide whether entry info exists), flexibility (linear scroll is the only path), and consistency.</p>`,
+  `<ul>
+     <li><b>Can't find it.</b> 23 institutions in a linear stack with no retrieval mechanism — the task is filtering; the page only supports reading through.</li>
+     <li><b>Can't parse it.</b> Chaotic benefit labeling makes it impossible to compare "free for me" vs "merely discounted."</li>
+     <li><b>Can't use it.</b> ID requirements, reservation rules, and companion policies are buried in accordions, offloaded to external sites, or missing.</li>
+     <li><b>Can't tell them apart.</b> Always-free benefits, discounts, annual events, and internships carry identical visual weight.</li>
+     <li><b>Unusable on mobile.</b> A desktop long-read becomes endless scrolling on the device students actually use.</li>
+   </ul>`,
+  `<p>The structural reframe: from <b>article</b> to <b>product</b>. The old IA was a linear scroll — hero, mission, quotes, then an unordered accordion list. The new IA is task-oriented and three layers deep:</p>
+   <div class="iablock"><b>L1 Home</b> — condensed hero + core CTA ("See where you can go free")
+<b>L2 Partner index</b> — search · filter chips (benefit × borough × open today × +1)
+        · list ⇄ map toggle · standardized cards × 23
+<b>L3 Partner detail</b> — "How to use your benefit" pinned first
+        · hours summary · description demoted to the bottom</div>
+   <p>Every partner gets the same mandatory fields — name, one-line positioning, benefit tags, action guidance, area, hours summary, companion policy. Once structured, "[Yearly]" becomes an <b>Annual event</b> tag and "+1" is promoted from fine print to a badge. Four benefit categories each carry their own visual language: always free, student discount, annual events, and programs.</p>`,
+  `<ul>
+     <li><b>Sticky filter bar.</b> Filtering is the core task, so the chips stay visible while scrolling.</li>
+     <li><b>Three-tier card hierarchy.</b> Benefit badge first, then name and hours, then a one-line "how to enter" cue. Long descriptions never appear on cards.</li>
+     <li><b>Map as a peer view.</b> "Is it near me" is a spatial question; list and map switch with one tap, pins colored by benefit type.</li>
+     <li><b>"How to use" owns the detail page's first screen.</b> Institutional history serves learning-about, not acting-on — it moves to the bottom.</li>
+     <li><b>Mobile first.</b> The grid collapses to one column; accordions are replaced by progressive-disclosure detail pages.</li>
+   </ul>`,
+  `<p>Task-based testing with 5 students, old vs new versions, order counterbalanced, mobile-first:</p>
+   <div class="tasklist">
+     <div class="trow"><div class="tn">T1</div><div class="tb"><div class="task">Find a museum you can visit free with one friend this Saturday</div><div class="crit">Reaches Leslie-Lohman or Kaufman in ≤ 60 s — near-guaranteed failure on the old page, where "+1" was never structured</div></div></div>
+     <div class="trow"><div class="tn">T2</div><div class="tb"><div class="task">You study on Staten Island — find the closest free partner</div><div class="crit">Locates the Tibetan Art Museum via the map</div></div></div>
+     <div class="trow"><div class="tn">T3</div><div class="tb"><div class="task">State what you need to bring to MoMA and whether to book ahead</div><div class="crit">Correctly answers "valid ID, no reservation needed"</div></div></div>
+     <div class="trow"><div class="tn">T4</div><div class="tb"><div class="task">Find a September arts event with a student discount</div><div class="crit">Finds The Armory Show and its promo discount</div></div></div>
+   </div>
+   <p>Metrics: completion rate, time on task, error paths, SEQ, SUS. Post-launch: median time from entry to a partner-site click (target −50%), mobile bounce and scroll depth, filter usage rate, and detail-page reach across the long tail of partners.</p>`]
+},
+/* ---------- 02 · NO LIMIT ---------- */
+{
+  key:'nolimit', acc:'var(--nolimit)', num:'02', name:'No <span class="thin">Limit</span>', plain:'No Limit',
+  type:'Mobile app · responsible design', year:'2026', stack:'Figma · HTML',
+  proto:'prototypes/no-limit.html', protoNote:'The v2 rebuild in your browser — a live fasting timer, inverted data hierarchy, and the goal-guardrail advisory, all interactive.',
+  hook:'Fasting, progress, and people — in one place.',
+  lede:['People practicing intermittent fasting juggle three tools: a timer, a scale app, and a social feed. The tools are fragmented — and so is the motivation, for a habit that lives or dies on continuity.',
+        'No Limit collapses timing, body-metric tracking, and community into one app — then was rebuilt in a v2 driven by three reflections: frequency-first IA, trends over data points, and restraint as design.'],
+  motif:`<svg viewBox="0 0 640 360" fill="none" role="img" aria-label="Fasting timer ring illustration"><circle cx="320" cy="180" r="108" stroke="var(--line-2)" stroke-width="16"/><path d="M320 72 A108 108 0 1 1 225 233" stroke="var(--nolimit)" stroke-width="16" stroke-linecap="round"/><text x="320" y="176" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="40" fill="var(--ink)">16:00</text><text x="320" y="208" text-anchor="middle" font-family="Source Serif 4" font-style="italic" font-size="17" fill="var(--ink-2)">you've got this</text><circle cx="225" cy="233" r="9" fill="#E76F51"/></svg>`,
+  chapters:[
+  `<p>A walkthrough of mainstream fasting apps surfaced three shared problems: timing and body data live apart; community features are bolted on with no link to the fasting behavior; and changing a plan is buried under layers of settings while real schedules change constantly.</p>
+   <p>Semi-structured interviews with current and former 16:8 practitioners converged on three needs: <b>"the thing I do most is start and stop the timer"</b> (the core action must be one tap away), <b>"I need to see change or I can't keep going"</b> (trends must live next to the fasting record), and <b>"fasting alone is lonely"</b> (meal posts and likes are real motivation).</p>
+   <p>Key insights: fasting apps split sharply between high-frequency actions (twice daily) and low-frequency ones (every few weeks) — <b>the IA must be layered by frequency</b>; data matters as trend, not point; community works when bound to the behavior. A responsible-design premise was fixed at this stage: no shaming copy, no reinforcement of extreme goals, and safety exits along critical paths.</p>`,
+  `<ul>
+     <li><b>Fragmented tools.</b> Timing, logging, and social live in three apps; every break in the chain raises the odds of quitting.</li>
+     <li><b>The core action isn't fast enough.</b> Start/stop gets diluted by low-frequency features on the first screen.</li>
+     <li><b>Data tells no story.</b> A single number can't answer "am I getting better" — no time dimensions, no multi-metric comparison.</li>
+     <li><b>High friction to adjust plans.</b> Shift work and weekend dinners disrupt the window, but the edit path is so deep users stop logging.</li>
+     <li><b>Loneliness.</b> The hardest stretch of a fast comes with no immediate peer feedback.</li>
+   </ul>`,
+  `<p>A three-tab structure layered by usage frequency:</p>
+   <div class="iablock"><b>Home</b> (daily) — countdown ring · Start/End Fasting as the only primary button
+       · tracking preview → full charts (Weight ⇄ Body fat · Day/Week/Month/Year)
+<b>Community</b> — persistent personal summary strip · meal-photo feed
+<b>Settings</b> (infrequent) — profile · account security incl. emergency contacts
+       · fasting plan with per-field Change controls · Health-app sync</div>
+   <p>Key decisions: the timer owns the first screen with charts as preview only; plan editing is flat per-field Change buttons instead of a nested form; the community feed keeps your own progress visible on top, turning spectating into comparing; and safety infrastructure — emergency contacts — sits at the top level of account security.</p>`,
+  `<p>The lo-fi stage tested two first-screen hypotheses. <b>Hypothesis A (rejected)</b> split the screen evenly between timer and chart — testers called the chart noise before starting a fast. <b>Hypothesis B (adopted)</b> gives the ring 60%+ of the visual weight with one primary button and a compressed preview card.</p>
+   <p>The v2 rebuild translated each reflection into interface: the tracking page's hierarchy inverted so <b>"▾ 2.8 lbs this month" is the headline</b> and the absolute value the subtitle; a missed day reads "one missed day doesn't undo your progress"; ending early reads "that's okay" and still logs the result; and setting a goal far below current weight triggers a supportive advisory — a nearer milestone, a conversation with a doctor — never a celebration. Community sharing defaults to no weight numbers.</p>`,
+  `<p>Task-based testing with 5–6 users on real devices:</p>
+   <div class="tasklist">
+     <div class="trow"><div class="tn">T1</div><div class="tb"><div class="task">Start a fast</div><div class="crit">One step from the first screen, ≤ 5 s</div></div></div>
+     <div class="trow"><div class="tn">T2</div><div class="tb"><div class="task">Find how much your weight changed this month</div><div class="crit">Reaches Month view and reads the delta, ≤ 30 s</div></div></div>
+     <div class="trow"><div class="tn">T3</div><div class="tb"><div class="task">Move the eating window an hour earlier</div><div class="crit">Completes via Fasting Plan, ≤ 45 s</div></div></div>
+     <div class="trow"><div class="tn">T4</div><div class="tb"><div class="task">Add an emergency contact</div><div class="crit">Locates it under Account Security — safety-feature discoverability</div></div></div>
+   </div>
+   <p>Beyond SEQ/SUS, a responsible-design checklist verifies the product: a copy audit for shaming language, extreme-input tests (unhealthy goals must trigger advisories, never celebration), and consent-first handling of body data. North star: consecutive logging days; if community engagement stays low and uncorrelated with retention, it demotes to a secondary entry.</p>`]
+},
+/* ---------- 03 · SHELFIE ---------- */
+{
+  key:'shelfie', acc:'var(--shelfie)', num:'03', name:'Shel<span class="thin">fie</span>', plain:'Shelfie',
+  type:'AI-native product', year:'2026', stack:'Claude API · JS',
+  proto:'prototypes/shelfie.html', protoNote:'Explore the full UI and flows in your browser. AI features (photo recognition, recipe generation) require an API backend — the demo video shows them running live.',
+  hook:'Snap your groceries. Cook what you have.',
+  lede:['For solo cooks trying to save money, the real enemy is waste — bought, forgotten, spoiled, tossed. Shelfie cuts tracking cost to a single photo: AI recognizes each grocery, estimates shelf life, and sorts the pantry by what to use first.',
+        'This shipped as a working AI prototype across three iterations — the vision, recipe generation, and link parsing make real model calls, failures included.'],
+  motif:`<svg viewBox="0 0 640 360" fill="none" role="img" aria-label="Camera viewfinder over a grocery shelf illustration"><line x1="170" y1="240" x2="470" y2="240" stroke="var(--ink)" stroke-width="3"/><circle cx="240" cy="215" r="21" stroke="var(--shelfie)" stroke-width="3"/><rect x="295" y="188" width="40" height="52" rx="6" stroke="var(--shelfie)" stroke-width="3"/><path d="M382 240 v-36 a17 17 0 0 1 34 0 v36" stroke="var(--shelfie)" stroke-width="3"/><path d="M188 118 h-24 v24 M452 118 h24 v24 M188 302 h-24 v-24 M452 302 h24 v-24" stroke="var(--shelfie)" stroke-width="4" stroke-linecap="round"/><text x="320" y="104" text-anchor="middle" font-family="Source Serif 4" font-style="italic" font-size="17" fill="var(--ink-2)">3 items · est. 5 days</text></svg>`,
+  chapters:[
+  `<p>Decomposing "cook to save money" into a behavior chain — buy → store → remember → decide → cook → finish — showed the breakage clusters in the middle: the fridge is a black box, "what's for dinner" arrives at the day's lowest-energy moment, and recipes saved from YouTube live in a parallel world from the actual inventory.</p>
+   <p>A competitive walkthrough found one shared cause of death in inventory apps: <b>manual entry</b>. Typing groceries item by item costs more than it returns; most users quit within a week.</p>
+   <p>The project's pivotal artifact is an <b>AI opportunity map</b> — every step evaluated on "can AI substantially lower the cost here," not "can AI be bolted on." Adopted: photo recognition, inventory-driven recipe generation, and recipe parsing from links, text, and screenshots. Deliberately non-AI: missing-ingredient checks (local matching — instant, free, explainable). Rejected outright: a chat assistant, which adds interaction cost and contradicts the zero-typing thesis.</p>`,
+  `<ul>
+     <li><b>Entry equals abandonment.</b> Every manual-entry solution dies within a week.</li>
+     <li><b>The fridge black box.</b> Invisible inventory makes "forgot → spoiled → tossed" the default ending.</li>
+     <li><b>Decision paralysis.</b> An open-ended dinner question at the lowest-energy moment slides toward takeout.</li>
+     <li><b>Recipes disconnected from inventory.</b> Saved recipes scatter across camera rolls with zero link to the kitchen; missing ingredients surface at cooking time.</li>
+     <li><b>Serving-size mismatch.</b> Recipes default to four servings; "cook once for the next few days" — the real saving strategy — has no product support.</li>
+   </ul>`,
+  `<p>Three tabs plus a central camera FAB — the only way into the pantry:</p>
+   <div class="iablock"><b>Pantry</b> (home) — Prepped & ready · ⏳ Use soon · Fresh · Staples · $-saved counter
+<b>[Snap FAB]</b> — photo → AI recognition → checkbox confirm → in
+<b>Cook</b> — ✨ AI ideas (servings: tonight / +lunch / +day after · Make-ahead cards)
+       — 📖 My cookbook (import via link / text / screenshot · live missing-check)
+<b>Auth</b> — random food-themed username · email required once · auto-login after</div>
+   <p>Four AI-interaction principles anchor the architecture: <b>AI is an invisible worker</b>, not a conversation partner — there is no chat box anywhere; <b>every AI output gets a human confirmation slot</b> — an AI you can correct is an AI you can trust; <b>structured schemas are design contracts</b> — prompt engineering is interface design; and <b>failure paths get designed as carefully as success</b> — every AI touchpoint has a fallback exit.</p>`,
+  `<ul>
+     <li><b>Inventory is the home screen, grouped by freshness.</b> "Use soon" is the first thing you see — taxonomy yields to urgency.</li>
+     <li><b>The photo is the only entrance</b>, built as a central FAB. No first-level manual add — deliberate restraint.</li>
+     <li><b>The serving selector speaks intent</b>: Just tonight / + tomorrow's lunch / + the day after — servings translated into meal-prep scenarios.</li>
+     <li><b>The cookbook sorts by missing count.</b> Cookable-right-now rises to the top; choosing dinner requires opening nothing.</li>
+     <li><b>The savings counter compounds visibly</b> — using something before it expires, or eating a prepped portion, turns "waste avoided" into a growing number.</li>
+   </ul>`,
+  `<p>Testing uses participants' <b>own grocery photos and recipe links</b> — probing the AI's real behavior, mistakes included:</p>
+   <div class="tasklist">
+     <div class="trow"><div class="tn">T1</div><div class="tb"><div class="task">Snap your own groceries and add them</div><div class="crit">Completes recognition + confirmation, actively corrects wrong items</div></div></div>
+     <div class="trow"><div class="tn">T2</div><div class="tb"><div class="task">Get a 3-serving recommendation and "cook" it</div><div class="crit">Understands the Make-ahead note, finds the Prepped group</div></div></div>
+     <div class="trow"><div class="tn">T3</div><div class="tb"><div class="task">Save a YouTube recipe to the cookbook</div><div class="crit">Succeeds via any import path, understands the preview step</div></div></div>
+     <div class="trow"><div class="tn">T4</div><div class="tb"><div class="task">Pick a cookable-right-now dish</div><div class="crit">Uses the missing badges and sorting, ≤ 20 s</div></div></div>
+   </div>
+   <p>AI-specific metrics extend standard usability: <b>recognition acceptance rate</b>, <b>correction behavior rate</b> (if nobody ever corrects, the confirmation step is theater), <b>recommendation adoption</b>, per-path import success, and <b>failure-path completion</b> — after a link fails, how many users follow the fallback and succeed. North star post-launch: at least one full photo → cook loop per week, with Use-soon consumption vs expiry-deletion as the waste-reduction proof.</p>`]
+}
+];
+
+/* ================= RENDER ================= */
+const $=id=>document.getElementById(id);
+function renderWorkspace(){
+  $('gridEl').innerHTML=CASES.map((c,i)=>`
+    <button class="workcard" style="--acc:${c.acc}" onclick="openCase(${i})">
+      <div class="thumb">${c.motif}</div>
+      <div class="wc-body">
+        <div class="wc-tag"><i></i>${c.type}</div>
+        <h3>${c.name}</h3>
+        <p class="hook">${c.hook}</p>
+        <div class="wc-foot"><span>YL-${c.num}</span><span>${c.stack}</span><span>${c.year}</span></div>
+      </div>
+    </button>`).join('');
+  $('listEl').innerHTML=CASES.map((c,i)=>`
+    <button class="row" style="--acc:${c.acc}" onclick="openCase(${i})">
+      <span class="r-num">YL-${c.num}</span>
+      <span class="r-name">${c.plain}<span class="hook">${c.hook}</span></span>
+      <span class="r-type">${c.type}</span>
+      <span class="r-year">${c.year}</span>
+    </button>`).join('');
+}
+function setView(v){
+  const change=()=>{
+    $('workspace').dataset.view=v;
+    $('vtGrid').setAttribute('aria-pressed',v==='grid');
+    $('vtList').setAttribute('aria-pressed',v==='list');
+  };
+  document.startViewTransition?document.startViewTransition(change):change();
+}
+
+let current=0,lastFocus=null;
+function openCase(i){
+  current=i; const c=CASES[i];
+  lastFocus=document.activeElement;
+  const fill=()=>{
+    $('vCrumb').textContent=c.plain;
+    $('vHero').innerHTML=c.motif;
+    $('vContent').innerHTML=`
+      <div style="--acc:${c.acc}">
+        <div class="v-tag"><i></i>${c.type}</div>
+        <h2 id="vTitle">${c.name}</h2>
+        <p class="v-hook" style="color:${c.acc}">${c.hook}</p>
+        <div class="v-meta">
+          <div><span class="lab">No.</span><span class="val">YL-${c.num}</span></div>
+          <div><span class="lab">Year</span><span class="val">${c.year}</span></div>
+          <div><span class="lab">Stack</span><span class="val">${c.stack}</span></div>
+          <div><span class="lab">Role</span><span class="val">Solo designer</span></div>
+        </div>
+        ${c.lede.map(p=>`<p class="lede">${p}</p>`).join('')}
+        <a class="proto-cta" href="${c.proto}" target="_blank" rel="noopener">Open the live prototype ↗</a>
+        <p class="proto-note">${c.protoNote}</p>
+        <nav class="chapnav" aria-label="Chapters">
+          ${CHAPS.map((ch,n)=>`<a href="#chap-${n}" onclick="jumpChap(event,${n})">${'0'+(n+1)} ${ch}</a>`).join('')}
+        </nav>
+        ${c.chapters.map((body,n)=>`
+          <section class="chap" id="chap-${n}">
+            <h3><b>0${n+1}</b> ${CHAPS[n]}</h3>
+            ${body}
+          </section>`).join('')}
+        <div class="v-nav">
+          <button onclick="stepCase(-1)">‹ ${CASES[(i-1+CASES.length)%CASES.length].plain}</button>
+          <button onclick="stepCase(1)">${CASES[(i+1)%CASES.length].plain} ›</button>
+        </div>
+      </div>`;
+    $('viewer').classList.add('open');
+    $('viewer').scrollTop=0;
+    document.body.style.overflow='hidden';
+  };
+  document.startViewTransition?document.startViewTransition(fill):fill();
+  toggleDrawer(false);
+  setTimeout(()=>$('viewer').querySelector('.v-actions button:last-child').focus(),80);
+}
+function jumpChap(e,n){
+  e.preventDefault();
+  const el=document.getElementById('chap-'+n);
+  if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function stepCase(d){openCase((current+d+CASES.length)%CASES.length);}
+function closeCase(){
+  const done=()=>{$('viewer').classList.remove('open');document.body.style.overflow='';};
+  document.startViewTransition?document.startViewTransition(done):done();
+  if(lastFocus)lastFocus.focus();
+}
+document.addEventListener('keydown',e=>{
+  if(!$('viewer').classList.contains('open'))return;
+  if(e.key==='Escape')closeCase();
+  if(e.key==='ArrowRight')stepCase(1);
+  if(e.key==='ArrowLeft')stepCase(-1);
+});
+function toggleDrawer(force){
+  const s=$('side');
+  const open=typeof force==='boolean'?force:!s.classList.contains('open');
+  s.classList.toggle('open',open);
+  document.querySelector('.burger').setAttribute('aria-expanded',open);
+}
+renderWorkspace();
+</script>
+</body>
+</html>

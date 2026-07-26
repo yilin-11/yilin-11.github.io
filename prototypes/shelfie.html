@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shelfie v3 — Your pantry, your cookbook, and what's missing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#177245; --green-deep:#0E5232; --green-bg:#E7F3EC;
+  --amber:#B26B00; --amber-bg:#FCF0DC;
+  --red:#B03A2E; --red-bg:#FBE9E6;
+  --prep:#5B4AA6; --prep-bg:#EDEAF8;
+  --ink:#1F2823; --ink-2:#5B6862; --ink-3:#93A09A;
+  --paper:#F7F8F6; --card:#fff; --line:#E5E9E6;
+  --sans:'DM Sans',system-ui,sans-serif; --disp:'Bricolage Grotesque',var(--sans);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:#E9EDEA;color:var(--ink);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+button{font-family:var(--sans);cursor:pointer;border:none;background:none}
+:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.phone{width:396px;height:800px;background:#101512;border-radius:46px;padding:12px;box-shadow:0 30px 80px rgba(15,40,28,.28)}
+.screen{position:relative;width:100%;height:100%;background:var(--paper);border-radius:36px;overflow:hidden;display:flex;flex-direction:column}
+@media (max-width:840px){body{padding:0}.phone{width:100%;max-width:440px;height:100vh;border-radius:0;padding:0;box-shadow:none}.screen{border-radius:0}}
+.view{position:absolute;inset:0;display:none;flex-direction:column;overflow-y:auto;padding-bottom:92px}
+.view.on{display:flex}
+.view>*{flex-shrink:0}
+.view::-webkit-scrollbar{display:none}
+.head{padding:52px 22px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.head .lg{font-family:var(--disp);font-weight:700;font-size:23px;letter-spacing:-.01em}
+.head .lg span{color:var(--green)}
+.head .sub{font-size:12.5px;color:var(--ink-2)}
+.avatar{width:38px;height:38px;border-radius:50%;background:var(--green);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.saved-chip{background:var(--green-bg);color:var(--green-deep);font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;white-space:nowrap}
+
+/* auth */
+#vAuth{background:linear-gradient(180deg,var(--green-bg) 0%,var(--paper) 46%);padding:0 26px;justify-content:center}
+.auth-logo{font-family:var(--disp);font-weight:700;font-size:44px;text-align:center;letter-spacing:-.02em}
+.auth-logo span{color:var(--green)}
+.auth-sub{text-align:center;font-size:14px;color:var(--ink-2);margin:6px 0 26px;line-height:1.6}
+.uname-box{background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:13px}
+.uname-box .lab{font-size:11.5px;font-weight:700;color:var(--ink-3);display:block}
+.uname-box .un{font-family:var(--disp);font-size:19px;font-weight:700}
+.dice{margin-left:auto;font-size:21px;padding:6px;border-radius:10px}
+.dice:hover{background:var(--green-bg)}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:12.5px;font-weight:700;color:var(--ink-2);margin-bottom:6px}
+.field input,.field textarea{width:100%;padding:13px 16px;border:1.5px solid var(--line);border-radius:14px;font-size:14.5px;font-family:var(--sans);background:#fff}
+.field input:focus,.field textarea:focus{border-color:var(--green);outline:none}
+.btn-main{display:block;width:100%;background:var(--green);color:#fff;font-size:15.5px;font-weight:700;padding:15px;border-radius:16px;text-align:center;transition:background .15s}
+.btn-main:hover{background:var(--green-deep)}
+.btn-main:disabled{background:#B9C6BF;cursor:default}
+.auth-note{font-size:12px;color:var(--ink-3);text-align:center;margin-top:14px;line-height:1.6}
+.storage-warn{display:none;margin-top:14px;background:var(--amber-bg);border-radius:12px;padding:10px 14px;font-size:12px;color:var(--amber);line-height:1.55}
+
+/* pantry */
+.grp{padding:6px 22px 2px}
+.grp-h{display:flex;align-items:center;gap:8px;margin:12px 0 8px}
+.grp-h b{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.grp-h .n{font-size:12px;color:var(--ink-3);font-weight:500}
+.grp-h.prep b{color:var(--prep)}.grp-h.soon b{color:var(--amber)}
+.grp-h.fresh b{color:var(--green-deep)}.grp-h.staple b{color:var(--ink-3)}
+.item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 14px;display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.item.prepitem{border-color:#D8D2EE;background:#FBFAFE}
+.item .em{font-size:22px;width:30px;text-align:center}
+.item .nm{font-size:14.5px;font-weight:700}
+.item .qt{font-size:12px;color:var(--ink-2)}
+.item .life{margin-left:auto;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.life.d0{background:var(--red-bg);color:var(--red)}
+.life.d1{background:var(--amber-bg);color:var(--amber)}
+.life.d2{background:var(--green-bg);color:var(--green-deep)}
+.life.dp{background:var(--prep-bg);color:var(--prep)}
+.item .del{color:var(--ink-3);font-size:15px;padding:4px 2px 4px 6px}
+.item .del:hover{color:var(--red)}
+.empty-pan{margin:40px 22px;text-align:center;color:var(--ink-2);font-size:14px;line-height:1.7}
+.empty-pan .big{font-size:40px;margin-bottom:8px}
+.empty-pan b{color:var(--ink)}
+
+/* snap */
+.snap-hero{margin:10px 22px;background:var(--green-bg);border:1.5px dashed #A9CDB9;border-radius:20px;padding:28px 20px;text-align:center;cursor:pointer;display:block}
+.snap-hero:hover{border-color:var(--green)}
+.snap-hero .ic{font-size:36px;margin-bottom:8px}
+.snap-hero b{font-family:var(--disp);font-size:17px;display:block;margin-bottom:4px}
+.snap-hero p{font-size:13px;color:var(--ink-2);line-height:1.6}
+.preview{margin:0 22px 12px;border-radius:18px;overflow:hidden;display:none}
+.preview img{width:100%;display:block;max-height:210px;object-fit:cover}
+.scanning{display:none;margin:6px 22px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;font-size:14px;font-weight:500;color:var(--ink-2)}
+.scanning .dots::after{content:'';animation:dots 1.2s steps(4) infinite}
+@keyframes dots{0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}}
+.detected{margin:0 22px;display:none}
+.detected h3{font-family:var(--disp);font-size:16px;margin:14px 0 10px}
+.det-item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:11px;margin-bottom:8px}
+.det-item input[type=checkbox]{width:18px;height:18px;accent-color:var(--green)}
+.det-item .em{font-size:20px}
+.det-item .nm{font-size:14px;font-weight:700}
+.det-item .qt{font-size:12px;color:var(--ink-2)}
+.det-item .life{margin-left:auto;font-size:11.5px;color:var(--ink-3);font-weight:600}
+.btn-block{display:block;width:calc(100% - 44px);margin:14px 22px}
+.err{display:none;margin:6px 22px;background:var(--red-bg);border-radius:14px;padding:12px 16px;font-size:13px;color:var(--red);line-height:1.5}
+
+/* cook segments */
+.seg{display:flex;background:#EDF1EE;border-radius:999px;padding:4px;margin:6px 22px 4px}
+.seg button{flex:1;padding:9px;border-radius:999px;font-size:13.5px;font-weight:700;color:var(--ink-2)}
+.seg button.on{background:#fff;color:var(--green-deep);box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.cook-intro{margin:8px 22px 4px;font-size:13.5px;color:var(--ink-2);line-height:1.6}
+.cook-intro b{color:var(--ink)}
+.serv-label{margin:12px 22px 8px;font-size:13px;font-weight:700}
+.serv{display:flex;gap:8px;margin:0 22px}
+.serv button{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:10px 6px;text-align:center;transition:all .12s}
+.serv button b{display:block;font-family:var(--disp);font-size:17px}
+.serv button span{font-size:10.5px;color:var(--ink-2);font-weight:600;line-height:1.3;display:block;margin-top:2px}
+.serv button.on{border-color:var(--green);background:var(--green-bg)}
+.serv button.on b{color:var(--green-deep)}
+.recipes{margin:8px 22px;display:flex;flex-direction:column;gap:14px}
+.rec{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.rec-top{padding:15px 18px 13px;display:flex;gap:13px;align-items:flex-start;cursor:pointer;width:100%;text-align:left}
+.rec .em{font-size:29px;line-height:1}
+.rec h3{font-family:var(--disp);font-size:16.5px;margin-bottom:3px}
+.rec .meta{font-size:12px;color:var(--ink-2);display:flex;gap:9px;flex-wrap:wrap}
+.rec .meta .warn{color:var(--amber);font-weight:700}
+.rec .meta .ok{color:var(--green-deep);font-weight:700}
+.rec .chev{margin-left:auto;color:var(--ink-3);transition:transform .2s}
+.rec.open .chev{transform:rotate(90deg)}
+.rec-body{display:none;border-top:1px solid var(--line);padding:14px 18px 16px}
+.rec.open .rec-body{display:block}
+.uses{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.uses span{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--green-bg);color:var(--green-deep)}
+.uses span.miss{background:var(--amber-bg);color:var(--amber)}
+.steps{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:12px}
+.steps li{display:flex;gap:10px;font-size:13.5px;line-height:1.55}
+.steps li b{flex-shrink:0;width:20px;height:20px;border-radius:50%;background:var(--green-bg);color:var(--green-deep);font-size:11px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.prepnote{font-size:12.5px;color:var(--prep);background:var(--prep-bg);border-radius:10px;padding:9px 12px;line-height:1.55;margin-bottom:10px}
+.prepnote b{display:block;margin-bottom:2px}
+.tip{font-size:12.5px;color:var(--ink-2);background:var(--paper);border-radius:10px;padding:9px 12px;line-height:1.55;margin-bottom:12px}
+.tip b{color:var(--green-deep)}
+.btn-made{display:block;width:100%;background:var(--green);color:#fff;font-size:14px;font-weight:700;padding:12px;border-radius:12px;text-align:center}
+.btn-made:hover{background:var(--green-deep)}
+.btn-made.done{background:var(--prep-bg);color:var(--prep);cursor:default}
+.src-line{font-size:12px;color:var(--ink-3);margin-bottom:10px;word-break:break-all}
+.rec .rdel{font-size:12.5px;font-weight:700;color:var(--red);margin-top:10px}
+.cook-empty{margin:30px 22px;text-align:center;font-size:14px;color:var(--ink-2);line-height:1.7}
+.cook-empty .big{font-size:38px;margin-bottom:8px}
+.import-btn{margin:10px 22px 4px;background:#fff;border:1.5px dashed #A9CDB9;border-radius:16px;padding:14px;font-size:14px;font-weight:700;color:var(--green-deep);width:calc(100% - 44px);display:flex;align-items:center;justify-content:center;gap:8px}
+.import-btn:hover{border-color:var(--green);background:var(--green-bg)}
+
+/* import view */
+.imp-tabs{display:flex;gap:8px;margin:8px 22px 12px}
+.imp-tabs button{flex:1;border:1.5px solid var(--line);border-radius:12px;padding:9px;font-size:12.5px;font-weight:700;color:var(--ink-2);background:#fff}
+.imp-tabs button.on{border-color:var(--green);background:var(--green-bg);color:var(--green-deep)}
+.imp-pane{margin:0 22px;display:none}
+.imp-pane.on{display:block}
+.imp-pane textarea{width:100%;min-height:130px;padding:13px 15px;border:1.5px solid var(--line);border-radius:14px;font-size:14px;font-family:var(--sans);resize:vertical;background:#fff}
+.imp-pane textarea:focus{border-color:var(--green);outline:none}
+.imp-hint{font-size:12px;color:var(--ink-3);line-height:1.6;margin-top:8px}
+.back-row{padding:0 22px;display:flex}
+.back-btn{font-size:13.5px;font-weight:700;color:var(--green-deep)}
+
+/* account */
+.acct-card{margin:12px 22px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px}
+.acct-top{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.acct-top .avatar{width:54px;height:54px;font-size:18px}
+.acct-top b{font-family:var(--disp);font-size:17px;display:block}
+.acct-top span{font-size:12.5px;color:var(--ink-2)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stat{background:var(--paper);border-radius:14px;padding:12px 6px;text-align:center}
+.stat b{font-family:var(--disp);font-size:18px;display:block}
+.stat span{font-size:10px;color:var(--ink-2);font-weight:600;line-height:1.3;display:block;margin-top:2px}
+.slist{margin:0 22px 12px;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.sitem{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line);width:100%;text-align:left;font-size:14.5px;font-weight:600;color:var(--ink)}
+.sitem:last-child{border-bottom:none}
+.sitem .chev{margin-left:auto;color:var(--ink-3)}
+.sitem .val{margin-left:auto;font-size:12.5px;color:var(--ink-3);font-weight:600}
+.sitem.danger{color:var(--red)}
+.sync-line{margin:0 22px 12px;font-size:12px;color:var(--ink-3);display:flex;align-items:center;gap:6px}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+.sync-dot.off{background:var(--amber)}
+
+/* tabs */
+.tabbar{position:absolute;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:none;align-items:flex-end;padding:8px 6px 20px;z-index:50}
+.tabbar.show{display:flex}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:700;color:var(--ink-3);padding-top:6px}
+.tab.on{color:var(--green-deep)}
+.tab svg{width:21px;height:21px}
+.tab-snap{flex:0 0 78px;display:flex;justify-content:center}
+.snap-fab{width:58px;height:58px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;margin-top:-26px;box-shadow:0 8px 20px rgba(23,114,69,.35)}
+.snap-fab:hover{background:var(--green-deep)}
+.snap-fab svg{width:25px;height:25px}
+.toast{position:absolute;left:50%;bottom:104px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;font-weight:600;padding:10px 18px;border-radius:999px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:70;white-space:nowrap;max-width:88%;overflow:hidden;text-overflow:ellipsis}
+.toast.show{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="phone"><div class="screen">
+
+  <!-- AUTH -->
+  <div class="view on" id="vAuth">
+    <div class="auth-logo">Shel<span>fie</span></div>
+    <p class="auth-sub">Snap groceries. Save recipes from anywhere.<br>Always know what's missing.</p>
+    <div id="signupBox">
+      <div class="uname-box">
+        <div><span class="lab">Your username</span><span class="un" id="unameTxt">—</span></div>
+        <button class="dice" onclick="rollName()" aria-label="Generate a new username">🎲</button>
+      </div>
+      <div class="field"><label for="aMail">Email</label><input id="aMail" type="email" placeholder="you@example.com" required></div>
+      <div class="err" id="authErr" style="margin:0 0 12px"></div>
+      <button class="btn-main" onclick="signUp()">Start cooking</button>
+      <p class="auth-note">No real name needed — you're just a username here.<br>You'll only type your email this once: after that we sign you in automatically, and it's how you get back in if you ever sign out.</p>
+    </div>
+    <div id="loginBox" style="display:none">
+      <div class="uname-box">
+        <div><span class="lab">Welcome back</span><span class="un" id="loginName">—</span></div>
+        <span style="margin-left:auto;font-size:22px">👋</span>
+      </div>
+      <div class="field"><label for="lMail">Enter your email to log in</label><input id="lMail" type="email" placeholder="you@example.com" required></div>
+      <div class="err" id="loginErr" style="margin:0 0 12px"></div>
+      <button class="btn-main" onclick="logIn()">Log in</button>
+      <p class="auth-note">This is the email you signed up with.<br><button style="color:var(--green-deep);font-weight:700;text-decoration:underline;text-underline-offset:3px" onclick="startFresh()">Not you? Start fresh with a new account</button></p>
+    </div>
+    <div class="storage-warn" id="storeWarn">Persistent storage isn't available in this environment — the app will still work, but data resets when you close it.</div>
+  </div>
+
+  <!-- PANTRY -->
+  <div class="view" id="vPantry">
+    <div class="head">
+      <div><div class="lg">Shel<span>fie</span></div><div class="sub" id="hello">Cook what you have. Waste nothing.</div></div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="saved-chip" id="savedChip">est. $0 saved</div>
+        <button class="avatar" id="avBtn" onclick="go('acct')" aria-label="Account">·</button>
+      </div>
+    </div>
+    <div id="pantryList"></div>
+  </div>
+
+  <!-- SNAP -->
+  <div class="view" id="vSnap">
+    <div class="head"><div><div class="lg">Snap groceries</div><div class="sub">One photo. Zero typing.</div></div></div>
+    <label class="snap-hero" for="file">
+      <div class="ic">📸</div>
+      <b>Photograph your haul</b>
+      <p>Lay your groceries on the counter — or shoot the open fridge.<br>AI identifies each item and estimates its shelf life.</p>
+    </label>
+    <input type="file" id="file" accept="image/*" capture="environment" style="display:none" onchange="onPhoto(this,'grocery')">
+    <div class="preview" id="preview"><img id="previewImg" alt="Your grocery photo"></div>
+    <div class="scanning" id="scanning">🧠 Recognizing your groceries<span class="dots"></span></div>
+    <div class="err" id="snapErr"></div>
+    <div class="detected" id="detected">
+      <h3>Found in your photo — uncheck anything wrong</h3>
+      <div id="detList"></div>
+      <button class="btn-main btn-block" onclick="addDetected()">Add to pantry</button>
+    </div>
+  </div>
+
+  <!-- COOK -->
+  <div class="view" id="vCook">
+    <div class="head"><div><div class="lg">Cook &amp; prep</div><div class="sub">AI ideas or your own saved recipes</div></div></div>
+    <div class="seg" role="tablist">
+      <button class="on" id="segAI" onclick="setCookMode('ai')">✨ AI ideas</button>
+      <button id="segBook" onclick="setCookMode('book')">📖 My cookbook</button>
+    </div>
+
+    <!-- AI mode -->
+    <div id="modeAI">
+      <p class="cook-intro" id="cookIntro"></p>
+      <div class="serv-label">How many servings?</div>
+      <div class="serv" role="radiogroup" aria-label="Servings">
+        <button class="on" data-s="1" onclick="setServ(this)"><b>1</b><span>Just tonight</span></button>
+        <button data-s="2" onclick="setServ(this)"><b>2</b><span>+ tomorrow's<br>lunch</span></button>
+        <button data-s="3" onclick="setServ(this)"><b>3</b><span>+ the day<br>after too</span></button>
+      </div>
+      <button class="btn-main btn-block" id="cookBtn" onclick="getRecipes()">🍳 What should I make?</button>
+      <div class="scanning" id="cookLoad">👩‍🍳 Planning your portions<span class="dots"></span></div>
+      <div class="err" id="cookErr"></div>
+      <div class="recipes" id="recipes"></div>
+      <div class="cook-empty" id="cookEmpty" style="display:none"><div class="big">🥕</div>Your pantry is empty.<br>Snap your groceries first and I'll take it from there.</div>
+    </div>
+
+    <!-- Cookbook mode -->
+    <div id="modeBook" style="display:none">
+      <button class="import-btn" onclick="go('import')">＋ Save a recipe from YouTube or anywhere</button>
+      <p class="cook-intro" id="bookIntro"></p>
+      <div class="recipes" id="bookList"></div>
+      <div class="cook-empty" id="bookEmpty" style="display:none"><div class="big">📖</div>No saved recipes yet.<br>Found something tasty online? Bring it here —<br>I'll always tell you what you're missing.</div>
+    </div>
+  </div>
+
+  <!-- IMPORT -->
+  <div class="view" id="vImport">
+    <div class="head"><div><div class="lg">Save a recipe</div><div class="sub">From YouTube, blogs, screenshots — anywhere</div></div></div>
+    <div class="back-row"><button class="back-btn" onclick="go('cook');setCookMode('book')">‹ Back to cookbook</button></div>
+    <div class="imp-tabs">
+      <button class="on" id="itText" onclick="setImp('text')">🔗 Link or text</button>
+      <button id="itShot" onclick="setImp('shot')">🖼 Screenshot</button>
+    </div>
+    <div class="imp-pane on" id="paneText">
+      <textarea id="impText" placeholder="Paste a recipe link (YouTube, blog…) — or just paste the recipe text from the video description."></textarea>
+      <p class="imp-hint">Paste a URL and AI will look the recipe up. If a link can't be read (some videos), paste the description text instead — it always works.</p>
+      <button class="btn-main" style="margin-top:12px" onclick="importFromText()">Parse &amp; preview</button>
+    </div>
+    <div class="imp-pane" id="paneShot">
+      <label class="snap-hero" for="shotFile" style="margin:0">
+        <div class="ic">🖼</div><b>Upload a recipe screenshot</b>
+        <p>A screengrab from a video, a photo of a cookbook page,<br>or a saved image — AI reads it into your cookbook.</p>
+      </label>
+      <input type="file" id="shotFile" accept="image/*" style="display:none" onchange="onPhoto(this,'recipe')">
+      <div class="preview" id="shotPreview" style="margin:12px 0 0"><img id="shotImg" alt="Recipe screenshot"></div>
+    </div>
+    <div class="scanning" id="impLoad">📖 Reading the recipe<span class="dots"></span></div>
+    <div class="err" id="impErr"></div>
+    <div class="recipes" id="impPreview" style="margin-top:12px"></div>
+  </div>
+
+  <!-- ACCOUNT -->
+  <div class="view" id="vAcct">
+    <div class="head"><div><div class="lg">Account</div><div class="sub">Your data, saved and synced</div></div></div>
+    <div class="acct-card">
+      <div class="acct-top"><div class="avatar" id="avBig">·</div><div><b id="acName">—</b><span id="acMail">—</span></div></div>
+      <div class="stats">
+        <div class="stat"><b id="stItems">0</b><span>items<br>tracked</span></div>
+        <div class="stat"><b id="stBook">0</b><span>recipes<br>saved</span></div>
+        <div class="stat"><b id="stPrep">0</b><span>meals<br>cooked</span></div>
+        <div class="stat"><b id="stSaved">$0</b><span>est.<br>saved</span></div>
+      </div>
+    </div>
+    <div class="sync-line"><span class="sync-dot" id="syncDot"></span><span id="syncTxt">Synced — everything restores automatically</span></div>
+    <div class="slist">
+      <button class="sitem" onclick="rollName();applyProfile();persist();toast('New username: '+profile.name)">Shuffle my username<span class="val" id="unVal">—</span><span class="chev">›</span></button>
+      <button class="sitem" onclick="toast('Dietary preferences — next iteration')">Dietary preferences<span class="val">None set</span><span class="chev">›</span></button>
+      <button class="sitem" onclick="toast('Expiry reminders — next iteration')">Expiry reminders<span class="val">On</span><span class="chev">›</span></button>
+      <button class="sitem" onclick="clearData()">Clear my data<span class="chev">›</span></button>
+      <button class="sitem danger" onclick="signOut()">Sign out</button>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <nav class="tabbar" id="tabbar">
+    <button class="tab on" id="tPantry" onclick="go('pantry')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 10h16M4 10V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4M4 10v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M9 14h6"/></svg>Pantry</button>
+    <div class="tab-snap"><button class="snap-fab" aria-label="Snap groceries" onclick="go('snap')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.4"/></svg></button></div>
+    <button class="tab" id="tCook" onclick="go('cook')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v3M12 2v4M16 3v3M5 10h14l-1 10a1.5 1.5 0 0 1-1.5 1.3h-9A1.5 1.5 0 0 1 6 20z"/></svg>Cook</button>
+  </nav>
+  <div class="toast" id="toast"></div>
+</div></div>
+
+<script>
+/* ---------- state & persistence ---------- */
+const KEY='shelfie-account-and-state';
+const hasStore=(typeof window!=='undefined'&&typeof window.storage!=='undefined');
+let profile=null;
+let pantry=[
+  {name:"Chicken thighs",emoji:"🍗",qty:"4 pieces",days:2},
+  {name:"Spinach",emoji:"🥬",qty:"1 bag",days:2},
+  {name:"Eggs",emoji:"🥚",qty:"8",days:10},
+  {name:"Tomatoes",emoji:"🍅",qty:"3",days:4},
+  {name:"Rice",emoji:"🍚",qty:"2 lb",days:180},
+  {name:"Garlic",emoji:"🧄",qty:"1 bulb",days:21},
+  {name:"Soy sauce",emoji:"🫙",qty:"1 bottle",days:365}
+];
+let prepped=[], cookbook=[], saved=0, cookedCount=0, servings=1, detected=[], pendingRecipe=null;
+const $=id=>document.getElementById(id);
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+
+let signedIn=false;
+async function persist(){
+  if(!hasStore)return;
+  try{ await window.storage.set(KEY, JSON.stringify({profile,signedIn,pantry,prepped,cookbook,saved,cookedCount})); setSync(true); }
+  catch(e){ setSync(false); }
+}
+async function restore(){
+  rollName();
+  if(!hasStore){ $('storeWarn').style.display='block'; return; }
+  try{
+    const r=await window.storage.get(KEY);
+    if(r&&r.value){
+      const s=JSON.parse(r.value);
+      profile=s.profile||null; signedIn=!!s.signedIn; pantry=s.pantry||pantry; prepped=s.prepped||[];
+      cookbook=s.cookbook||[]; saved=s.saved||0; cookedCount=s.cookedCount||0;
+      if(profile&&signedIn){ enterApp(true); }
+      else if(profile){ showLoginMode(); }
+    }
+  }catch(e){ /* first run */ }
+}
+function showLoginMode(){
+  $('signupBox').style.display='none';
+  $('loginBox').style.display='block';
+  $('loginName').textContent=profile.name;
+  $('lMail').value='';
+  $('loginErr').style.display='none';
+}
+function setSync(ok){
+  $('syncDot').className='sync-dot'+(ok?'':' off');
+  $('syncTxt').textContent=ok?'Synced — everything restores automatically':'Sync unavailable — changes may not persist';
+}
+
+/* ---------- random username ---------- */
+const ADJ=['Crispy','Toasty','Minty','Zesty','Smoky','Honey','Pickled','Roasted','Buttery','Umami','Peppery','Sizzling'];
+const NOUN=['Radish','Noodle','Dumpling','Basil','Miso','Turnip','Bagel','Scallion','Tofu','Pepper','Mochi','Gnocchi'];
+let uname='';
+function rollName(){
+  uname=ADJ[Math.floor(Math.random()*ADJ.length)]+NOUN[Math.floor(Math.random()*NOUN.length)]+'_'+(10+Math.floor(Math.random()*90));
+  $('unameTxt').textContent=uname;
+  if(profile){profile.name=uname;}
+}
+
+/* ---------- auth ---------- */
+function signUp(){
+  const mail=$('aMail').value.trim();
+  const err=$('authErr');
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)){
+    err.textContent='Enter a valid email — it\u2019s how you\u2019ll get back into your account.';
+    err.style.display='block'; return;
+  }
+  err.style.display='none';
+  profile={name:uname,mail}; signedIn=true;
+  persist(); enterApp(false);
+}
+function logIn(){
+  const mail=$('lMail').value.trim().toLowerCase();
+  const err=$('loginErr');
+  if(mail!==profile.mail.toLowerCase()){
+    err.textContent='That email doesn\u2019t match this account. Check for typos, or start fresh below.';
+    err.style.display='block'; return;
+  }
+  err.style.display='none';
+  signedIn=true; persist(); enterApp(true);
+}
+async function startFresh(){
+  profile=null; signedIn=false;
+  pantry=[];prepped=[];cookbook=[];saved=0;cookedCount=0;
+  if(hasStore){try{await window.storage.delete(KEY);}catch(e){}}
+  rollName();
+  $('loginBox').style.display='none';
+  $('signupBox').style.display='block';
+  $('aMail').value='';
+  toast('Fresh start — pick a username and add your email');
+}
+function applyProfile(){
+  const ini=profile.name.slice(0,2).toUpperCase();
+  $('avBtn').textContent=ini; $('avBig').textContent=ini;
+  $('acName').textContent=profile.name; $('acMail').textContent=profile.mail;
+  $('unVal').textContent=profile.name;
+}
+function enterApp(returning){
+  $('vAuth').classList.remove('on');
+  $('tabbar').classList.add('show');
+  applyProfile();
+  $('hello').textContent=returning?('Welcome back, '+profile.name+' — everything is right where you left it.'):'Cook what you have. Waste nothing.';
+  go('pantry');
+  if(returning)toast('Signed in as '+profile.name);
+}
+function signOut(){
+  signedIn=false; persist();
+  $('tabbar').classList.remove('show');
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+  $('vAuth').classList.add('on');
+  showLoginMode();
+  toast('Signed out — log back in with your email');
+}
+async function clearData(){
+  pantry=[];prepped=[];cookbook=[];saved=0;cookedCount=0;
+  if(hasStore){try{await window.storage.delete(KEY);}catch(e){}}
+  renderPantry(); updateStats(); toast('All data cleared');
+}
+
+/* ---------- nav ---------- */
+let toastT;
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2100);}
+function go(k){
+  if(!profile)return;
+  ['vPantry','vSnap','vCook','vAcct','vImport'].forEach(v=>$(v).classList.remove('on'));
+  $({pantry:'vPantry',snap:'vSnap',cook:'vCook',acct:'vAcct',import:'vImport'}[k]).classList.add('on');
+  $('tPantry').classList.toggle('on',k==='pantry');
+  $('tCook').classList.toggle('on',k==='cook'||k==='import');
+  if(k==='pantry')renderPantry();
+  if(k==='cook'){renderCookIntro();renderBook();}
+  if(k==='acct')updateStats();
+}
+function setCookMode(m){
+  $('segAI').classList.toggle('on',m==='ai');
+  $('segBook').classList.toggle('on',m==='book');
+  $('modeAI').style.display=m==='ai'?'block':'none';
+  $('modeBook').style.display=m==='book'?'block':'none';
+  if(m==='book')renderBook();
+}
+function setImp(m){
+  $('itText').classList.toggle('on',m==='text');
+  $('itShot').classList.toggle('on',m==='shot');
+  $('paneText').classList.toggle('on',m==='text');
+  $('paneShot').classList.toggle('on',m==='shot');
+}
+
+/* ---------- pantry ---------- */
+function lifeLabel(d){return d<=1?(d<=0?'eat today':'1 day left'):d+' days left';}
+function lifeClass(d){return d<=1?'d0':(d<=3?'d1':'d2');}
+function renderPantry(){
+  const el=$('pantryList');
+  if(!pantry.length&&!prepped.length){el.innerHTML='<div class="empty-pan"><div class="big">🧺</div><b>Nothing tracked yet.</b><br>Tap the camera below after your next grocery run.</div>';return;}
+  const soon=pantry.filter(p=>p.days<=3).sort((a,b)=>a.days-b.days);
+  const fresh=pantry.filter(p=>p.days>3&&p.days<=30).sort((a,b)=>a.days-b.days);
+  const staple=pantry.filter(p=>p.days>30);
+  const prow=(p,i)=>`<div class="item prepitem"><span class="em">🍱</span><div><div class="nm">${esc(p.name)}</div><div class="qt">${p.portions} portion${p.portions>1?'s':''} ready to eat</div></div><span class="life dp">eat within ${p.days}d</span><button class="del" aria-label="Eat one portion" onclick="eatPrep(${i})">✓</button></div>`;
+  const row=p=>{const i=pantry.indexOf(p);
+    return `<div class="item"><span class="em">${p.emoji||'🛒'}</span><div><div class="nm">${esc(p.name)}</div><div class="qt">${esc(p.qty||'')}</div></div><span class="life ${lifeClass(p.days)}">${lifeLabel(p.days)}</span><button class="del" aria-label="Remove ${esc(p.name)}" onclick="delItem(${i})">✕</button></div>`;};
+  const grp=(cls,title,html,n)=>n?`<div class="grp"><div class="grp-h ${cls}"><b>${title}</b><span class="n">${n}</span></div>${html}</div>`:'';
+  el.innerHTML=
+    grp('prep','🍱 Prepped &amp; ready',prepped.map(prow).join(''),prepped.length)+
+    grp('soon','⏳ Use soon',soon.map(row).join(''),soon.length)+
+    grp('fresh','✦ Fresh',fresh.map(row).join(''),fresh.length)+
+    grp('staple','◆ Staples',staple.map(row).join(''),staple.length);
+}
+function delItem(i){
+  const p=pantry[i]; pantry.splice(i,1);
+  if(p.days<=3){saved+=3;toast('Nice — used before it expired');}else toast('Removed '+p.name);
+  $('savedChip').textContent='est. $'+saved+' saved';
+  renderPantry(); persist();
+}
+function eatPrep(i){
+  const p=prepped[i]; p.portions--; saved+=4;
+  toast('Enjoy! One '+p.name+' portion eaten — est. $4 vs takeout');
+  if(p.portions<=0)prepped.splice(i,1);
+  $('savedChip').textContent='est. $'+saved+' saved';
+  renderPantry(); persist();
+}
+
+/* ---------- shared photo handler ---------- */
+function onPhoto(inp,kind){
+  const f=inp.files&&inp.files[0]; if(!f)return;
+  const img=new Image();
+  img.onload=()=>{
+    const max=1024, sc=Math.min(1,max/Math.max(img.width,img.height));
+    const c=document.createElement('canvas'); c.width=img.width*sc; c.height=img.height*sc;
+    c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+    const dataUrl=c.toDataURL('image/jpeg',.85);
+    if(kind==='grocery'){
+      $('snapErr').style.display='none';$('detected').style.display='none';
+      $('previewImg').src=dataUrl;$('preview').style.display='block';
+      scanGroceries(dataUrl.split(',')[1]);
+    }else{
+      $('impErr').style.display='none';$('impPreview').innerHTML='';
+      $('shotImg').src=dataUrl;$('shotPreview').style.display='block';
+      importFromImage(dataUrl.split(',')[1]);
+    }
+  };
+  img.src=URL.createObjectURL(f);
+}
+
+/* ---------- grocery scan ---------- */
+async function scanGroceries(b64){
+  $('scanning').style.display='block';
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:[
+        {type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},
+        {type:'text',text:'Identify the grocery/food items in this photo. Respond with ONLY a JSON array, no markdown fences, no prose: [{"name":"item name","emoji":"one fitting emoji","qty":"estimated quantity like 2 or 500g or 1 bunch","days":estimated days until it should be used (integer; produce 2-7, meat/fish 2-3, dairy 7-14, eggs 21, pantry staples 180+)}]. Max 12 items. If no food is visible, return [].'}
+      ]}]})
+    });
+    const data=await r.json();
+    const txt=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+    detected=JSON.parse(txt.replace(/```json|```/g,'').trim());
+    $('scanning').style.display='none';
+    if(!Array.isArray(detected)||!detected.length){const e=$('snapErr');e.textContent="Couldn't spot any food in that photo — try better lighting or a closer shot.";e.style.display='block';return;}
+    $('detList').innerHTML=detected.map((d,i)=>`<label class="det-item"><input type="checkbox" checked data-i="${i}"><span class="em">${d.emoji||'🛒'}</span><div><div class="nm">${esc(d.name)}</div><div class="qt">${esc(d.qty||'')}</div></div><span class="life">~${d.days} days</span></label>`).join('');
+    $('detected').style.display='block';
+  }catch(e){
+    $('scanning').style.display='none';
+    const el=$('snapErr');el.textContent="The scan didn't go through. Check your connection and try again.";el.style.display='block';
+  }
+}
+function addDetected(){
+  const picks=[...document.querySelectorAll('#detList input:checked')].map(c=>detected[+c.dataset.i]);
+  pantry=pantry.concat(picks.map(p=>({name:p.name,emoji:p.emoji,qty:p.qty,days:Math.max(1,parseInt(p.days)||3)})));
+  toast(picks.length+' items added to pantry');
+  $('detected').style.display='none';$('preview').style.display='none';$('file').value='';
+  renderPantry(); persist(); go('pantry');
+}
+
+/* ---------- recipe import ---------- */
+const RECIPE_SCHEMA='{"name":"","emoji":"one fitting emoji","time_min":number,"servings":number,"ingredients":[{"name":"ingredient","qty":"amount"}],"steps":["short imperative steps"],"source":"the URL or platform name, or empty string"}';
+async function importFromText(){
+  const raw=$('impText').value.trim();
+  if(!raw){toast('Paste a link or recipe text first');return;}
+  const isUrl=/https?:\/\/\S+/.test(raw);
+  $('impLoad').style.display='block';$('impErr').style.display='none';$('impPreview').innerHTML='';
+  const body={model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:
+    isUrl
+    ? `Find the recipe at this link and extract it: ${raw} . If you cannot access the page content, respond with exactly {"error":"unreachable"}. Otherwise respond with ONLY this JSON object, no markdown fences, no prose: ${RECIPE_SCHEMA}`
+    : `Extract the recipe from this text into a structured format. Text: """${raw}""" Respond with ONLY this JSON object, no markdown fences, no prose: ${RECIPE_SCHEMA}`
+  }]};
+  if(isUrl)body.tools=[{type:'web_search_20250305',name:'web_search'}];
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const data=await r.json();
+    const txt=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n');
+    const jm=txt.match(/\{[\s\S]*\}/);
+    const rec=JSON.parse((jm?jm[0]:txt).replace(/```json|```/g,'').trim());
+    $('impLoad').style.display='none';
+    if(rec.error){showImpErr("Couldn't read that link — some videos block reading. Paste the recipe text from the description instead, it always works.");return;}
+    if(isUrl&&!rec.source)rec.source=raw;
+    previewImport(rec);
+  }catch(e){
+    $('impLoad').style.display='none';
+    showImpErr("Couldn't parse that — try pasting the recipe text itself.");
+  }
+}
+async function importFromImage(b64){
+  $('impLoad').style.display='block';
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:[
+        {type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},
+        {type:'text',text:`Extract the recipe shown in this image. Respond with ONLY this JSON object, no markdown fences, no prose: ${RECIPE_SCHEMA}. If no recipe is visible, respond with exactly {"error":"none"}.`}
+      ]}]})
+    });
+    const data=await r.json();
+    const txt=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+    const rec=JSON.parse(txt.replace(/```json|```/g,'').trim());
+    $('impLoad').style.display='none';
+    if(rec.error){showImpErr("Couldn't find a recipe in that image — try a clearer screenshot.");return;}
+    if(!rec.source)rec.source='Screenshot';
+    previewImport(rec);
+  }catch(e){
+    $('impLoad').style.display='none';
+    showImpErr("Couldn't read that screenshot — try again or paste the text.");
+  }
+}
+function showImpErr(m){const e=$('impErr');e.textContent=m;e.style.display='block';}
+function previewImport(rec){
+  pendingRecipe=rec;
+  const miss=missingFor(rec);
+  $('impPreview').innerHTML=`
+    <div class="rec open">
+      <div class="rec-top"><span class="em">${rec.emoji||'🍽️'}</span>
+        <div><h3>${esc(rec.name)}</h3>
+          <div class="meta"><span>⏱ ${rec.time_min||'?'} min</span><span>${rec.servings||1} serving${(rec.servings||1)>1?'s':''}</span>${missBadge(miss)}</div>
+        </div></div>
+      <div class="rec-body">
+        <div class="uses">${(rec.ingredients||[]).map(g=>{const has=!miss.includes(g.name);return `<span class="${has?'':'miss'}">${has?'':'+ '}${esc(g.name)}</span>`;}).join('')}</div>
+        <ol class="steps">${(rec.steps||[]).slice(0,6).map((s,n)=>`<li><b>${n+1}</b><span>${esc(s)}</span></li>`).join('')}</ol>
+        ${rec.source?`<div class="src-line">Source: ${esc(rec.source)}</div>`:''}
+        <button class="btn-made" onclick="saveRecipe()">Save to my cookbook</button>
+      </div>
+    </div>`;
+}
+function saveRecipe(){
+  cookbook.unshift(pendingRecipe);
+  persist();
+  toast('Saved — I\u2019ll always tell you what\u2019s missing');
+  $('impPreview').innerHTML='';$('impText').value='';$('shotPreview').style.display='none';$('shotFile').value='';
+  go('cook'); setCookMode('book');
+}
+
+/* ---------- missing-ingredient engine ---------- */
+const PANTRY_ASSUMED=['water','salt','pepper','oil','sugar'];
+function norm(s){return String(s).toLowerCase().replace(/e?s\b/g,'').trim();}
+function haveIngredient(name){
+  const n=norm(name);
+  if(PANTRY_ASSUMED.some(a=>n.includes(a)))return true;
+  return pantry.concat(prepped.map(p=>({name:p.name}))).some(p=>{
+    const pn=norm(p.name);
+    return pn.includes(n)||n.includes(pn)||pn.split(' ').some(w=>w.length>3&&n.includes(w));
+  });
+}
+function missingFor(rec){return (rec.ingredients||[]).filter(g=>!haveIngredient(g.name)).map(g=>g.name);}
+function missBadge(miss){
+  return miss.length
+    ? `<span class="warn">missing ${miss.length}: ${miss.slice(0,3).map(esc).join(', ')}${miss.length>3?'…':''}</span>`
+    : `<span class="ok">✓ you have everything</span>`;
+}
+
+/* ---------- cookbook render ---------- */
+function renderBook(){
+  $('bookEmpty').style.display=cookbook.length?'none':'block';
+  const ready=cookbook.filter(r=>!missingFor(r).length).length;
+  $('bookIntro').innerHTML=cookbook.length?`<b>${ready} of ${cookbook.length}</b> saved recipes are cookable right now with your pantry.`:'';
+  const sorted=cookbook.map((r,i)=>({r,i,miss:missingFor(r)})).sort((a,b)=>a.miss.length-b.miss.length);
+  $('bookList').innerHTML=sorted.map(({r,i,miss})=>`
+    <div class="rec" id="bk${i}">
+      <button class="rec-top" onclick="$('bk${i}').classList.toggle('open')" aria-expanded="false">
+        <span class="em">${r.emoji||'🍽️'}</span>
+        <div><h3>${esc(r.name)}</h3>
+          <div class="meta"><span>⏱ ${r.time_min||'?'} min</span>${missBadge(miss)}</div>
+        </div><span class="chev">›</span>
+      </button>
+      <div class="rec-body">
+        <div class="uses">${(r.ingredients||[]).map(g=>{const has=!miss.includes(g.name);return `<span class="${has?'':'miss'}">${has?'✓ ':'+ buy '}${esc(g.name)}${g.qty?' · '+esc(g.qty):''}</span>`;}).join('')}</div>
+        <ol class="steps">${(r.steps||[]).map((s,n)=>`<li><b>${n+1}</b><span>${esc(s)}</span></li>`).join('')}</ol>
+        ${r.source?`<div class="src-line">Source: ${esc(r.source)}</div>`:''}
+        ${miss.length?'':`<button class="btn-made" onclick="cookSaved(${i})">I made this</button>`}
+        <button class="rdel" onclick="delRecipe(${i})">Remove from cookbook</button>
+      </div>
+    </div>`).join('');
+}
+function cookSaved(i){
+  cookedCount++; saved+=4;
+  $('savedChip').textContent='est. $'+saved+' saved';
+  toast('Logged — est. $4 saved vs takeout');
+  persist();
+}
+function delRecipe(i){
+  toast('Removed '+cookbook[i].name);
+  cookbook.splice(i,1); renderBook(); persist();
+}
+
+/* ---------- AI cook mode ---------- */
+function setServ(btn){
+  servings=+btn.dataset.s;
+  btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+function renderCookIntro(){
+  const soon=pantry.filter(p=>p.days<=3);
+  $('cookEmpty').style.display=pantry.length?'none':'block';
+  $('cookBtn').style.display=pantry.length?'block':'none';
+  $('cookIntro').innerHTML=pantry.length
+    ? (soon.length?`<b>${soon.map(s=>s.name).join(', ')}</b> ${soon.length>1?'are':'is'} expiring first — I'll build your meal around ${soon.length>1?'them':'it'}.`:`Everything's fresh. Let's cook something easy from what you have.`)
+    :'';
+}
+async function getRecipes(){
+  $('cookErr').style.display='none';$('recipes').innerHTML='';
+  $('cookLoad').style.display='block';$('cookBtn').disabled=true;
+  const inv=pantry.map(p=>`${p.name} (${p.qty}, ${p.days} days left)`).join('; ');
+  const prep=servings>1?` I will cook ${servings} servings at once and refrigerate ${servings-1} portion(s) for the next day(s), so scale ingredient amounts to ${servings} servings and include how to store and reheat the make-ahead portions and how many days they keep.`:'';
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:
+        `I live alone, I'm busy, and I cook to save money. My pantry: ${inv}. Suggest exactly 3 recipes under 35 minutes for ${servings} serving(s), prioritizing ingredients with the fewest days left. Choose dishes that keep and reheat well when making ahead.${prep} Prefer using only my pantry; at most 1-2 cheap missing items per recipe. Respond with ONLY a JSON array, no markdown fences, no prose: [{"name":"","emoji":"","time_min":number,"uses":["pantry items used"],"missing":["items to buy, or empty array"],"steps":["3-5 short imperative steps with amounts for ${servings} serving(s)"],"prep_note":"${servings>1?'how to portion, store, and reheat the extra servings, and how many days they keep':''}","tip":"one money-saving tip"}]`
+      }]})
+    });
+    const data=await r.json();
+    const txt=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+    const recs=JSON.parse(txt.replace(/```json|```/g,'').trim());
+    $('cookLoad').style.display='none';$('cookBtn').disabled=false;
+    window._recs=recs;
+    $('recipes').innerHTML=recs.map((rc,i)=>`
+      <div class="rec" id="rec${i}">
+        <button class="rec-top" onclick="$('rec${i}').classList.toggle('open')" aria-expanded="false">
+          <span class="em">${rc.emoji||'🍽️'}</span>
+          <div><h3>${esc(rc.name)}</h3>
+            <div class="meta"><span>⏱ ${rc.time_min} min</span><span>${servings} serving${servings>1?'s':''}</span>${(rc.missing&&rc.missing.length)?`<span class="warn">buy: ${rc.missing.map(esc).join(', ')}</span>`:'<span class="ok">✓ all from your pantry</span>'}</div>
+          </div><span class="chev">›</span>
+        </button>
+        <div class="rec-body">
+          <div class="uses">${(rc.uses||[]).map(u=>`<span>${esc(u)}</span>`).join('')}${(rc.missing||[]).map(m=>`<span class="miss">+ ${esc(m)}</span>`).join('')}</div>
+          <ol class="steps">${(rc.steps||[]).map((s,n)=>`<li><b>${n+1}</b><span>${esc(s)}</span></li>`).join('')}</ol>
+          ${(servings>1&&rc.prep_note)?`<div class="prepnote"><b>🍱 Make-ahead</b>${esc(rc.prep_note)}</div>`:''}
+          ${rc.tip?`<div class="tip"><b>Tip · </b>${esc(rc.tip)}</div>`:''}
+          <button class="btn-made" id="made${i}" onclick="madeIt(${i})">I made this${servings>1?' — save '+(servings-1)+' portion'+(servings>2?'s':'')+' for later':''}</button>
+        </div>
+      </div>`).join('');
+  }catch(e){
+    $('cookLoad').style.display='none';$('cookBtn').disabled=false;
+    const el=$('cookErr');el.textContent="Couldn't fetch ideas just now — give it another try in a moment.";el.style.display='block';
+  }
+}
+function madeIt(i){
+  const rc=window._recs[i]; const btn=$('made'+i);
+  if(btn.classList.contains('done'))return;
+  cookedCount++;
+  (rc.uses||[]).forEach(u=>{
+    const idx=pantry.findIndex(p=>p.name.toLowerCase()===String(u).toLowerCase());
+    if(idx>-1&&pantry[idx].days<=3){saved+=3;pantry.splice(idx,1);}
+  });
+  if(servings>1){
+    prepped.push({name:rc.name,portions:servings-1,days:3});
+    toast((servings-1)+' portion'+(servings>2?'s':'')+' of '+rc.name+' added to Prepped');
+  }else{saved+=4;toast('Logged — est. $4 saved vs takeout');}
+  $('savedChip').textContent='est. $'+saved+' saved';
+  btn.classList.add('done');
+  btn.textContent=servings>1?'✓ Prepped — waiting in your pantry':'✓ Logged';
+  persist();
+}
+
+/* ---------- stats ---------- */
+function updateStats(){
+  $('stItems').textContent=pantry.length;
+  $('stBook').textContent=cookbook.length;
+  $('stPrep').textContent=cookedCount;
+  $('stSaved').textContent='$'+saved;
+  $('savedChip').textContent='est. $'+saved+' saved';
+}
+
+restore();
+</script>
+</body>
+</html>

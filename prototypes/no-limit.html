@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>No Limit — Prototype v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --mint:#DDF3EE; --mint-2:#BCE7DD; --teal:#2A9D8F; --teal-deep:#186F65;
+  --coral:#E76F51; --coral-deep:#C24E31; --coral-bg:#FDEAE3;
+  --ink:#22312E; --ink-2:#5C6E6A; --ink-3:#8AA09B;
+  --paper:#FBFDFC; --card:#FFFFFF; --line:#E3EEEB;
+  --ok:#2A9D8F; --warn-bg:#FFF4E5; --warn:#8A5A0B;
+  --sans:'Manrope',system-ui,sans-serif; --logo:'Caveat',cursive;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:#EFF4F2;color:var(--ink);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+button{font-family:var(--sans);cursor:pointer;border:none;background:none}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+
+/* device frame */
+.stage{display:flex;gap:40px;align-items:center;flex-wrap:wrap;justify-content:center}
+.phone{width:390px;height:770px;background:#111;border-radius:48px;padding:12px;box-shadow:0 30px 80px rgba(20,50,45,.25)}
+.screen{position:relative;width:100%;height:100%;background:var(--paper);border-radius:38px;overflow:hidden;display:flex;flex-direction:column}
+.notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:120px;height:26px;background:#111;border-radius:14px;z-index:60}
+.note{max-width:280px;font-size:13.5px;color:#4A5C57;line-height:1.7}
+.note b{display:block;font-size:15px;color:#22312E;margin-bottom:6px}
+.note ol{padding-left:18px;display:flex;flex-direction:column;gap:8px}
+@media (max-width:840px){.note{display:none}body{padding:0}.phone{width:100%;max-width:420px;height:100vh;border-radius:0;padding:0;box-shadow:none}.screen{border-radius:0}.notch{display:none}}
+
+/* views */
+.view{position:absolute;inset:0;display:none;flex-direction:column;overflow-y:auto;padding-bottom:122px}
+.view>*{flex-shrink:0}
+.view.on{display:flex}
+.view::-webkit-scrollbar{display:none}
+
+/* login */
+#vLogin{background:linear-gradient(180deg,var(--mint) 0%,var(--paper) 45%);padding:0 28px;justify-content:center;gap:0}
+.logo{font-family:var(--logo);font-size:52px;color:var(--teal-deep);text-align:center;margin-bottom:2px}
+.login-sub{text-align:center;font-size:14px;color:var(--ink-2);margin-bottom:30px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12.5px;font-weight:700;color:var(--ink-2);margin-bottom:6px;letter-spacing:.02em}
+.field input{width:100%;padding:13px 16px;border:1.5px solid var(--line);border-radius:14px;font-size:15px;font-family:var(--sans);background:#fff}
+.field input:focus{border-color:var(--teal);outline:none}
+.btn-main{width:100%;background:var(--coral);color:#fff;font-size:16px;font-weight:700;padding:15px;border-radius:16px;margin-top:6px;transition:background .15s}
+.btn-main:hover{background:var(--coral-deep)}
+.aux{display:flex;justify-content:center;gap:22px;margin:16px 0 22px}
+.aux button{font-size:13.5px;font-weight:600;color:var(--teal-deep);text-decoration:underline;text-underline-offset:3px}
+.divider{display:flex;align-items:center;gap:12px;color:var(--ink-3);font-size:12px;margin-bottom:16px}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line)}
+.sso{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sso button{border:1.5px solid var(--line);border-radius:14px;padding:12px;font-size:13.5px;font-weight:600;color:var(--ink);background:#fff;display:flex;align-items:center;justify-content:center;gap:8px}
+.sso button:hover{border-color:var(--teal)}
+
+/* app header */
+.apphead{background:var(--mint);padding:52px 22px 16px;display:flex;align-items:center;justify-content:space-between}
+.apphead .lg{font-family:var(--logo);font-size:30px;color:var(--teal-deep)}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--teal);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+/* home */
+.timer-wrap{background:var(--mint);padding:8px 22px 26px;text-align:center;border-radius:0 0 30px 30px}
+.ring-box{position:relative;width:240px;height:240px;margin:8px auto 14px}
+.ring-box svg{transform:rotate(-90deg)}
+.ring-txt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.ring-txt .t{font-size:38px;font-weight:700;letter-spacing:.01em;font-variant-numeric:tabular-nums}
+.ring-txt .s{font-size:13px;color:var(--ink-2);font-weight:600}
+.ring-txt .s2{font-size:12px;color:var(--ink-3)}
+.btn-fast{background:var(--coral);color:#fff;font-size:16px;font-weight:700;padding:14px 34px;border-radius:999px;display:inline-flex;align-items:center;gap:9px;transition:background .15s}
+.btn-fast:hover{background:var(--coral-deep)}
+.btn-fast.stop{background:var(--teal-deep)}
+.window-line{font-size:12.5px;color:var(--ink-2);margin-top:12px;font-weight:600}
+.window-line button{color:var(--teal-deep);text-decoration:underline;text-underline-offset:3px;font-weight:700;font-size:12.5px}
+.home-cards{padding:18px 22px;display:flex;flex-direction:column;gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px}
+.card-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.card-h b{font-size:15px;font-weight:700}
+.card-h button{font-size:13px;font-weight:700;color:var(--coral-deep)}
+.trend-line{font-size:13px;color:var(--ink-2);margin-bottom:10px}
+.trend-line b{color:var(--teal-deep);font-size:15px}
+.spark{width:100%;height:70px}
+.streak{display:flex;gap:8px;align-items:center}
+.streak .days{display:flex;gap:5px;flex:1}
+.streak .d{flex:1;height:8px;border-radius:4px;background:var(--line)}
+.streak .d.on{background:var(--teal)}
+.streak span{font-size:12.5px;color:var(--ink-2);font-weight:600;white-space:nowrap}
+.gentle{font-size:12px;color:var(--ink-3);margin-top:8px;line-height:1.5}
+
+/* tracking view */
+.subhead{padding:52px 22px 12px;display:flex;align-items:center;gap:12px}
+.subhead button.back{width:34px;height:34px;border-radius:50%;background:var(--mint);color:var(--teal-deep);font-size:16px;font-weight:700}
+.subhead h2{font-size:19px;font-weight:700}
+.seg{display:flex;background:var(--mint);border-radius:999px;padding:4px;margin:6px 22px 4px}
+.seg button{flex:1;padding:9px;border-radius:999px;font-size:13.5px;font-weight:700;color:var(--teal-deep)}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.seg2{display:flex;gap:4px;margin:10px 22px}
+.seg2 button{flex:1;padding:7px;border-radius:10px;font-size:12.5px;font-weight:700;color:var(--ink-3)}
+.seg2 button.on{background:var(--mint);color:var(--teal-deep)}
+.headline{padding:8px 22px 0}
+.headline .big{font-size:30px;font-weight:700}
+.headline .big small{font-size:15px;color:var(--ink-2);font-weight:600}
+.headline .delta{font-size:14px;font-weight:700;margin-top:2px}
+.delta.down{color:var(--teal-deep)}.delta.up{color:var(--coral-deep)}
+.headline .ctx{font-size:12.5px;color:var(--ink-3);margin-top:2px}
+.chart-box{padding:10px 22px}
+.stat-rows{padding:0 22px;display:flex;flex-direction:column;gap:10px}
+.srow{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 16px}
+.srow .l{font-size:13.5px;font-weight:600;color:var(--ink-2)}
+.srow .v{font-size:15px;font-weight:700}
+.srow .d{font-size:12.5px;font-weight:700}
+
+/* community */
+.me-strip{margin:14px 22px;background:var(--mint);border-radius:18px;padding:14px 16px;display:flex;align-items:center;gap:14px}
+.mini-ring{width:52px;height:52px;position:relative}
+.mini-ring svg{transform:rotate(-90deg)}
+.mini-ring span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;color:var(--teal-deep)}
+.me-strip .txt b{font-size:14px;display:block}
+.me-strip .txt span{font-size:12px;color:var(--ink-2)}
+.post{margin:0 22px 16px;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.post .ph{display:flex;align-items:center;gap:10px;padding:12px 16px}
+.post .ph .avatar{width:32px;height:32px;font-size:11px}
+.post .ph b{font-size:13.5px}
+.post .ph span{font-size:11.5px;color:var(--ink-3);margin-left:auto}
+.post .img{height:190px;display:flex;align-items:center;justify-content:center;font-size:44px;position:relative;overflow:hidden}
+.post .img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.post .img.a{background:linear-gradient(135deg,#F6E7D8,#EED6BF)}
+.post .img.b{background:linear-gradient(135deg,#DDF3EE,#C4E8DE)}
+.post .body{padding:12px 16px 14px}
+.post .acts{display:flex;gap:16px;margin-bottom:8px}
+.post .acts button{font-size:13px;font-weight:700;color:var(--ink-2);display:flex;gap:6px;align-items:center}
+.post .acts button.liked{color:var(--coral-deep)}
+.post .cap{font-size:13.5px;line-height:1.5}
+.post .cap b{font-weight:700}
+.cmts{border-top:1px solid var(--line);margin-top:12px;padding-top:11px;display:none;flex-direction:column;gap:9px}
+.cmts.show{display:flex}
+.cmt{display:flex;gap:9px;align-items:flex-start}
+.cmt .avatar{width:26px;height:26px;font-size:9.5px;flex-shrink:0}
+.cmt p{font-size:12.5px;line-height:1.5;color:var(--ink-2)}
+.cmt p b{color:var(--ink);font-weight:700}
+.cmt-input{display:flex;gap:8px;margin-top:3px}
+.cmt-input input{flex:1;border:1.5px solid var(--line);border-radius:999px;padding:8px 14px;font-size:12.5px;font-family:var(--sans)}
+.cmt-input input:focus{border-color:var(--teal);outline:none}
+.cmt-input button{background:var(--teal);color:#fff;font-size:12px;font-weight:700;padding:8px 15px;border-radius:999px;flex-shrink:0}
+.cmt-input button:hover{background:var(--teal-deep)}
+
+/* settings */
+.sec-label{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);padding:24px 22px 10px}
+.slist{margin:0 22px;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.sitem{display:flex;align-items:center;gap:12px;padding:16px;min-height:56px;border-bottom:1px solid var(--line);width:100%;text-align:left;font-size:14.5px;font-weight:600;color:var(--ink)}
+.sitem>*:first-child{flex-shrink:0}
+.sitem .val{margin-left:auto;font-size:12.5px;color:var(--ink-3);font-weight:600;text-align:right;max-width:52%;white-space:normal;line-height:1.4}
+.sitem .chev{margin-left:auto;color:var(--ink-3);flex-shrink:0}
+.sitem .val~.chev{margin-left:8px}
+.sitem:last-child{border-bottom:none}
+.toggle{margin-left:auto;width:44px;height:26px;border-radius:999px;background:var(--line);position:relative;transition:background .15s}
+.toggle::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle.on{background:var(--teal)}
+.toggle.on::after{left:21px}
+.profile{margin:14px 22px 0;display:flex;align-items:center;gap:14px}
+.profile .avatar{width:56px;height:56px;font-size:18px}
+.profile b{font-size:17px;display:block}
+.profile span{font-size:13px;color:var(--ink-2)}
+.danger{color:var(--coral-deep)!important}
+
+/* plan editor */
+.plan-card{margin:12px 22px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 18px}
+.plan-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.plan-row:last-child{border-bottom:none}
+.plan-row .l{font-size:14px;font-weight:600;color:var(--ink-2)}
+.plan-row .r{display:flex;gap:10px;align-items:center}
+.plan-row .v{font-size:16px;font-weight:700;font-variant-numeric:tabular-nums}
+.chg{background:var(--coral-bg);color:var(--coral-deep);font-size:12px;font-weight:700;padding:6px 14px;border-radius:999px}
+.chg:hover{background:#FBD9CC}
+.plan-row input,.plan-row select{border:1.5px solid var(--teal);border-radius:10px;padding:6px 10px;font-size:15px;font-weight:700;font-family:var(--sans);width:96px}
+.advice{margin:0 22px 12px;background:var(--warn-bg);border:1px solid #F3DFC0;border-radius:14px;padding:12px 16px;font-size:12.5px;line-height:1.6;color:var(--warn);display:none}
+.advice.show{display:block}
+.advice b{display:block;margin-bottom:2px}
+.support{margin:4px 22px 20px;font-size:12px;color:var(--ink-3);line-height:1.6}
+.support a{color:var(--teal-deep);font-weight:700}
+
+/* tab bar */
+.tabbar{position:absolute;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;padding:10px 0 22px;z-index:50}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:700;color:var(--ink-3)}
+.tab.on{color:var(--coral-deep)}
+.tab svg{width:22px;height:22px}
+.toast{position:absolute;left:50%;bottom:104px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;font-weight:600;padding:10px 18px;border-radius:999px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:70;white-space:nowrap}
+.toast.show{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="note" aria-hidden="true">
+    <b>No Limit · Prototype v2</b>
+    <ol>
+      <li><b style="font-size:13px;display:inline">Frequency first</b> — the first screen holds only the timer ring and one primary button; charts step back to a preview.</li>
+      <li><b style="font-size:13px;display:inline">Trends over numbers</b> — the tracking page leads with "−2.8 lbs this month"; the absolute value takes second place.</li>
+      <li><b style="font-size:13px;display:inline">Responsible design</b> — supportive copy, gentle advisories on extreme goals, emergency contacts one tap deep.</li>
+    </ol>
+  </div>
+  <div class="phone"><div class="screen">
+    <div class="notch"></div>
+
+    <!-- LOGIN -->
+    <div class="view on" id="vLogin">
+      <div class="logo">No Limit</div>
+      <p class="login-sub">Fasting, progress, and people — in one place.</p>
+      <div class="field"><label for="em">Email</label><input id="em" type="email" placeholder="name@school.edu"></div>
+      <div class="field"><label for="pw">Password</label><input id="pw" type="password" placeholder="••••••••"></div>
+      <button class="btn-main" onclick="go('home')">Log in</button>
+      <div class="aux">
+        <button onclick="go('home')">Log in with Face ID</button>
+        <button onclick="toast('Reset link sent')">Forgot password?</button>
+      </div>
+      <div class="divider">or continue with</div>
+      <div class="sso">
+        <button onclick="go('home')">G&nbsp; Google</button>
+        <button onclick="go('home')"> Apple</button>
+        <button onclick="go('home')">f&nbsp; Facebook</button>
+        <button onclick="go('home')">𝕏&nbsp; X</button>
+      </div>
+    </div>
+
+    <!-- HOME -->
+    <div class="view" id="vHome">
+      <div class="apphead" style="background:var(--mint)"><span class="lg">No Limit</span><div class="avatar">RL</div></div>
+      <div class="timer-wrap">
+        <div class="ring-box">
+          <svg width="240" height="240" viewBox="0 0 240 240" aria-hidden="true">
+            <circle cx="120" cy="120" r="104" fill="#fff"/>
+            <circle cx="120" cy="120" r="104" fill="none" stroke="#EAF6F3" stroke-width="14"/>
+            <circle id="ring" cx="120" cy="120" r="104" fill="none" stroke="var(--coral)" stroke-width="14" stroke-linecap="round" stroke-dasharray="653.45" stroke-dashoffset="653.45"/>
+          </svg>
+          <div class="ring-txt">
+            <div class="t" id="clock">16:00:00</div>
+            <div class="s" id="phase">Ready when you are</div>
+            <div class="s2">16 hours · everyday</div>
+          </div>
+        </div>
+        <button class="btn-fast" id="fastBtn" onclick="toggleFast()">▶&nbsp; Start fasting</button>
+        <div class="window-line">Eating window <b id="winTxt">12:00 – 20:00</b> · <button onclick="go('plan')">Change plan</button></div>
+      </div>
+      <div class="home-cards">
+        <div class="card">
+          <div class="card-h"><b>This week</b></div>
+          <div class="streak">
+            <div class="days"><div class="d on"></div><div class="d on"></div><div class="d on"></div><div class="d"></div><div class="d on"></div><div class="d on"></div><div class="d"></div></div>
+            <span>5 of 7 fasts</span>
+          </div>
+          <p class="gentle">One missed day doesn't undo your progress. Today is a fresh window.</p>
+        </div>
+        <div class="card">
+          <div class="card-h"><b>Your trend</b><button onclick="go('track')">Show more →</button></div>
+          <p class="trend-line"><b>−2.8 lbs</b> this month · steady and sustainable</p>
+          <svg class="spark" viewBox="0 0 300 70" preserveAspectRatio="none" aria-label="Weight trend, gently declining">
+            <polyline points="0,22 40,26 80,20 120,34 160,30 200,42 250,40 300,50" fill="none" stroke="var(--teal)" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="300" cy="50" r="4" fill="var(--teal-deep)"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRACKING -->
+    <div class="view" id="vTrack">
+      <div class="subhead"><button class="back" onclick="go('home')" aria-label="Back">‹</button><h2>Your trend</h2></div>
+      <div class="seg" role="tablist">
+        <button class="on" id="mW" onclick="setMetric('w')">Weight</button>
+        <button id="mF" onclick="setMetric('f')">Body fat %</button>
+      </div>
+      <div class="seg2" role="tablist">
+        <button onclick="setPeriod(this,'day')">Day</button>
+        <button onclick="setPeriod(this,'week')">Week</button>
+        <button class="on" onclick="setPeriod(this,'month')">Month</button>
+        <button onclick="setPeriod(this,'year')">Year</button>
+      </div>
+      <div class="headline">
+        <div class="delta down" id="hDelta">▾ 2.8 lbs this month</div>
+        <div class="big" id="hVal">191.3 <small>lbs today</small></div>
+        <div class="ctx" id="hCtx">Averaging −0.7 lbs a week — a steady, sustainable pace.</div>
+      </div>
+      <div class="chart-box">
+        <svg id="bigChart" width="100%" height="170" viewBox="0 0 340 170" preserveAspectRatio="none" aria-label="Trend chart"></svg>
+      </div>
+      <div class="stat-rows">
+        <div class="srow"><span class="l">Body fat</span><span class="v">27.7%</span><span class="d delta down">▾ 0.4%</span></div>
+        <div class="srow"><span class="l">Muscle</span><span class="v">43.4%</span><span class="d delta" style="color:var(--teal-deep)">▴ 0.3%</span></div>
+      </div>
+      <p class="support">Trends matter more than any single day. Weight naturally moves up and down.</p>
+    </div>
+
+    <!-- COMMUNITY -->
+    <div class="view" id="vComm">
+      <div class="apphead"><span style="font-size:19px;font-weight:700">Community</span><div class="avatar">RL</div></div>
+      <div class="me-strip">
+        <div class="mini-ring">
+          <svg width="52" height="52" viewBox="0 0 52 52"><circle cx="26" cy="26" r="21" fill="none" stroke="#fff" stroke-width="6"/><circle cx="26" cy="26" r="21" fill="none" stroke="var(--teal)" stroke-width="6" stroke-linecap="round" stroke-dasharray="131.9" stroke-dashoffset="42" id="miniRing"/></svg>
+          <span id="miniPct">68%</span>
+        </div>
+        <div class="txt"><b id="miniTitle">Fast in progress</b><span>You're keeping pace with 214 people fasting right now</span></div>
+      </div>
+      <div class="post">
+        <div class="ph"><div class="avatar" style="background:#E9C46A;color:#6B4E00">MK</div><b>Maya K.</b><span>30 min ago</span></div>
+        <div class="img a"><img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=70" alt="Chicken and brown rice bowl with fresh vegetables" loading="lazy" onerror="this.remove()"><span aria-hidden="true">🍗</span></div>
+        <div class="body">
+          <div class="acts">
+            <button id="like1" onclick="like(this)">♡ <span>100</span></button>
+            <button onclick="toggleCmts(1)" aria-expanded="false">💬 <span id="cn1">2</span></button>
+          </div>
+          <p class="cap"><b>Maya K.</b> First meal of my window — chicken and brown rice bowl. Worth the wait.</p>
+          <div class="cmts" id="cmts1">
+            <div class="cmt"><div class="avatar" style="background:var(--teal);color:#fff">JT</div><p><b>Jordan T.</b> That bowl looks incredible — saving this idea for tomorrow.</p></div>
+            <div class="cmt"><div class="avatar" style="background:var(--coral);color:#fff">RL</div><p><b>Ruffles L.</b> Same window as me! Breaking mine in 20 minutes 🙌</p></div>
+            <div class="cmt-input">
+              <input id="ci1" placeholder="Add a comment…" aria-label="Add a comment" onkeydown="if(event.key==='Enter')addCmt(1)">
+              <button onclick="addCmt(1)">Post</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="post">
+        <div class="ph"><div class="avatar" style="background:var(--teal);color:#fff">JT</div><b>Jordan T.</b><span>2 h ago</span></div>
+        <div class="img b"><img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=70" alt="Fresh green salad with vegetables" loading="lazy" onerror="this.remove()"><span aria-hidden="true">🥗</span></div>
+        <div class="body">
+          <div class="acts">
+            <button id="like2" onclick="like(this)">♡ <span>58</span></button>
+            <button onclick="toggleCmts(2)" aria-expanded="false">💬 <span id="cn2">1</span></button>
+          </div>
+          <p class="cap"><b>Jordan T.</b> Week 4 of 16:8. The first hour is still the hardest — this feed keeps me honest.</p>
+          <div class="cmts" id="cmts2">
+            <div class="cmt"><div class="avatar" style="background:#E9C46A;color:#6B4E00">MK</div><p><b>Maya K.</b> Week 4 is where it clicked for me too. You've got this.</p></div>
+            <div class="cmt-input">
+              <input id="ci2" placeholder="Add a comment…" aria-label="Add a comment" onkeydown="if(event.key==='Enter')addCmt(2)">
+              <button onclick="addCmt(2)">Post</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="view" id="vSet">
+      <div class="apphead"><span style="font-size:19px;font-weight:700">Settings</span></div>
+      <div class="profile"><div class="avatar">RL</div><div><b>Ruffles L.</b><span>ct160@yorkmail.edu</span></div></div>
+      <div class="sec-label">Your plan</div>
+      <div class="slist">
+        <button class="sitem" onclick="go('plan')">Fasting plan<span class="val">16:8 · window 12:00–20:00</span><span class="chev">›</span></button>
+      </div>
+      <div class="sec-label">Account security</div>
+      <div class="slist">
+        <button class="sitem" onclick="toast('ID: ct160ruffles')">ID<span class="val">ct160ruffles</span><span class="chev">›</span></button>
+        <button class="sitem" onclick="toast('Phone flow — next iteration')">Phone<span class="val">+1 234 567 890</span><span class="chev">›</span></button>
+        <button class="sitem" onclick="toast('Password flow — next iteration')">Password<span class="chev">›</span></button>
+        <button class="sitem" onclick="toast('You can add someone you trust here')">Emergency contacts<span class="val">1 added</span><span class="chev">›</span></button>
+        <button class="sitem" onclick="toast('2 devices signed in')">Manage devices<span class="chev">›</span></button>
+      </div>
+      <div class="sec-label">Data</div>
+      <div class="slist">
+        <button class="sitem" onclick="this.querySelector('.toggle').classList.toggle('on')">Sync with Health app<span class="toggle on" role="switch" aria-checked="true"></span></button>
+        <button class="sitem" onclick="this.querySelector('.toggle').classList.toggle('on')">Share weight numbers in Community<span class="toggle" role="switch" aria-checked="false"></span></button>
+      </div>
+      <div class="sec-label">More</div>
+      <div class="slist">
+        <button class="sitem" onclick="toast('About No Limit')">About us<span class="chev">›</span></button>
+        <button class="sitem" onclick="toast('We read every note')">Help &amp; feedback<span class="chev">›</span></button>
+        <button class="sitem" onclick="toast('Switch account')">Switch account<span class="chev">›</span></button>
+        <button class="sitem danger" onclick="go('login')">Log out</button>
+      </div>
+      <div style="height:44px"></div>
+    </div>
+
+    <!-- FASTING PLAN -->
+    <div class="view" id="vPlan">
+      <div class="subhead"><button class="back" onclick="go('set')" aria-label="Back">‹</button><h2>Fasting plan</h2></div>
+      <div class="plan-card">
+        <div class="plan-row"><span class="l">Plan</span><div class="r"><span class="v">16 : 8</span><button class="chg" onclick="toast('Plans: 14:10 · 16:8 · 18:6')">Change</button></div></div>
+        <div class="plan-row"><span class="l">Eating starts</span><div class="r"><span class="v" id="pStart">12:00</span><button class="chg" onclick="editTime('pStart')">Change</button></div></div>
+        <div class="plan-row"><span class="l">Eating ends</span><div class="r"><span class="v" id="pEnd">20:00</span><button class="chg" onclick="editTime('pEnd')">Change</button></div></div>
+      </div>
+      <div class="plan-card">
+        <div class="plan-row"><span class="l">Start weight</span><div class="r"><span class="v">215.8 lb</span></div></div>
+        <div class="plan-row"><span class="l">Current</span><div class="r"><span class="v">191.3 lb</span></div></div>
+        <div class="plan-row"><span class="l">Goal</span><div class="r"><span class="v" id="pGoal">175.0 lb</span><button class="chg" onclick="editGoal()">Change</button></div></div>
+      </div>
+      <div class="advice" id="advice"><b>Let's keep this sustainable</b>That goal is quite far from your current weight. Gradual change tends to last — consider a nearer milestone first, and it's always worth talking this through with a doctor or dietitian.</div>
+      <p class="support">Questions about whether fasting is right for you? <a href="#" onclick="toast('Linking to professional resources');return false">Talk to a professional</a> — we'll never push you past what feels healthy.</p>
+    </div>
+
+    <!-- TAB BAR -->
+    <nav class="tabbar" id="tabbar" style="display:none">
+      <button class="tab on" id="tHome" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Home</button>
+      <button class="tab" id="tComm" onclick="go('comm')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.2"/><circle cx="16.5" cy="9.5" r="2.6"/><path d="M4 19c.6-3 2.6-4.5 5-4.5s4.4 1.5 5 4.5M13.5 15.6c2 .2 3.6 1.4 4.2 3.4"/></svg>Community</button>
+      <button class="tab" id="tSet" onclick="go('set')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2-1.2L14.2 3h-4l-.4 2.5a7 7 0 0 0-2 1.2l-2.3-1-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2 1.2l.4 2.5h4l.4-2.5a7 7 0 0 0 2-1.2l2.3 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2Z"/></svg>Settings</button>
+    </nav>
+    <div class="toast" id="toast"></div>
+  </div></div>
+</div>
+
+<script>
+const V={login:'vLogin',home:'vHome',track:'vTrack',comm:'vComm',set:'vSet',plan:'vPlan'};
+function go(k){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+  document.getElementById(V[k]).classList.add('on');
+  const bar=document.getElementById('tabbar');
+  bar.style.display=(k==='login')?'none':'flex';
+  ['tHome','tComm','tSet'].forEach(id=>document.getElementById(id).classList.remove('on'));
+  if(k==='home'||k==='track'||k==='plan'&&false)document.getElementById('tHome').classList.add('on');
+  if(k==='track')document.getElementById('tHome').classList.add('on');
+  if(k==='comm')document.getElementById('tComm').classList.add('on');
+  if(k==='set'||k==='plan')document.getElementById('tSet').classList.add('on');
+  if(k==='track')drawChart();
+}
+let toastT;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1800);}
+
+/* fasting timer */
+const TOTAL=16*3600;
+let left=TOTAL, fasting=false, tick=null;
+const CIRC=2*Math.PI*104;
+function fmt(s){const h=String(Math.floor(s/3600)).padStart(2,'0'),m=String(Math.floor(s%3600/60)).padStart(2,'0'),x=String(s%60).padStart(2,'0');return h+':'+m+':'+x;}
+function paint(){
+  document.getElementById('clock').textContent=fmt(left);
+  const done=(TOTAL-left)/TOTAL;
+  document.getElementById('ring').style.strokeDashoffset=CIRC*(1-done);
+  const pct=Math.round(done*100);
+  document.getElementById('miniPct').textContent=pct+'%';
+  document.getElementById('miniRing').style.strokeDashoffset=131.9*(1-done);
+}
+function toggleFast(){
+  const btn=document.getElementById('fastBtn'), ph=document.getElementById('phase');
+  if(!fasting){
+    fasting=true; btn.textContent='■  End fasting'; btn.classList.add('stop');
+    ph.textContent='Fasting — you\u2019ve got this';
+    document.getElementById('miniTitle').textContent='Fast in progress';
+    tick=setInterval(()=>{if(left>0){left--;paint();}else{clearInterval(tick);ph.textContent='Fast complete — well done';toast('16 hours complete 🎉');}},1000);
+    toast('Fast started');
+  }else{
+    fasting=false; clearInterval(tick);
+    btn.textContent='▶  Start fasting'; btn.classList.remove('stop');
+    ph.textContent='Ended early — that\u2019s okay';
+    document.getElementById('miniTitle').textContent='Between fasts';
+    toast('Fast ended — logged '+fmt(TOTAL-left));
+    left=TOTAL; setTimeout(paint,300);
+  }
+}
+paint();
+
+/* plan editing */
+function editTime(id){
+  const el=document.getElementById(id), cur=el.textContent.trim();
+  const inp=document.createElement('input'); inp.type='time'; inp.value=cur;
+  el.replaceWith(inp); inp.focus();
+  inp.addEventListener('change',()=>done()); inp.addEventListener('blur',()=>done());
+  let fin=false;
+  function done(){if(fin)return;fin=true;
+    const v=inp.value||cur; const s=document.createElement('span');
+    s.className='v'; s.id=id; s.textContent=v; inp.replaceWith(s);
+    const st=document.getElementById('pStart').textContent, en=document.getElementById('pEnd').textContent;
+    document.getElementById('winTxt').textContent=st+' – '+en;
+    toast('Plan updated');
+  }
+}
+function editGoal(){
+  const el=document.getElementById('pGoal');
+  const inp=document.createElement('input'); inp.type='number'; inp.step='0.1'; inp.value=parseFloat(el.textContent);
+  el.replaceWith(inp); inp.focus();
+  let fin=false;
+  inp.addEventListener('change',()=>done()); inp.addEventListener('blur',()=>done());
+  function done(){if(fin)return;fin=true;
+    const v=parseFloat(inp.value)||175;
+    const s=document.createElement('span'); s.className='v'; s.id='pGoal';
+    s.textContent=v.toFixed(1)+' lb'; inp.replaceWith(s);
+    const current=191.3;
+    document.getElementById('advice').classList.toggle('show', v < current*0.85);
+    toast('Goal updated');
+  }
+}
+
+/* tracking chart */
+const DATA={
+  w:{day:[191.8,191.5,191.6,191.3],week:[193.6,192.9,192.1,191.3],month:[194.1,193.2,193.6,192.4,192.8,191.9,191.3],year:[215.8,210.2,206.5,203.1,199.8,196.4,191.3]},
+  f:{day:[27.8,27.8,27.7,27.7],week:[28.1,28.0,27.8,27.7],month:[28.6,28.4,28.2,28.0,27.9,27.8,27.7],year:[33.5,32.1,31.0,30.2,29.3,28.4,27.7]}
+};
+let metric='w', period='month';
+const UNIT={w:'lbs',f:'%'};
+function setMetric(m){metric=m;
+  document.getElementById('mW').classList.toggle('on',m==='w');
+  document.getElementById('mF').classList.toggle('on',m==='f');
+  updateHead(); drawChart();
+}
+function setPeriod(btn,p){period=p;
+  btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); updateHead(); drawChart();
+}
+function updateHead(){
+  const d=DATA[metric][period]; const delta=(d[d.length-1]-d[0]);
+  const down=delta<=0; const el=document.getElementById('hDelta');
+  el.textContent=(down?'▾ ':'▴ ')+Math.abs(delta).toFixed(1)+' '+UNIT[metric]+' this '+period;
+  el.className='delta '+(down?'down':'up');
+  document.getElementById('hVal').innerHTML=d[d.length-1].toFixed(1)+' <small>'+UNIT[metric]+' today</small>';
+  document.getElementById('hCtx').textContent = metric==='w'
+    ? 'Averaging −0.7 lbs a week — a steady, sustainable pace.'
+    : 'Body composition shifts slowly — this is right on track.';
+}
+function drawChart(){
+  const d=DATA[metric][period];
+  const svg=document.getElementById('bigChart');
+  const W=340,H=170,P=18;
+  const min=Math.min(...d), max=Math.max(...d), span=(max-min)||1;
+  const pts=d.map((v,i)=>[P+i*(W-2*P)/(d.length-1), H-P-(v-min)/span*(H-2*P)]);
+  const line=pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+  const area=line+' '+(W-P)+','+(H-6)+' '+P+','+(H-6);
+  svg.innerHTML='<polygon points="'+area+'" fill="#DDF3EE"/>'+
+    '<polyline points="'+line+'" fill="none" stroke="#2A9D8F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'+
+    pts.map((p,i)=>'<circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+(i===pts.length-1?5:3)+'" fill="'+(i===pts.length-1?'#186F65':'#2A9D8F')+'"/>').join('')+
+    '<text x="'+pts[0][0]+'" y="'+(pts[0][1]-8)+'" font-size="10" font-weight="700" fill="#5C6E6A" font-family="Manrope">'+d[0].toFixed(1)+'</text>'+
+    '<text x="'+(pts[pts.length-1][0]-6)+'" y="'+(pts[pts.length-1][1]-10)+'" font-size="10" font-weight="700" fill="#186F65" font-family="Manrope" text-anchor="end">'+d[d.length-1].toFixed(1)+'</text>';
+}
+function like(btn){
+  const n=btn.querySelector('span'); const liked=btn.classList.toggle('liked');
+  n.textContent=parseInt(n.textContent)+(liked?1:-1);
+  btn.firstChild.textContent=liked?'♥ ':'♡ ';
+}
+function toggleCmts(i){
+  const c=document.getElementById('cmts'+i);
+  const open=c.classList.toggle('show');
+  const btn=c.closest('.body').querySelector('.acts button[aria-expanded]');
+  if(btn)btn.setAttribute('aria-expanded',open);
+  if(open)document.getElementById('ci'+i).focus();
+}
+function addCmt(i){
+  const inp=document.getElementById('ci'+i);
+  const text=inp.value.trim();
+  if(!text)return;
+  const row=document.createElement('div');
+  row.className='cmt';
+  row.innerHTML='<div class="avatar" style="background:var(--coral);color:#fff">RL</div><p><b>Ruffles L.</b> </p>';
+  row.querySelector('p').append(text);
+  const box=document.getElementById('cmts'+i);
+  box.insertBefore(row, box.querySelector('.cmt-input'));
+  inp.value='';
+  const n=document.getElementById('cn'+i);
+  n.textContent=parseInt(n.textContent)+1;
+  toast('Comment posted');
+}
+updateHead();
+</script>
+</body>
+</html>

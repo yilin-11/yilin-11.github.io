@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CUNY Arts — Your student ID is a museum pass</title>
+<meta name="description" content="Free and discounted access to 20+ of NYC's greatest cultural institutions for CUNY students, faculty, and staff.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#0033A1; --blue-deep:#001E63; --blue-tint:#EAF0FC;
+  --paper:#FCFBF8; --ink:#191C24; --ink-2:#565B68; --ink-3:#8B8F9A;
+  --line:#E4E2DB; --line-2:#CFCDC4;
+  --free:#0F6E56; --free-bg:#E2F4EC;
+  --disc:#8A5A0B; --disc-bg:#FBEED3;
+  --annual:#993C1D; --annual-bg:#FAE9E1;
+  --prog:#4A3F9E; --prog-bg:#ECEAFA;
+  --radius:10px;
+  --sans:'Public Sans',system-ui,sans-serif;
+  --disp:'Fraunces',Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{transition:none!important;animation:none!important}}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:16px;line-height:1.6}
+a{color:var(--blue)}
+button{font-family:var(--sans);cursor:pointer}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* top bar */
+.topbar{background:var(--blue-deep);color:#fff;font-size:13px;padding:8px 24px;display:flex;justify-content:space-between;align-items:center}
+.topbar a{color:#fff;text-decoration:none;opacity:.85}
+.topbar a:hover{opacity:1;text-decoration:underline}
+.brand{background:#fff;border-bottom:1px solid var(--line);padding:14px 24px;display:flex;align-items:center;gap:14px}
+.brand .mark{width:38px;height:38px;background:var(--blue);color:#fff;font-family:var(--disp);font-weight:600;font-size:17px;display:flex;align-items:center;justify-content:center;border-radius:6px;flex-shrink:0}
+.brand .t1{font-weight:600;font-size:17px;letter-spacing:.01em}
+.brand .t2{font-size:12.5px;color:var(--ink-2)}
+
+/* hero */
+.hero{max-width:1100px;margin:0 auto;padding:64px 24px 48px;display:grid;grid-template-columns:1.25fr .75fr;gap:48px;align-items:center}
+.eyebrow{font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:14px}
+h1{font-family:var(--disp);font-weight:500;font-size:clamp(34px,5vw,54px);line-height:1.08;letter-spacing:-.01em;margin-bottom:18px}
+h1 em{font-style:italic;color:var(--blue)}
+.hero p.lede{font-size:17.5px;color:var(--ink-2);max-width:52ch;margin-bottom:26px}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.btn-primary{background:var(--blue);color:#fff;border:none;padding:13px 22px;border-radius:8px;font-size:15.5px;font-weight:600;text-decoration:none;display:inline-block;transition:background .15s}
+.btn-primary:hover{background:var(--blue-deep)}
+.btn-ghost{background:none;border:1.5px solid var(--line-2);color:var(--ink);padding:12px 20px;border-radius:8px;font-size:15px;font-weight:500;text-decoration:none}
+.btn-ghost:hover{border-color:var(--ink-2)}
+.stats{display:flex;gap:0;margin-top:36px;border-top:1px solid var(--line);padding-top:22px}
+.stat{padding-right:32px;margin-right:32px;border-right:1px solid var(--line)}
+.stat:last-child{border:none;margin:0;padding-right:0}
+.stat b{display:block;font-family:var(--disp);font-weight:600;font-size:30px;line-height:1.1;color:var(--ink)}
+.stat span{font-size:13px;color:var(--ink-2)}
+
+/* hero ticket illustration */
+.hero-art{position:relative;min-height:280px}
+.big-ticket{background:#fff;border:1.5px solid var(--line-2);border-radius:14px;padding:26px 24px;transform:rotate(2.5deg);max-width:330px;margin:0 auto;position:relative;box-shadow:0 14px 34px rgba(20,30,70,.10)}
+.big-ticket::before,.big-ticket::after{content:"";position:absolute;width:22px;height:22px;background:var(--paper);border:1.5px solid var(--line-2);border-radius:50%;top:50%;margin-top:-11px}
+.big-ticket::before{left:-12px;border-left-color:transparent}
+.big-ticket::after{right:-12px;border-right-color:transparent}
+.big-ticket .tk-top{display:flex;justify-content:space-between;font-size:11.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);border-bottom:1.5px dashed var(--line-2);padding-bottom:14px;margin-bottom:14px}
+.big-ticket .tk-admit{font-family:var(--disp);font-size:26px;font-weight:600;line-height:1.15;margin-bottom:6px}
+.big-ticket .tk-sub{font-size:14px;color:var(--ink-2);margin-bottom:16px}
+.big-ticket .tk-price{display:flex;align-items:baseline;gap:8px}
+.big-ticket .tk-price b{font-family:var(--disp);font-size:40px;font-weight:600;color:var(--free)}
+.big-ticket .tk-price s{color:var(--ink-3);font-size:16px}
+.ticket-shadow{background:var(--blue-tint);border-radius:14px;position:absolute;inset:18px -6px -14px 30px;transform:rotate(-2deg);z-index:-1}
+
+/* filter bar */
+.toolbar-wrap{position:sticky;top:0;z-index:50;background:var(--paper);border-bottom:1px solid var(--line)}
+.toolbar{max-width:1100px;margin:0 auto;padding:14px 24px;display:flex;flex-direction:column;gap:12px}
+.tb-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.search{flex:1;min-width:200px;position:relative}
+.search input{width:100%;padding:10px 14px 10px 38px;border:1.5px solid var(--line-2);border-radius:8px;font-size:15px;font-family:var(--sans);background:#fff}
+.search input:focus{border-color:var(--blue);outline:none;box-shadow:0 0 0 3px var(--blue-tint)}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ink-3)}
+select{padding:10px 12px;border:1.5px solid var(--line-2);border-radius:8px;font-size:14.5px;font-family:var(--sans);background:#fff;color:var(--ink)}
+.view-toggle{display:flex;border:1.5px solid var(--line-2);border-radius:8px;overflow:hidden}
+.view-toggle button{background:#fff;border:none;padding:10px 16px;font-size:14px;font-weight:500;color:var(--ink-2);display:flex;gap:6px;align-items:center}
+.view-toggle button.on{background:var(--ink);color:#fff}
+.chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{border:1.5px solid var(--line-2);background:#fff;border-radius:999px;padding:7px 15px;font-size:13.5px;font-weight:500;color:var(--ink-2);transition:all .12s}
+.chip:hover{border-color:var(--ink-2)}
+.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.chip.tgl.on{background:var(--ink);border-color:var(--ink)}
+.count{font-size:13.5px;color:var(--ink-2);margin-left:auto;white-space:nowrap}
+
+/* grid */
+.main{max-width:1100px;margin:0 auto;padding:34px 24px 80px}
+.section-h{display:flex;align-items:baseline;gap:14px;margin-bottom:22px}
+.section-h h2{font-family:var(--disp);font-weight:500;font-size:27px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 20px 18px;display:flex;flex-direction:column;gap:10px;transition:border-color .15s,box-shadow .15s;cursor:pointer;text-align:left;width:100%;font-family:var(--sans)}
+.card:hover{border-color:var(--line-2);box-shadow:0 6px 22px rgba(20,30,70,.07)}
+.card.hl{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-tint)}
+.badge-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tk{position:relative;display:inline-flex;align-items:center;font-size:12px;font-weight:600;letter-spacing:.03em;padding:4px 12px 4px 10px;border-radius:4px 6px 6px 4px;line-height:1.5}
+.tk::before{content:"";position:absolute;left:0;top:0;bottom:0;width:0;border-left:2px dashed rgba(255,255,255,.0)}
+.tk::after{content:"";position:absolute;right:-4px;top:50%;width:8px;height:8px;margin-top:-4px;border-radius:50%;background:#fff}
+.tk.free{background:var(--free-bg);color:var(--free)}
+.tk.free::after{background:var(--paper)}
+.tk.disc{background:var(--disc-bg);color:var(--disc)}
+.tk.annual{background:var(--annual-bg);color:var(--annual)}
+.tk.prog{background:var(--prog-bg);color:var(--prog)}
+.tk::after{background:#fff}
+.pill{font-size:12px;color:var(--ink-2);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.card h3{font-family:var(--disp);font-weight:500;font-size:19.5px;line-height:1.25}
+.card .tag{font-size:13.5px;color:var(--ink-2);line-height:1.5}
+.meta{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:10px;margin-top:auto}
+.meta .row{display:flex;gap:7px;align-items:flex-start}
+.meta svg{flex-shrink:0;margin-top:2.5px;color:var(--ink-3)}
+.howto{font-size:13.5px;font-weight:600;color:var(--blue);display:flex;gap:6px;align-items:center;margin-top:2px}
+.open-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px}
+.open-dot.y{background:#1D9E75}.open-dot.n{background:var(--line-2)}
+.empty{padding:60px 20px;text-align:center;color:var(--ink-2)}
+.empty b{font-family:var(--disp);font-size:20px;font-weight:500;display:block;color:var(--ink);margin-bottom:6px}
+
+/* map */
+.map-wrap{display:none;background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px}
+.map-wrap.show{display:block}
+.map-flex{display:grid;grid-template-columns:1.1fr .9fr;gap:20px}
+.map-legend{font-size:13px;color:var(--ink-2);display:flex;gap:16px;flex-wrap:wrap;margin-top:10px}
+.map-legend span{display:flex;align-items:center;gap:6px}
+.dotk{width:10px;height:10px;border-radius:50%}
+.map-list{max-height:430px;overflow:auto;display:flex;flex-direction:column;gap:6px;padding-right:6px}
+.map-list button{background:none;border:1px solid var(--line);border-radius:8px;padding:9px 12px;text-align:left;font-size:13.5px;display:flex;justify-content:space-between;gap:10px;align-items:center;color:var(--ink)}
+.map-list button:hover{border-color:var(--blue);background:var(--blue-tint)}
+.mdot{cursor:pointer;transition:r .12s}
+.mdot:hover{stroke:var(--ink);stroke-width:2}
+
+/* modal */
+.overlay{position:fixed;inset:0;background:rgba(15,20,40,.5);display:none;align-items:flex-start;justify-content:center;padding:40px 18px;z-index:100;overflow-y:auto}
+.overlay.show{display:flex}
+.modal{background:#fff;border-radius:16px;max-width:640px;width:100%;padding:30px 30px 26px;position:relative}
+.modal .close{position:absolute;top:16px;right:16px;background:var(--paper);border:1px solid var(--line);border-radius:50%;width:34px;height:34px;font-size:16px;color:var(--ink-2);display:flex;align-items:center;justify-content:center}
+.modal h3{font-family:var(--disp);font-size:26px;font-weight:500;margin:10px 0 4px}
+.modal .m-tag{color:var(--ink-2);font-size:15px;margin-bottom:18px}
+.howbox{background:var(--blue-tint);border:1px solid #C9D6F2;border-radius:12px;padding:16px 18px;margin-bottom:18px}
+.howbox b{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);display:block;margin-bottom:6px;font-weight:600}
+.howbox p{font-size:15px;line-height:1.6}
+.m-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.m-cell{border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.m-cell b{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:4px;font-weight:600}
+.m-cell p{font-size:14px;line-height:1.5}
+.m-links{display:flex;gap:10px;flex-wrap:wrap}
+.m-links a{font-size:14px;font-weight:600;text-decoration:none;border:1.5px solid var(--line-2);border-radius:8px;padding:9px 16px;color:var(--ink)}
+.m-links a.pri{background:var(--blue);border-color:var(--blue);color:#fff}
+
+footer{border-top:1px solid var(--line);background:#fff;padding:30px 24px;text-align:center;font-size:13.5px;color:var(--ink-2)}
+footer b{color:var(--ink)}
+
+@media (max-width:840px){
+  .hero{grid-template-columns:1fr;padding:44px 20px 36px;gap:30px}
+  .hero-art{display:none}
+  .stats{flex-wrap:wrap;gap:18px}
+  .stat{padding-right:20px;margin-right:20px}
+  .map-flex{grid-template-columns:1fr}
+  .m-grid{grid-template-columns:1fr}
+  .toolbar{padding:12px 16px}
+  .main{padding:26px 16px 60px}
+  .count{margin-left:0;width:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span>The City University of New York</span>
+  <nav aria-label="utility"><a href="#partners">Partners</a> &nbsp;·&nbsp; <a href="#" onclick="return false">Cultural Corps</a> &nbsp;·&nbsp; <a href="#" onclick="return false">Contact</a></nav>
+</div>
+<header class="brand">
+  <div class="mark" aria-hidden="true">CA</div>
+  <div>
+    <div class="t1">CUNY Arts</div>
+    <div class="t2">Academics · Current initiatives</div>
+  </div>
+</header>
+
+<section class="hero">
+  <div>
+    <p class="eyebrow">For all CUNY students, faculty &amp; staff</p>
+    <h1>Your student ID is a <em>museum pass.</em></h1>
+    <p class="lede">CUNY Arts partners with 20+ of New York's greatest cultural institutions — MoMA, the Whitney, The Shed, and more — so you can walk in free or heavily discounted. No essays, no applications. Just your ID.</p>
+    <div class="cta-row">
+      <a class="btn-primary" href="#partners">See where you can go free</a>
+      <a class="btn-ghost" href="#partners" onclick="setView('map');return true">Browse the map</a>
+    </div>
+    <div class="stats" role="list">
+      <div class="stat" role="listitem"><b>14</b><span>always-free partners</span></div>
+      <div class="stat" role="listitem"><b>5</b><span>boroughs covered</span></div>
+      <div class="stat" role="listitem"><b>$0</b><span>with a valid CUNY ID</span></div>
+    </div>
+  </div>
+  <div class="hero-art" aria-hidden="true">
+    <div class="ticket-shadow"></div>
+    <div class="big-ticket">
+      <div class="tk-top"><span>Admit one</span><span>CUNY Arts</span></div>
+      <div class="tk-admit">Museum of Modern Art</div>
+      <div class="tk-sub">General admission · Show CUNY ID at the ticketing desk</div>
+      <div class="tk-price"><b>$0</b><s>$30</s></div>
+    </div>
+  </div>
+</section>
+
+<div class="toolbar-wrap" id="partners">
+  <div class="toolbar">
+    <div class="tb-row">
+      <div class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="q" type="search" placeholder="Search partners, e.g. MoMA" aria-label="Search partners" oninput="render()">
+      </div>
+      <select id="boro" aria-label="Filter by borough" onchange="render()">
+        <option value="">All boroughs</option>
+        <option>Manhattan</option>
+        <option>Staten Island</option>
+        <option value="Citywide">Citywide / online</option>
+      </select>
+      <div class="view-toggle" role="tablist" aria-label="View">
+        <button id="vList" class="on" role="tab" aria-selected="true" onclick="setView('list')">☰ List</button>
+        <button id="vMap" role="tab" aria-selected="false" onclick="setView('map')">◉ Map</button>
+      </div>
+    </div>
+    <div class="tb-row">
+      <div class="chips" role="group" aria-label="Filter by benefit type">
+        <button class="chip on" data-perk="" onclick="setPerk(this)">All</button>
+        <button class="chip" data-perk="free" onclick="setPerk(this)">Free admission</button>
+        <button class="chip" data-perk="disc" onclick="setPerk(this)">Student discount</button>
+        <button class="chip" data-perk="annual" onclick="setPerk(this)">Annual events</button>
+        <button class="chip" data-perk="prog" onclick="setPerk(this)">Programs</button>
+        <span style="width:1px;height:22px;background:var(--line-2)" aria-hidden="true"></span>
+        <button class="chip tgl" id="fOpen" aria-pressed="false" onclick="tgl(this)">Open today</button>
+        <button class="chip tgl" id="fPlus" aria-pressed="false" onclick="tgl(this)">Bring a +1</button>
+      </div>
+      <span class="count" id="count" aria-live="polite"></span>
+    </div>
+  </div>
+</div>
+
+<main class="main">
+  <div class="section-h"><h2>Partner institutions</h2></div>
+
+  <div class="map-wrap" id="mapWrap">
+    <div class="map-flex">
+      <div>
+        <svg viewBox="0 0 460 430" width="100%" role="img" aria-label="Simplified map of New York City with partner locations" id="nycMap">
+          <path d="M118 300 Q100 250 118 200 Q128 160 150 120 Q166 88 186 62 L206 74 Q192 110 180 150 Q168 200 164 250 Q162 285 168 316 L140 322 Z" fill="#EDF1F8" stroke="#C7D0E4" stroke-width="1.5"/>
+          <text x="120" y="180" font-size="11" fill="#8B93AC" font-family="Public Sans" transform="rotate(-68 128 180)">MANHATTAN</text>
+          <path d="M210 90 Q260 70 310 84 Q340 96 348 130 Q340 160 300 168 Q255 172 224 150 Q206 122 210 90 Z" fill="#F4F2EC" stroke="#DAD7CC" stroke-width="1.5"/>
+          <text x="252" y="128" font-size="11" fill="#A19D8F" font-family="Public Sans">THE BRONX</text>
+          <path d="M200 200 Q260 184 320 196 Q370 210 380 250 Q372 290 320 300 Q260 306 220 288 Q196 260 200 200 Z" fill="#F4F2EC" stroke="#DAD7CC" stroke-width="1.5"/>
+          <text x="280" y="250" font-size="11" fill="#A19D8F" font-family="Public Sans">QUEENS</text>
+          <path d="M180 320 Q230 306 280 316 Q316 328 316 358 Q306 388 256 392 Q206 392 182 372 Q170 348 180 320 Z" fill="#F4F2EC" stroke="#DAD7CC" stroke-width="1.5"/>
+          <text x="222" y="356" font-size="11" fill="#A19D8F" font-family="Public Sans">BROOKLYN</text>
+          <path d="M60 340 Q100 328 130 344 Q146 364 132 388 Q104 410 70 402 Q44 388 46 364 Q50 348 60 340 Z" fill="#EDF1F8" stroke="#C7D0E4" stroke-width="1.5"/>
+          <text x="56" y="376" font-size="10" fill="#8B93AC" font-family="Public Sans">STATEN IS.</text>
+          <g id="mapDots"></g>
+        </svg>
+        <div class="map-legend">
+          <span><span class="dotk" style="background:#0F6E56"></span>Free</span>
+          <span><span class="dotk" style="background:#BA7515"></span>Discount</span>
+          <span><span class="dotk" style="background:#C24A22"></span>Annual event</span>
+          <span><span class="dotk" style="background:#5A4DBF"></span>Program</span>
+        </div>
+      </div>
+      <div class="map-list" id="mapList" aria-label="Partners shown on map"></div>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" style="display:none"><b>No matches</b>Try clearing a filter or two — 20 partners are waiting.</div>
+</main>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="mTitle" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="close" aria-label="Close details" onclick="closeModal()">✕</button>
+    <div class="badge-row" id="mBadges"></div>
+    <h3 id="mTitle"></h3>
+    <p class="m-tag" id="mTag"></p>
+    <div class="howbox"><b>How to use your benefit</b><p id="mHow"></p></div>
+    <div class="m-grid">
+      <div class="m-cell"><b>Hours</b><p id="mHours"></p></div>
+      <div class="m-cell"><b>Companions</b><p id="mComp"></p></div>
+      <div class="m-cell"><b>Location</b><p id="mLoc"></p></div>
+      <div class="m-cell"><b>Contact</b><p id="mPhone"></p></div>
+    </div>
+    <div class="m-links">
+      <a class="pri" id="mSite" href="#" target="_blank" rel="noopener">Visit website ↗</a>
+      <a href="#" onclick="closeModal();return false">Back to list</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <b>CUNY Arts</b> · Opening doors to arts &amp; culture in NYC · Redesign prototype by Yi Lin — content sourced from cuny.edu
+</footer>
+
+<script>
+const D=[
+{n:"Museum of Modern Art",t:"The global landmark of modern and contemporary art.",p:"free",pl:"Free · faculty & staff too",b:"Manhattan",nb:"Midtown",h:"Daily 10:30–5:30, Fri until 8:30",od:[0,1,2,3,4,5,6],how:"Check in at the ticketing desk with a valid CUNY ID — no advance timed ticket needed. Companion tickets can be purchased on site.",comp:"Companions welcome (paid tickets at the desk)",loc:"11 W 53rd St, Midtown",ph:"(212) 708-9685",u:"https://www.moma.org",x:150,y:172,p1:false},
+{n:"Whitney Museum of American Art",t:"20th- and 21st-century American art in the Meatpacking District.",p:"free",pl:"Free · faculty & staff too",b:"Manhattan",nb:"Meatpacking",h:"Wed–Mon 10:30–6, Fri until 10 · Closed Tue",od:[0,1,3,4,5,6],how:"Show your CUNY ID for free admission. Also free for everyone 25 & under — book a timed ticket at whitney.org.",comp:"Free Friday Nights 5–10pm are free for all ages",loc:"99 Gansevoort St",ph:"(212) 570-3600",u:"https://whitney.org",x:150,y:238,p1:false},
+{n:"The Shed",t:"New art across every discipline, inside Hudson Yards' movable building.",p:"free",pl:"Free exhibitions",b:"Manhattan",nb:"Hudson Yards",h:"Tue–Sun, hours vary · Closed Mon",od:[0,2,3,4,5,6],how:"Free admission to Shed exhibitions (live performances excluded) with a valid CUNY ID at the box office.",comp:"Standard tickets for guests",loc:"545 W 30th St",ph:"(646) 455-3494",u:"https://www.theshed.org",x:145,y:218,p1:false},
+{n:"El Museo del Barrio",t:"Latin American and Caribbean art on Museum Mile.",p:"free",pl:"Free · faculty & staff too",b:"Manhattan",nb:"East Harlem",h:"Thu–Sun 11–5",od:[0,4,5,6],how:"Show your CUNY ID at admissions for free entry. Family programs run most weekends.",comp:"Standard admission for guests",loc:"1230 5th Ave at 104th St",ph:"(212) 831-7272",u:"https://www.elmuseo.org",x:172,y:120,p1:false},
+{n:"Intrepid Museum",t:"A space shuttle, a supersonic spy plane, and the carrier Intrepid.",p:"free",pl:"Free · faculty & staff too",b:"Manhattan",nb:"Hell's Kitchen",h:"Daily 10–5",od:[0,1,2,3,4,5,6],how:"Present a valid CUNY ID at the box office for free general admission.",comp:"Standard admission for guests",loc:"Pier 86, W 46th St & 12th Ave",ph:"(212) 245-0072",u:"https://www.intrepidmuseum.org",x:138,y:196,p1:false},
+{n:"Leslie-Lohman Museum of Art",t:"The world's only museum devoted to queer art and artists.",p:"free",pl:"Free +1",b:"Manhattan",nb:"SoHo",h:"Wed–Sun 12–6 · Closed Mon–Tue",od:[0,3,4,5,6],how:"Free admission for CUNY students plus one guest — just show your ID at the front desk.",comp:"Bring one friend free",loc:"26 Wooster St",ph:"(212) 431-2609",u:"https://www.leslielohman.org",x:158,y:262,p1:true},
+{n:"The Jewish Museum",t:"4,000 years of art and Jewish culture in the Warburg mansion.",p:"free",pl:"Free for students",b:"Manhattan",nb:"Museum Mile",h:"Fri–Mon 11–6, Thu 11–8 · Closed Tue–Wed",od:[0,1,4,5,6],how:"Show your CUNY student ID for free admission. Saturdays are free for everyone.",comp:"Free for all on Saturdays",loc:"1109 5th Ave at 92nd St",ph:"(212) 423-3200",u:"https://thejewishmuseum.org",x:174,y:132,p1:false},
+{n:"Museum of the City of New York",t:"The story of NYC — its diversity, opportunity, and reinvention.",p:"free",pl:"Free · faculty & staff too",b:"Manhattan",nb:"East Harlem",h:"Mon–Fri 10–5, Sat–Sun 10–6",od:[0,1,2,3,4,5,6],how:"Show your CUNY ID at admissions. Class visits must be booked through mcny.org/museum-tours.",comp:"Standard admission for guests",loc:"1220 5th Ave at 103rd St",ph:"(212) 534-1672",u:"https://www.mcny.org",x:173,y:126,p1:false},
+{n:"Museum of Jewish Heritage",t:"A living memorial to the Holocaust in Battery Park City.",p:"free",pl:"Free for students",b:"Manhattan",nb:"Battery Park",h:"Wed & Fri 10–5, Thu 10–8, Sun 10–5",od:[0,3,4,5],how:"Free admission for CUNY students with a valid student ID at the box office.",comp:"Free for the public Thu 4–8pm",loc:"36 Battery Pl",ph:"(646) 437-4202",u:"https://mjhnyc.org",x:152,y:288,p1:false},
+{n:"9/11 Memorial & Museum",t:"Bearing witness at the World Trade Center site.",p:"free",pl:"Free for students",b:"Manhattan",nb:"World Trade Center",h:"Museum Wed–Mon 9–7 · Memorial daily 8–8",od:[0,1,3,4,5,6],how:"Free walk-up admission anytime for CUNY students as available — show a valid school ID at the desk. Walk-up only, no advance booking.",comp:"Standard admission for guests",loc:"180 Greenwich St",ph:"(212) 312-8800",u:"https://www.911memorial.org",x:154,y:282,p1:false},
+{n:"Poster House",t:"America's first museum dedicated entirely to posters.",p:"free",pl:"Free for students",b:"Manhattan",nb:"Chelsea",h:"Thu–Sun 10–6, Fri until 9",od:[0,4,5,6],how:"Show your CUNY ID at the desk. Fridays and every third Sunday are free for everyone.",comp:"Free for all on Fridays",loc:"119 W 23rd St",ph:"(917) 722-2439",u:"https://posterhouse.org",x:154,y:230,p1:false},
+{n:"The Frick Collection",t:"Vermeer, Rembrandt, and Turner in a Gilded Age mansion.",p:"free",pl:"2 free tickets",b:"Manhattan",nb:"Upper East Side",h:"Wed–Mon 10:30–5:30 · Closed Tue",od:[0,1,3,4,5,6],how:"CUNY students and faculty receive two free tickets with a valid school ID. Classes can book free guided visits.",comp:"Your second ticket covers a guest",loc:"1 E 70th St",ph:"(212) 288-0700",u:"https://www.frick.org",x:168,y:158,p1:true},
+{n:"Jacques Marchais Museum of Tibetan Art",t:"A hillside retreat of Himalayan art on Staten Island.",p:"free",pl:"Free for students",b:"Staten Island",nb:"Lighthouse Hill",h:"Thu–Sun 1–5",od:[0,4,5,6],how:"Show your CUNY student ID for free entry. From the SI Ferry, take the S74 to Lighthouse Ave.",comp:"Standard admission for guests",loc:"338 Lighthouse Ave",ph:"(718) 987-3500",u:"https://www.tibetanmuseum.org",x:92,y:372,p1:false},
+{n:"Kaufman Music Center",t:"Bach to Broadway in the acoustics of Merkin Hall.",p:"free",pl:"Free tickets +1",b:"Manhattan",nb:"Upper West Side",h:"Box office Sun–Thu 12–7, Fri 12–5",od:[0,1,2,3,4,5],how:"Call the box office at (212) 501-3330, identify yourself as a CUNY student, and reserve free first-come tickets. Bring your ID at pickup.",comp:"Free and discounted tickets extend to a +1",loc:"129 W 67th St",ph:"(212) 501-3330",u:"https://www.kaufmanmusiccenter.org",x:152,y:168,p1:true},
+{n:"Jazz at Lincoln Center",t:"The world's largest home for jazz — including Dizzy's Club.",p:"disc",pl:"Student tickets",b:"Manhattan",nb:"Columbus Circle",h:"Performance schedule varies",od:[0,1,2,3,4,5,6],how:"Student tickets for theaters and Dizzy's Club, plus free curated CUNY events through the season — check jazz.org.",comp:"Guests pay standard student/regular rates",loc:"Broadway at 60th St",ph:"—",u:"https://www.jazz.org",x:151,y:178,p1:false},
+{n:"TDF · Theatre Development Fund",t:"Broadway to Off-Off-Broadway at $11–$59 a ticket.",p:"disc",pl:"$20/yr membership",b:"Citywide",nb:"All venues",h:"Membership is online, year-round",od:[0,1,2,3,4,5,6],how:"Join TDF at the reduced $20/year rate with promo code CUNYArts, then unlock discounted tickets across NYC theater and dance.",comp:"Members can often buy multiple tickets",loc:"Online · venues citywide",ph:"—",u:"https://www.tdf.org",x:200,y:250,p1:true},
+{n:"New Museum of Contemporary Art",t:"Today's art and ideas on the Bowery — newly expanded.",p:"disc",pl:"$19 student tickets",b:"Manhattan",nb:"Bowery",h:"Tue–Sun 11–6, Thu until 9 · Closed Mon",od:[0,2,3,4,5,6],how:"Reduced $19 student admission daily. Thursdays 7–9pm are pay-what-you-wish — reserve online in advance.",comp:"Pay-what-you-wish Thursdays for everyone",loc:"235 Bowery",ph:"(212) 219-1222",u:"https://www.newmuseum.org",x:160,y:258,p1:false},
+{n:"The Armory Show",t:"NYC's landmark international art fair at the Javits Center.",p:"annual",pl:"Annual · September · 40% off",b:"Manhattan",nb:"Javits Center",h:"Sept 5–7, 11am–7pm",od:[],how:"Buy student tickets online with promo code CUNY25 for 40% off ($30 + fees). Students may buy more than one ticket. Armory Live panels are open to all.",comp:"Extra discounted tickets allowed",loc:"429 11th Ave",ph:"—",u:"https://www.thearmoryshow.com",x:140,y:212,p1:true},
+{n:"The Winter Show",t:"Historic art, antiques, and design at the Park Avenue Armory.",p:"annual",pl:"Annual · January · $25 tickets",b:"Manhattan",nb:"Park Ave Armory",h:"Jan 23 – Feb 1",od:[],how:"CUNY students can purchase up to 2 tickets at $25 each, in person at the Armory. Select students join a VIP tour with the executive director.",comp:"Up to 2 discounted tickets each",loc:"643 Park Ave",ph:"—",u:"https://www.thewintershow.org",x:166,y:164,p1:true},
+{n:"The Moth · Storytelling Workshops",t:"Six weeks of personal storytelling craft, free for CUNY students.",p:"prog",pl:"Free workshop · apply",b:"Citywide",nb:"Virtual & in person",h:"Every fall & spring semester",od:[0,1,2,3,4,5,6],how:"Apply online at themoth.org/college for the free 6-week workshop series. Open to all current CUNY undergrad and grad students.",comp:"Individual application",loc:"Virtual & in person",ph:"—",u:"https://themoth.org/college",x:210,y:262,p1:false}
+];
+
+const PERK={free:["free","Free"],disc:["disc","Discount"],annual:["annual","Annual"],prog:["prog","Program"]};
+let perk="", view="list";
+const today=new Date().getDay();
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+
+function isOpen(d){return d.od.includes(today);}
+function filtered(){
+  const q=document.getElementById('q').value.trim().toLowerCase();
+  const b=document.getElementById('boro').value;
+  const fo=document.getElementById('fOpen').classList.contains('on');
+  const fp=document.getElementById('fPlus').classList.contains('on');
+  return D.filter(d=>
+    (!q||d.n.toLowerCase().includes(q)||d.nb.toLowerCase().includes(q))&&
+    (!b||d.b===b)&&(!perk||d.p===perk)&&(!fo||isOpen(d))&&(!fp||d.p1)
+  );
+}
+function setPerk(el){document.querySelectorAll('.chip[data-perk]').forEach(c=>c.classList.remove('on'));el.classList.add('on');perk=el.dataset.perk;render();}
+function tgl(el){el.classList.toggle('on');el.setAttribute('aria-pressed',el.classList.contains('on'));render();}
+function setView(v){view=v;
+  document.getElementById('vList').classList.toggle('on',v==='list');
+  document.getElementById('vList').setAttribute('aria-selected',v==='list');
+  document.getElementById('vMap').classList.toggle('on',v==='map');
+  document.getElementById('vMap').setAttribute('aria-selected',v==='map');
+  document.getElementById('mapWrap').classList.toggle('show',v==='map');
+  document.getElementById('grid').style.display=v==='map'?'none':'grid';
+  render();
+}
+const DOTC={free:"#0F6E56",disc:"#BA7515",annual:"#C24A22",prog:"#5A4DBF"};
+function render(){
+  const list=filtered();
+  document.getElementById('count').textContent=list.length+" of "+D.length+" partners";
+  const grid=document.getElementById('grid');
+  document.getElementById('empty').style.display=(list.length===0&&view==='list')?'block':'none';
+  grid.innerHTML=list.map((d,i)=>{
+    const idx=D.indexOf(d);
+    const open=d.od.length?`<span><span class="open-dot ${isOpen(d)?'y':'n'}"></span>${isOpen(d)?'Open today':'Closed today'}</span>`:'';
+    return `<button class="card" id="card${idx}" onclick="openModal(${idx})" aria-haspopup="dialog">
+      <div class="badge-row"><span class="tk ${d.p}">${esc(d.pl)}</span><span class="pill">${esc(d.nb)}</span></div>
+      <h3>${esc(d.n)}</h3>
+      <p class="tag">${esc(d.t)}</p>
+      <div class="meta">
+        <div class="row"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><span>${esc(d.h)} ${open}</span></div>
+        <div class="howto">→ ${esc(d.how.split('.')[0])}.</div>
+      </div>
+    </button>`;
+  }).join('');
+  const dots=document.getElementById('mapDots');
+  dots.innerHTML=list.map(d=>{const idx=D.indexOf(d);
+    return `<circle class="mdot" cx="${d.x}" cy="${d.y}" r="7" fill="${DOTC[d.p]}" stroke="#fff" stroke-width="1.5" tabindex="0" role="button" aria-label="${esc(d.n)}" onclick="openModal(${idx})" onkeydown="if(event.key==='Enter')openModal(${idx})"><title>${esc(d.n)}</title></circle>`;
+  }).join('');
+  document.getElementById('mapList').innerHTML=list.map(d=>{const idx=D.indexOf(d);
+    return `<button onclick="openModal(${idx})"><span>${esc(d.n)}</span><span class="dotk" style="background:${DOTC[d.p]};flex-shrink:0"></span></button>`;}).join('');
+}
+function openModal(i){
+  const d=D[i];
+  document.getElementById('mBadges').innerHTML=`<span class="tk ${d.p}">${esc(d.pl)}</span><span class="pill">${esc(d.b)}</span>`;
+  document.getElementById('mTitle').textContent=d.n;
+  document.getElementById('mTag').textContent=d.t;
+  document.getElementById('mHow').textContent=d.how;
+  document.getElementById('mHours').textContent=d.h;
+  document.getElementById('mComp').textContent=d.comp;
+  document.getElementById('mLoc').textContent=d.loc;
+  document.getElementById('mPhone').textContent=d.ph;
+  document.getElementById('mSite').href=d.u;
+  document.getElementById('overlay').classList.add('show');
+  document.body.style.overflow='hidden';
+  document.querySelector('.modal .close').focus();
+}
+function closeModal(){document.getElementById('overlay').classList.remove('show');document.body.style.overflow='';}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+render();
+</script>
+</body>
+</html>
