@@ -50,6 +50,10 @@ Chapter HTML uses a fixed set of styled blocks — reuse them instead of inventi
 - `.tasklist` > `.trow` > `.tn` + `.tb` (`.task` + `.crit`) — usability test tasks and success criteria
 - plain `<ul><li><b>Lead-in.</b> …</li></ul>` — pain points and design decisions
 
+### Head assets
+
+`og.png` (1200×630), `favicon.svg`, and `apple-touch-icon.png` sit at the repo root and are referenced from `<head>` with absolute `https://yilin-11.github.io/…` URLs for the Open Graph tags (relative URLs are not resolved by most crawlers). `og.png` bakes in the name and the tagline, so **if the `<title>` or the sidebar `.disc` line changes, the image is now stale** — it was generated with Pillow from the site's own tokens (paper/ink/line colors, the `.reg-mini` corner mark, the three case accent colors) and has to be redrawn, not edited.
+
 ### Conventions to preserve
 
 - **Theming:** every color comes from a custom property in `:root`, with a `@media (prefers-color-scheme:dark)` override. New UI must not hardcode colors, and `motif` SVGs must use `var(--ink)`, `var(--paper)`, `var(--line-2)` and the case accent so they invert correctly in dark mode.
