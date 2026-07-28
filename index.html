@@ -103,13 +103,12 @@ nav.worknav .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 
 .list{display:none;flex-direction:column}
 .list .row{
-  display:grid;grid-template-columns:64px 1fr auto;gap:20px;align-items:center;
+  display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;
   padding:22px 4px;border-bottom:1px solid var(--line);text-align:left;width:100%;
   transition:padding-left .2s;
 }
 .list .row:hover{padding-left:14px}
 .list .row:hover .r-name{text-decoration:underline;text-underline-offset:4px}
-.r-num{font-size:12px;color:var(--ink-3);letter-spacing:.08em}
 .r-name{font-weight:700;font-size:19px}
 .r-name .hook{display:block;font-family:var(--ss);font-style:italic;font-weight:400;font-size:13.5px;color:var(--ink-2);margin-top:2px}
 .r-type{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--acc);white-space:nowrap}
@@ -221,8 +220,7 @@ section.page p+p{margin-top:14px}
   body:has(.side.open) .scrim{display:block}
   .main{padding:26px 20px 70px}
   .grid{grid-template-columns:1fr}
-  .list .row{grid-template-columns:1fr auto;gap:8px}
-  .r-num{display:none}
+  .list .row{gap:8px}
   .v-bar{padding:12px 18px}
   .v-content{padding:34px 20px 80px}
   .v-meta div{padding-right:18px;margin-right:18px}
@@ -316,7 +314,7 @@ const CHAPS=['Research','Pain points','IA','Wireframes','Validation'];
 const CASES=[
 /* ---------- 01 · CUNY ARTS ---------- */
 {
-  key:'cuny', acc:'var(--cuny)', num:'01', name:'CUNY <span class="thin">Arts</span>', plain:'CUNY Arts',
+  key:'cuny', acc:'var(--cuny)', name:'CUNY <span class="thin">Arts</span>', plain:'CUNY Arts',
   type:'Responsive web redesign', stack:'HTML · Figma',
   proto:'prototypes/cuny-arts.html', protoNote:'A fully interactive redesign — live filtering, borough map, and detail modals, all with real content from the original page.',
   hook:'Your student ID is a museum pass.',
@@ -365,7 +363,7 @@ const CASES=[
 },
 /* ---------- 02 · NO LIMIT ---------- */
 {
-  key:'nolimit', acc:'var(--nolimit)', num:'02', name:'No <span class="thin">Limit</span>', plain:'No Limit',
+  key:'nolimit', acc:'var(--nolimit)', name:'No <span class="thin">Limit</span>', plain:'No Limit',
   type:'Mobile app · responsible design', stack:'Figma · HTML',
   proto:'prototypes/no-limit.html', protoNote:'The v2 rebuild in your browser — a live fasting timer, inverted data hierarchy, and the goal-guardrail advisory, all interactive.',
   hook:'Fasting, progress, and people — in one place.',
@@ -403,7 +401,7 @@ const CASES=[
 },
 /* ---------- 03 · SHELFIE ---------- */
 {
-  key:'shelfie', acc:'var(--shelfie)', num:'03', name:'Shel<span class="thin">fie</span>', plain:'Shelfie',
+  key:'shelfie', acc:'var(--shelfie)', name:'Shel<span class="thin">fie</span>', plain:'Shelfie',
   type:'AI-native product', stack:'Claude API · JS',
   proto:'prototypes/shelfie.html', protoNote:'Explore the full UI and flows in your browser. AI features (photo recognition, recipe generation) require an API backend — the demo video shows them running live.',
   hook:'Snap your groceries. Cook what you have.',
@@ -456,12 +454,11 @@ function renderWorkspace(){
         <div class="wc-tag"><i></i>${c.type}</div>
         <h3>${c.name}</h3>
         <p class="hook">${c.hook}</p>
-        <div class="wc-foot"><span>YL-${c.num}</span><span>${c.stack}</span></div>
+        <div class="wc-foot"><span>${c.stack}</span></div>
       </div>
     </button>`).join('');
   $('listEl').innerHTML=CASES.map((c,i)=>`
     <button class="row" style="--acc:${c.acc}" onclick="openCase(${i})">
-      <span class="r-num">YL-${c.num}</span>
       <span class="r-name">${c.plain}<span class="hook">${c.hook}</span></span>
       <span class="r-type">${c.type}</span>
     </button>`).join('');
@@ -490,7 +487,6 @@ function openCase(i){
         <h2 id="vTitle">${c.name}</h2>
         <p class="v-hook" style="color:${c.acc}">${c.hook}</p>
         <div class="v-meta">
-          <div><span class="lab">No.</span><span class="val">YL-${c.num}</span></div>
           <div><span class="lab">Stack</span><span class="val">${c.stack}</span></div>
           <div><span class="lab">Role</span><span class="val">Solo designer</span></div>
         </div>

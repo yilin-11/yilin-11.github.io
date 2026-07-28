@@ -28,9 +28,9 @@ Content and presentation are separated inside the one file: **all case-study con
 
 Each case object:
 
-- `key`, `num` (`'01'`), `plain` (plain-text name), `name` (may contain `<span class="thin">` for the two-tone title treatment)
+- `key`, `plain` (plain-text name), `name` (may contain `<span class="thin">` for the two-tone title treatment)
 - `acc` — the case's accent color, always a CSS var (`var(--cuny)`, `var(--nolimit)`, `var(--shelfie)`), defined for both themes in `:root`
-- `type`, `year`, `stack` — shown in card footers and the viewer meta row
+- `type`, `stack` — shown in card footers and the viewer meta row
 - `proto` / `protoNote` — relative path to the prototype file, plus the caveat text under the CTA
 - `hook`, `lede[]` — one-liner and intro paragraphs
 - `motif` — inline SVG hero/thumbnail
