@@ -460,7 +460,9 @@ function setView(v){
 let current=0,lastFocus=null;
 function openCase(i){
   current=i; const c=CASES[i];
-  lastFocus=document.activeElement;
+  /* only remember the page-level trigger, not the viewer's own buttons —
+     stepCase() re-enters openCase() while the viewer is already open */
+  if(!$('viewer').classList.contains('open'))lastFocus=document.activeElement;
   const fill=()=>{
     $('vCrumb').textContent=c.plain;
     $('vHero').innerHTML=c.motif;
@@ -506,9 +508,11 @@ function jumpChap(e,n){
 }
 function stepCase(d){openCase((current+d+CASES.length)%CASES.length);}
 function closeCase(){
-  const done=()=>{$('viewer').classList.remove('open');document.body.style.overflow='';};
+  const done=()=>{
+    $('viewer').classList.remove('open');document.body.style.overflow='';
+    if(lastFocus&&lastFocus.isConnected)lastFocus.focus();
+  };
   document.startViewTransition?document.startViewTransition(done):done();
-  if(lastFocus)lastFocus.focus();
 }
 document.addEventListener('keydown',e=>{
   if(!$('viewer').classList.contains('open'))return;
