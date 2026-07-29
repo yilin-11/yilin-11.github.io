@@ -58,7 +58,7 @@ Chapter HTML uses a fixed set of styled blocks — reuse them instead of inventi
 
 ### Conventions to preserve
 
-- **Theming:** every color comes from a custom property in `:root`, with a `@media (prefers-color-scheme:dark)` override. New UI must not hardcode colors, and `motif` SVGs must use `var(--ink)`, `var(--paper)`, `var(--line-2)` and the case accent so they invert correctly in dark mode.
+- **Theming:** every color comes from a custom property — light values on `:root`, dark values on `:root[data-theme="dark"]`, written once each. There is **no `@media (prefers-color-scheme:dark)` block**: an inline script in `<head>` (before the stylesheet) resolves a stored `yl-theme` choice, or failing that the system preference, into the `data-theme` attribute before the body paints. `toggleTheme()` flips and stores it; the `☀`/`☾` button in `.ws-head` shows where a press would take you, and the page keeps following the system for anyone who has never pressed it. New UI must not hardcode colors, and `motif` SVGs must use `var(--ink)`, `var(--paper)`, `var(--line-2)` and the case accent so they invert correctly in dark mode.
 - **Accessibility:** interactive targets are kept at `min-height/min-width:44px`; toggles carry `aria-pressed`; the viewer is `role="dialog" aria-modal="true"` with `aria-labelledby`, saves `lastFocus` and restores it on close; `motif` SVGs have `role="img"` + `aria-label`; focus styling goes through `:focus-visible`.
 
 ## Prototypes

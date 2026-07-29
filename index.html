@@ -28,6 +28,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<script>
+/* Runs before the body paints: a stored choice wins, otherwise the system's.
+   Without this the page would flash the light default at anyone on dark. */
+(function(){
+  var t=null;
+  try{t=localStorage.getItem('yl-theme')}catch(e){}
+  if(t!=='light'&&t!=='dark'){
+    t=window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+  }
+  document.documentElement.setAttribute('data-theme',t);
+})();
+</script>
 <style>
 :root{
   --paper:#FFFFFF; --ink:#16181D; --ink-2:#5B5F68; --ink-3:#9A9DA5;
@@ -36,12 +48,14 @@
   --sg:'Space Grotesk',system-ui,sans-serif;
   --ss:'Source Serif 4',Georgia,serif;
 }
-@media (prefers-color-scheme:dark){
-  :root{
-    --paper:#121316; --ink:#EDECE8; --ink-2:#A8ABB2; --ink-3:#6B6E76;
-    --line:#26282D; --line-2:#3A3D44; --card:#1A1C20;
-    --cuny:#5B82E0; --nolimit:#4DBFAF; --shelfie:#3FA372; --mutuo:#D4835C; --foredge:#E28B98;
-  }
+/* The dark palette is keyed to an explicit data-theme rather than the media
+   query: the head script resolves the system preference into that attribute
+   before the body paints, so one written copy serves both the automatic case
+   and the toggle. */
+:root[data-theme="dark"]{
+  --paper:#121316; --ink:#EDECE8; --ink-2:#A8ABB2; --ink-3:#6B6E76;
+  --line:#26282D; --line-2:#3A3D44; --card:#1A1C20;
+  --cuny:#5B82E0; --nolimit:#4DBFAF; --shelfie:#3FA372; --mutuo:#D4835C; --foredge:#E28B98;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -80,9 +94,12 @@ nav.worknav .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .main{padding:44px 48px 80px;min-width:0}
 .ws-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:26px}
 .ws-head h2{font-weight:500;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.ws-tools{display:flex;align-items:center;gap:10px}
 .viewtoggle{display:flex;border:1px solid var(--line-2);border-radius:8px;overflow:hidden}
 .viewtoggle button{padding:10px 16px;font-size:13px;color:var(--ink-2);min-width:44px;min-height:44px}
 .viewtoggle button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.themebtn{border:1px solid var(--line-2);border-radius:8px;min-width:44px;min-height:44px;padding:10px 14px;font-size:13px;color:var(--ink-2);display:inline-flex;align-items:center;justify-content:center;transition:color .15s,border-color .15s}
+.themebtn:hover{color:var(--ink);border-color:var(--ink-3)}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:22px}
 .workcard{
@@ -271,9 +288,12 @@ code{font-family:var(--sg);font-size:.88em;background:var(--card);border:1px sol
     <div class="workspace" id="workspace" data-view="grid">
       <div class="ws-head">
         <h2>Selected work</h2>
-        <div class="viewtoggle" role="group" aria-label="View mode">
-          <button aria-pressed="true" id="vtGrid" onclick="setView('grid')" aria-label="Grid view">▦</button>
-          <button aria-pressed="false" id="vtList" onclick="setView('list')" aria-label="List view">☰</button>
+        <div class="ws-tools">
+          <div class="viewtoggle" role="group" aria-label="View mode">
+            <button aria-pressed="true" id="vtGrid" onclick="setView('grid')" aria-label="Grid view">▦</button>
+            <button aria-pressed="false" id="vtList" onclick="setView('list')" aria-label="List view">☰</button>
+          </div>
+          <button class="themebtn" id="themeBtn" onclick="toggleTheme()"></button>
         </div>
       </div>
       <div class="grid" id="gridEl"></div>
@@ -697,6 +717,29 @@ function toggleDrawer(force){
   s.classList.toggle('open',open);
   document.querySelector('.burger').setAttribute('aria-expanded',open);
 }
+/* Theme. The attribute is already on <html> from the head script; this only
+   keeps the button honest about where a press would take you, and keeps
+   following the system for anyone who has not pressed it. */
+function applyTheme(t,remember){
+  document.documentElement.setAttribute('data-theme',t);
+  if(remember){try{localStorage.setItem('yl-theme',t)}catch(e){}}
+  const b=$('themeBtn'), toLight=t==='dark';
+  b.textContent=toLight?'☀':'☾';
+  b.setAttribute('aria-label',toLight?'Switch to the light theme':'Switch to the dark theme');
+  b.title=b.getAttribute('aria-label');
+}
+function toggleTheme(){
+  const next=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+  const change=()=>applyTheme(next,true);
+  document.startViewTransition?document.startViewTransition(change):change();
+}
+applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light',false);
+try{
+  matchMedia('(prefers-color-scheme:dark)').addEventListener('change',e=>{
+    let stored=null; try{stored=localStorage.getItem('yl-theme')}catch(_){}
+    if(stored!=='light'&&stored!=='dark')applyTheme(e.matches?'dark':'light',false);
+  });
+}catch(e){}
 renderWorkspace();
 </script>
 </body>
