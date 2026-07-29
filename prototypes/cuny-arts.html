@@ -97,6 +97,27 @@ h1 em{font-style:normal;text-decoration:underline;text-decoration-thickness:.06e
 .tkitem figcaption::before{content:"";width:8px;height:8px;background:var(--k);flex:none}
 @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
+/* CUNY's own venues. The source page files these under "Cultural Centers",
+   which names an org chart rather than a thing you can visit — so the section
+   is called what it is, and the kind of place leads every row. */
+.campus{background:var(--wash);border-top:1px solid var(--line)}
+.campus-in{max-width:1180px;margin:0 auto;padding:56px 32px 76px}
+.campus-lede{font-size:17px;color:var(--ink-2);max-width:62ch;margin:-8px 0 6px;line-height:1.5}
+.campus-lede span{display:block;font-size:12.5px;color:var(--ink-3);margin-top:8px}
+.campus .chips{margin:22px 0 4px}
+.campus .chip{background:#fff}
+/* newspaper columns, not a grid: a reader scanning one column straight down
+   should get the list in order */
+.vlist{columns:2;column-gap:46px;margin-top:14px}
+@media (max-width:900px){.vlist{columns:1}}
+.vrow{break-inside:avoid;display:grid;grid-template-columns:76px 1fr;column-gap:14px;padding:15px 6px;border-bottom:1px solid var(--line-2);text-decoration:none;color:var(--ink);align-items:baseline;transition:background .12s}
+.vrow:hover{background:#fff}
+.vrow:hover .vn{text-decoration:underline;text-underline-offset:3px}
+.vk{grid-row:1/3;font-size:9.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-3);padding-top:4px}
+.vn{font-size:15.5px;font-weight:600;line-height:1.3}
+.vn i{font-style:normal;color:var(--blue)}
+.vc{font-size:12px;color:var(--ink-2);margin-top:4px}
+
 /* the closing block — one colour field, one sentence */
 .band{background:var(--blue);color:#fff;padding:74px 32px}
 .band-in{max-width:1180px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-end;gap:40px;flex-wrap:wrap}
@@ -243,7 +264,7 @@ footer b{color:#fff;font-weight:700}
 <div class="spectrum" aria-hidden="true"><span style="background:var(--free)"></span><span style="background:var(--disc)"></span><span style="background:var(--annual)"></span><span style="background:var(--prog)"></span></div>
 <div class="topbar">
   <span>The City University of New York</span>
-  <nav aria-label="utility"><a href="#partners">Partners</a> &nbsp;·&nbsp; <a href="#" onclick="return false">Cultural Corps</a> &nbsp;·&nbsp; <a href="#" onclick="return false">Contact</a></nav>
+  <nav aria-label="utility"><a href="#partners">Partners</a> &nbsp;·&nbsp; <a href="#campus">On campus</a> &nbsp;·&nbsp; <a href="#" onclick="return false">Cultural Corps</a> &nbsp;·&nbsp; <a href="#" onclick="return false">Contact</a></nav>
 </div>
 <header class="brand">
   <div class="mark" aria-hidden="true">CA</div>
@@ -380,6 +401,15 @@ footer b{color:#fff;font-weight:700}
   </div>
 </div>
 
+<section class="campus" id="campus">
+  <div class="campus-in">
+    <div class="section-h"><h2>Arts on your campus</h2></div>
+    <p class="campus-lede">Forty galleries, theatres, museums and archives that CUNY runs on its own campuses — the ones you can walk to between classes, no partner agreement involved.<span>cuny.edu lists these as “CUNY Cultural Centers”.</span></p>
+    <div class="chips" role="group" aria-label="Filter campus venues by borough" id="boroChips"></div>
+    <div class="vlist" id="vlist"></div>
+  </div>
+</section>
+
 <section class="band">
   <div class="band-in">
     <p>One ID. Twenty institutions. <b>Zero dollars.</b></p>
@@ -498,6 +528,69 @@ function buildTicker(){
   const one=D.map((d,i)=>`<figure class="tkitem" style="--k:${DOTC[d.p]}"><img src="${IMG}${d.im}" alt="" loading="lazy" width="768" height="402"><figcaption>${esc(d.n)}</figcaption></figure>`).join('');
   document.getElementById('tickerTrack').innerHTML=one+one;
 }
+// CUNY's own venues, from the "Cultural Centers" list on cuny.edu.
+const CENTERS=[
+{v:"Leonard & Claire Tow Center for the Performing Arts",c:"Brooklyn College",b:"Brooklyn",k:"Stage",u:"https://www.brooklyn.edu/towcenter/"},
+{v:"Barry R. Feirstein Graduate School of Cinema",c:"Brooklyn College",b:"Brooklyn",k:"Film",u:"https://www.brooklyn.edu/feirstein/"},
+{v:"The Kingsborough Art Museum",c:"Kingsborough Community College",b:"Brooklyn",k:"Museum",u:"http://www.kccartmuseum.org/"},
+{v:"The Leon M. Goldstein Performing Arts Center",c:"Kingsborough Community College",b:"Brooklyn",k:"Stage",u:"http://www.onstageatkingsborough.org/"},
+{v:"Center for Black Literature",c:"Medgar Evers College",b:"Brooklyn",k:"Center",u:"http://centerforblackliterature.org/"},
+{v:"Theatreworks",c:"New York City College of Technology",b:"Brooklyn",k:"Stage",u:"https://www.citytechtheatreworks.org/"},
+{v:"Hall of Fame Art Gallery",c:"Bronx Community College",b:"Bronx",k:"Gallery",u:"http://www.bcc.cuny.edu/academics/academic-departments/art-and-music-department/the-hall-of-fame-art-gallery/"},
+{v:"Hostos Center for the Arts & Culture",c:"Hostos Community College",b:"Bronx",k:"Stage",u:"https://www.hostos.cuny.edu/culturearts/"},
+{v:"Longwood Art Gallery",c:"Hostos Community College",b:"Bronx",k:"Gallery",u:"https://www.hostos.cuny.edu/culturearts/events/exhibits.shtml"},
+{v:"Lehman Center for the Performing Arts",c:"Lehman College",b:"Bronx",k:"Stage",u:"http://lehmancenter.org/"},
+{v:"Lehman College Art Gallery",c:"Lehman College",b:"Bronx",k:"Gallery",u:"https://lehmangallery.org/"},
+{v:"The LaGuardia and Wagner Archives",c:"LaGuardia Community College",b:"Queens",k:"Archive",u:"http://www.laguardiawagnerarchive.lagcc.cuny.edu/"},
+{v:"LaGuardia Performing Arts Center",c:"LaGuardia Community College",b:"Queens",k:"Stage",u:"http://www.lpac.nyc/"},
+{v:"Kupferberg Center for the Arts",c:"Queens College",b:"Queens",k:"Stage",u:"https://kupferbergcenter.org/queens-college-art-center/"},
+{v:"Louis Armstrong House Museum",c:"Queens College",b:"Queens",k:"Museum",u:"http://www.louisarmstronghouse.org/"},
+{v:"Queens College Art Center",c:"Queens College",b:"Queens",k:"Gallery",u:"https://www.qc.cuny.edu/academics/soa/queens-college-art-center/"},
+{v:"Godwin Ternbach Museum",c:"Queens College",b:"Queens",k:"Museum",u:"http://gtmuseum.org/"},
+{v:"QCC Art Gallery",c:"Queensborough Community College",b:"Queens",k:"Gallery",u:"http://www.qcc.cuny.edu/artgallery/default2.asp"},
+{v:"Harriet and Kenneth Kupferberg Holocaust Resource Center & Archives",c:"Queensborough Community College",b:"Queens",k:"Archive",u:"http://www.qcc.cuny.edu/khrca"},
+{v:"Queensborough Performing Arts Center",c:"Queensborough Community College",b:"Queens",k:"Stage",u:"http://www.qcc.cuny.edu/qpac"},
+{v:"York College Performing Arts Center",c:"York College",b:"Queens",k:"Stage",u:"http://www.york.cuny.edu/centers-institutes/performing-arts"},
+{v:"Baruch Performing Arts Center (BPAC)",c:"Baruch College",b:"Manhattan",k:"Stage",u:"http://www.baruch.cuny.edu/bpac/"},
+{v:"The Sidney Mishkin Gallery",c:"Baruch College",b:"Manhattan",k:"Gallery",u:"https://weissman.baruch.cuny.edu/mishkin-gallery/"},
+{v:"Shirley Fiterman Art Center",c:"Borough of Manhattan Community College",b:"Manhattan",k:"Gallery",u:"http://www.bmcc.cuny.edu/sfac/"},
+{v:"Tribeca Performing Arts Center",c:"Borough of Manhattan Community College",b:"Manhattan",k:"Stage",u:"http://tribecapac.org/"},
+{v:"The Center for the Humanities",c:"CUNY Graduate Center",b:"Manhattan",k:"Center",u:"http://centerforthehumanities.org/"},
+{v:"Martin E. Segal Theatre Center",c:"CUNY Graduate Center",b:"Manhattan",k:"Stage",u:"http://thesegalcenter.org/"},
+{v:"The James Gallery",c:"CUNY Graduate Center",b:"Manhattan",k:"Gallery",u:"http://centerforthehumanities.org/james-gallery"},
+{v:"205 Hudson Street Gallery",c:"Hunter College",b:"Manhattan",k:"Gallery",u:"http://www.205hudsongallery.org/"},
+{v:"Hunter East Harlem Gallery",c:"Hunter College",b:"Manhattan",k:"Gallery",u:"http://www.hunter.cuny.edu/eastharlem-artgallery"},
+{v:"Bertha and Karl Leubsdorf Art Gallery",c:"Hunter College",b:"Manhattan",k:"Gallery",u:"http://www.hunter.cuny.edu/art/exhibitions-public-programs/galleries/galleries"},
+{v:"Kaye Playhouse",c:"Hunter College",b:"Manhattan",k:"Stage",u:"http://www.hunter.cuny.edu/kayeplayhouse"},
+{v:"The Anya and Andrew Shiva Gallery",c:"John Jay College",b:"Manhattan",k:"Gallery",u:"http://shivagallery.org/"},
+{v:"Gerald W. Lynch Theater",c:"John Jay College",b:"Manhattan",k:"Stage",u:"https://geraldwlynchtheater.com/"},
+{v:"CUNY DSI Gallery",c:"The City College of New York (CCNY)",b:"Manhattan",k:"Gallery",u:"https://www.ccny.cuny.edu/about"},
+{v:"Compton Goethals Hall",c:"The City College of New York (CCNY)",b:"Manhattan",k:"Stage",u:"http://www.ccny.cuny.edu/theatre/comptongoethals"},
+{v:"Aaron Davis Hall",c:"The City College of New York (CCNY)",b:"Manhattan",k:"Stage",u:"http://www.citycollegecenterforthearts.org/"},
+{v:"The City College Center for the Arts",c:"The City College of New York (CCNY)",b:"Manhattan",k:"Stage",u:"http://www.citycollegecenterforthearts.org/"},
+{v:"The Art Gallery at the College of Staten Island",c:"College of Staten Island",b:"Staten Island",k:"Gallery",u:"http://www.csi.cuny.edu/artgallery/"},
+{v:"College of Staten Island Center for the Arts",c:"College of Staten Island",b:"Staten Island",k:"Stage",u:"http://www.cfashows.com/"}
+];
+let boro="";
+function setBoro(el){
+  document.querySelectorAll('#boroChips .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on'); boro=el.dataset.boro; renderCenters();
+}
+function buildBoroChips(){
+  const order=["Manhattan","Brooklyn","Queens","Bronx","Staten Island"];
+  const counts={}; CENTERS.forEach(c=>counts[c.b]=(counts[c.b]||0)+1);
+  const chips=[`<button class="chip on" data-boro="" onclick="setBoro(this)">All ${CENTERS.length}</button>`]
+    .concat(order.filter(b=>counts[b]).map(b=>`<button class="chip" data-boro="${b}" onclick="setBoro(this)">${b} ${counts[b]}</button>`));
+  document.getElementById('boroChips').innerHTML=chips.join('');
+}
+function renderCenters(){
+  const list=boro?CENTERS.filter(c=>c.b===boro):CENTERS;
+  document.getElementById('vlist').innerHTML=list.map(c=>
+    `<a class="vrow" href="${c.u}" target="_blank" rel="noopener"><span class="vk">${c.k}</span><span class="vn">${esc(c.v)} <i>\u2197</i></span><span class="vc">${esc(c.c)} \u00b7 ${c.b}</span></a>`
+  ).join('');
+}
+buildBoroChips();
+renderCenters();
 buildTicker();
 render();
 </script>
