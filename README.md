@@ -31,12 +31,14 @@ index.html          the portfolio — case study content, styles, and JS in one 
 prototypes/         the three interactive prototypes (Mutuo and Foredge live in their own repos)
 og.png              social share card
 favicon.svg         also apple-touch-icon.png
-mmp210/             archived coursework — p5.js sketches
-mmp240/             archived coursework — HTML/CSS exercises, Craigslist redesign
-citymail/           archived coursework — CCNY CityMail redesign
 ```
 
-The `mmp*` and `citymail` directories are old CUNY coursework, kept in place so existing links don't break.
+Old CUNY coursework — `mmp210/` (p5.js sketches), `mmp240/` (HTML/CSS exercises
+and a Craigslist redesign) and `citymail/` (a CCNY CityMail redesign) — no longer
+lives on `main`. It is kept as-is on the
+[`archive/coursework`](https://github.com/yilin-11/yilin-11.github.io/tree/archive/coursework)
+branch, with its history intact. Since Pages serves `main`, those paths are no
+longer published.
 
 ## Running locally
 

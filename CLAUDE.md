@@ -18,9 +18,8 @@ python3 -m http.server 8000    # then open http://localhost:8000
 | --- | --- | --- |
 | `index.html` | **active** | The entire portfolio — single self-contained file (~670 lines, inline `<style>` + `<script>`) |
 | `prototypes/*.html` | **active** | Three self-contained interactive prototypes linked from the first three case studies |
-| `mmp210/`, `mmp240/`, `citymail/` | archived | Old CUNY coursework, kept as-is for links that may exist in the wild |
 
-Treat the archived directories as frozen artifacts: fix them only if asked, and don't "modernize" or refactor them. They contain intentional oddities (e.g. the misspelled `mmp240/craigslist_redesign/stlyes.css`, p5.js 0.5.6 from CDN in `mmp210/memes` and `mmp210/self-portrait` vs. a vendored `p5.js` in `mmp210/midterm-project`).
+The old CUNY coursework (`mmp210/`, `mmp240/`, `citymail/`) used to sit at the repo root. It now lives only on the `archive/coursework` branch and is no longer served, since Pages publishes `main`. Treat it as a frozen artifact: don't restore it to `main`, and don't "modernize" it if you are asked to work on that branch — it contains intentional oddities (e.g. the misspelled `mmp240/craigslist_redesign/stlyes.css`, p5.js 0.5.6 from CDN in `mmp210/memes` and `mmp210/self-portrait` vs. a vendored `p5.js` in `mmp210/midterm-project`).
 
 ## `index.html` architecture
 
