@@ -13,6 +13,11 @@ const CASES=[
   motif:`<svg viewBox="0 0 640 360" fill="none" role="img" aria-label="Ticket stub illustration"><rect x="150" y="110" width="340" height="140" rx="14" stroke="var(--cuny)" stroke-width="3" transform="rotate(-3 320 180)"/><circle cx="155" cy="176" r="13" fill="var(--paper)" stroke="var(--cuny)" stroke-width="3" transform="rotate(-3 320 180)"/><circle cx="485" cy="212" r="13" fill="var(--paper)" stroke="var(--cuny)" stroke-width="3" transform="rotate(-3 320 180)"/><text x="190" y="172" font-family="Space Grotesk" font-weight="700" font-size="30" fill="var(--cuny)" transform="rotate(-3 320 180)">ADMIT ONE</text><text x="190" y="204" font-family="Source Serif 4" font-style="italic" font-size="17" fill="var(--ink-2)" transform="rotate(-3 320 180)">$0 with a CUNY ID</text><line x1="408" y1="132" x2="408" y2="222" stroke="var(--cuny)" stroke-width="2.5" stroke-dasharray="4 8" transform="rotate(-3 320 180)"/></svg>`,
   shots:[{src:'cuny-list.jpg',cap:'The listing: benefit colour on every card, the desk instruction under the name.'},
          {src:'cuny-detail.jpg',cap:'The detail panel — "How to use your benefit" pinned above hours and location.'}],
+  wires:[
+    {k:'page',t:'01 Index',cap:'Filter bar pinned above a single card grid — filtering is the task, so it never scrolls away.',p:['nav:4','head','chips:5','cards:6']},
+    {k:'page',t:'02 Card',cap:'Benefit badge first, then name and hours, then one line of "how to enter". Long descriptions never reach a card.',p:['note:Benefit','head','sub','lines:2','chips:2']},
+    {k:'page',t:'03 Detail',cap:'"How to use your benefit" owns the first screen; institutional history is demoted to the bottom.',p:['nav:3','img','note:How to use','lines:3','btn']}
+  ],
   chapters:[
   `<p>A quantitative content audit of the live page defined the problem before any sketching:</p>
    <div class="statgrid">
@@ -69,6 +74,11 @@ const CASES=[
   motif:`<svg viewBox="0 0 640 360" fill="none" role="img" aria-label="Fasting timer ring illustration"><circle cx="320" cy="180" r="108" stroke="var(--line-2)" stroke-width="16"/><path d="M320 72 A108 108 0 1 1 225 233" stroke="var(--nolimit)" stroke-width="16" stroke-linecap="round"/><text x="320" y="176" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="40" fill="var(--ink)">16:00</text><text x="320" y="208" text-anchor="middle" font-family="Source Serif 4" font-style="italic" font-size="17" fill="var(--ink-2)">you've got this</text><circle cx="225" cy="233" r="9" fill="#E76F51"/></svg>`,
   shots:[{src:'nolimit-timer.jpg',cap:'The first screen: the ring owns it, one primary button, charts demoted to a preview.'},
          {src:'nolimit-trend.jpg',cap:'Tracking inverted — "▾2.8 lbs this month" is the headline, the absolute weight the subtitle.'}],
+  wires:[
+    {k:'phone',t:'01 Home',cap:'The ring takes 60% of the weight, one primary button, and the charts step back to a preview card underneath.',p:['nav:2','ring','btn','lines:2','rows:2','tabs:3']},
+    {k:'phone',t:'02 Tracking',cap:'Hierarchy inverted: the delta is the headline, the absolute weight the subtitle, the chart underneath both.',p:['nav:2','chips:4','head','sub','img','rows:2','tabs:3']},
+    {k:'phone',t:'03 Plan',cap:'Flat per-field rows with their own Change control, instead of one nested form nobody finishes.',p:['nav:2','head','rows:5','tabs:3']}
+  ],
   chapters:[
   `<p>A walkthrough of mainstream fasting apps surfaced three shared problems: timing and body data live apart; community features are bolted on with no link to the fasting behavior; and changing a plan is buried under layers of settings while real schedules change constantly.</p>
    <p>Semi-structured interviews with current and former 16:8 practitioners converged on three needs: <b>"the thing I do most is start and stop the timer"</b> (the core action must be one tap away), <b>"I need to see change or I can't keep going"</b> (trends must live next to the fasting record), and <b>"fasting alone is lonely"</b> (meal posts and likes are real motivation).</p>
@@ -109,6 +119,11 @@ const CASES=[
   motif:`<svg viewBox="0 0 640 360" fill="none" role="img" aria-label="Camera viewfinder over a grocery shelf illustration"><line x1="170" y1="240" x2="470" y2="240" stroke="var(--ink)" stroke-width="3"/><circle cx="240" cy="215" r="21" stroke="var(--shelfie)" stroke-width="3"/><rect x="295" y="188" width="40" height="52" rx="6" stroke="var(--shelfie)" stroke-width="3"/><path d="M382 240 v-36 a17 17 0 0 1 34 0 v36" stroke="var(--shelfie)" stroke-width="3"/><path d="M188 118 h-24 v24 M452 118 h24 v24 M188 302 h-24 v-24 M452 302 h24 v-24" stroke="var(--shelfie)" stroke-width="4" stroke-linecap="round"/><text x="320" y="104" text-anchor="middle" font-family="Source Serif 4" font-style="italic" font-size="17" fill="var(--ink-2)">3 items · est. 5 days</text></svg>`,
   shots:[{src:'shelfie-pantry.jpg',cap:'The pantry, grouped by urgency: Use soon is the first thing you see.'},
          {src:'shelfie-cook.jpg',cap:'The serving selector speaks in meals — tonight, plus tomorrow\u2019s lunch, plus the day after.'}],
+  wires:[
+    {k:'phone',t:'01 Pantry',cap:'Grouped by urgency, not by taxonomy — "use soon" is the first thing on screen. The camera is the only entrance.',p:['nav:2','note:Use soon','rows:6','fab','tabs:3']},
+    {k:'phone',t:'02 Confirm',cap:'Every AI output gets a human slot: recognition returns a checklist you correct before anything is saved.',p:['nav:2','img','note:Check what it found','rows:4','btn']},
+    {k:'phone',t:'03 Cook',cap:'Servings stated as meals — tonight, plus tomorrow\u2019s lunch — and the cookbook sorted by what is missing.',p:['nav:2','head','chips:3','cards:6','tabs:3']}
+  ],
   chapters:[
   `<p>Decomposing "cook to save money" into a behavior chain — buy → store → remember → decide → cook → finish — showed the breakage clusters in the middle: the fridge is a black box, "what's for dinner" arrives at the day's lowest-energy moment, and recipes saved from YouTube live in a parallel world from the actual inventory.</p>
    <p>A competitive walkthrough found one shared cause of death in inventory apps: <b>manual entry</b>. Typing groceries item by item costs more than it returns; most users quit within a week.</p>
@@ -159,6 +174,11 @@ const CASES=[
   motif:`<svg viewBox="0 0 640 360" fill="none" role="img" aria-label="Two skill tags exchanging, one each way"><rect x="96" y="118" width="182" height="70" rx="12" stroke="var(--mutuo)" stroke-width="3"/><text x="187" y="163" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="25" fill="var(--mutuo)">TEACH</text><rect x="362" y="172" width="182" height="70" rx="12" stroke="var(--mutuo)" stroke-width="3"/><text x="453" y="217" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="25" fill="var(--mutuo)">LEARN</text><path d="M288 148 H 352" stroke="var(--ink-2)" stroke-width="2.5" stroke-linecap="round"/><path d="M342 140 L 352 148 L 342 156" stroke="var(--ink-2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M352 212 H 288" stroke="var(--ink-2)" stroke-width="2.5" stroke-linecap="round"/><path d="M298 204 L 288 212 L 298 220" stroke="var(--ink-2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><text x="320" y="296" text-anchor="middle" font-family="Source Serif 4" font-style="italic" font-size="17" fill="var(--ink-2)">one each way</text></svg>`,
   shots:[{src:'mutuo-directory.jpg',cap:'Browse: a shelf of everyone you can trade with, then one per category, each tile leading with the skill it teaches.'},
          {src:'mutuo-matches.jpg',cap:'Matches, mutual ones first — the state that used to exist and tell nobody.'}],
+  wires:[
+    {k:'page',t:'01 Browse',cap:'One shelf per category, and above them all a shelf of everyone a trade is possible with. Order comes from the ranking, not from a constant.',p:['nav:4','note:You can trade with these','shelf:5','head','shelf:5']},
+    {k:'page',t:'02 Poster',cap:'The tile leads with the offer: artwork drawn from the name, the swap label burned into the corner, distance under it.',p:['note:Straight swap','img','head','sub','lines:2']},
+    {k:'page',t:'03 States',cap:'The screens nobody had drawn — empty, no results, working, rejected, expired, too many attempts, not found.',p:['nav:3','head','note:Nobody here yet','lines:2','btn']}
+  ],
   chapters:[
   `<p>No user study here — this was an audit of a shipped thing. I read all 35 source files end to end, then wrote tests that pinned down what the app <i>actually did</i> rather than what it looked like it did. Where behaviour and intent disagreed, the test recorded the behaviour first, and the fix came second.</p>
    <div class="statgrid">
@@ -247,6 +267,11 @@ const CASES=[
   motif:`<svg viewBox="0 0 640 360" fill="none" role="img" aria-label="A shelf of book spines beside a ten-tick fore-edge rating gauge"><path d="M84 232 H 336" stroke="var(--ink-2)" stroke-width="3" stroke-linecap="round"/><rect x="92" y="138" width="22" height="94" stroke="var(--ink-2)" stroke-width="2.5"/><rect x="119" y="116" width="26" height="116" stroke="var(--ink-2)" stroke-width="2.5"/><rect x="150" y="148" width="20" height="84" stroke="var(--ink-2)" stroke-width="2.5"/><rect x="175" y="84" width="28" height="130" fill="var(--foredge)"/><rect x="208" y="130" width="22" height="102" stroke="var(--ink-2)" stroke-width="2.5"/><rect x="235" y="110" width="25" height="122" stroke="var(--ink-2)" stroke-width="2.5"/><rect x="265" y="142" width="20" height="90" stroke="var(--ink-2)" stroke-width="2.5"/><rect x="290" y="122" width="26" height="110" stroke="var(--ink-2)" stroke-width="2.5"/><text x="404" y="132" font-family="Space Grotesk" font-weight="700" font-size="24" fill="var(--foredge)">7 / 10</text><rect x="404" y="150" width="4" height="54" fill="var(--foredge)"/><rect x="418" y="150" width="4" height="54" fill="var(--foredge)"/><rect x="432" y="150" width="4" height="54" fill="var(--foredge)"/><rect x="446" y="150" width="4" height="54" fill="var(--foredge)"/><rect x="460" y="150" width="4" height="54" fill="var(--foredge)"/><rect x="474" y="150" width="4" height="54" fill="var(--foredge)"/><rect x="488" y="150" width="4" height="54" fill="var(--foredge)"/><rect x="502" y="150" width="4" height="54" fill="var(--line-2)"/><rect x="516" y="150" width="4" height="54" fill="var(--line-2)"/><rect x="530" y="150" width="4" height="54" fill="var(--line-2)"/><text x="320" y="300" text-anchor="middle" font-family="Source Serif 4" font-style="italic" font-size="17" fill="var(--ink-2)">ten ticks, not five stars</text></svg>`,
   shots:[{src:'foredge-shelf.jpg',cap:'The shelf: ten ticks rather than five stars, sortable by rating, recency or title.'},
          {src:'foredge-detail.jpg',cap:'One book — Open Library supplies the facts, the reader supplies the verdict.'}],
+  wires:[
+    {k:'page',t:'01 Shelf',cap:'Ten ticks rather than five stars, on every row, sortable by rating, recency or title.',p:['nav:3','head','chips:3','ticks:10','rows:5']},
+    {k:'page',t:'02 Book',cap:'Open Library supplies the facts down one column; the rating, the finish date and the notes are the reader\u2019s and sit in the other.',p:['nav:3','head','ticks:10','lines:3','btn']},
+    {k:'page',t:'03 Add',cap:'Search first, type second: pick the title and the author, cover, year and ISBN fill themselves in.',p:['nav:3','head','sub','rows:3','note:Every failure has a drawn state','btn']}
+  ],
   chapters:[
   `<p>The research here was not about people, it was about an API — because what the machine can fill in decides what the reader has to type, and a reading log dies at exactly the point where logging a book means copying a title, an author, a year and a cover URL by hand. So I read Open Library’s search and cover endpoints before drawing anything.</p>
    <div class="statgrid">
@@ -303,6 +328,42 @@ const CASES=[
 
 /* ================= RENDER ================= */
 const $=id=>document.getElementById(id);
+/* ---------- wireframes ----------
+   A tiny vocabulary of blocks so chapter 04 can show structure instead of only
+   describing it. Parts are tokens; "cards:6" repeats, "note:Text" annotates. */
+const WIRE={
+  nav:  n=>`<div class="w-nav">${'<i></i>'.repeat(n||3)}</div>`,
+  head: ()=>`<div class="w-head"></div>`,
+  sub:  ()=>`<div class="w-sub"></div>`,
+  lines:n=>`<div class="w-lines">${'<i></i>'.repeat(n||3)}</div>`,
+  btn:  ()=>`<div class="w-btn"></div>`,
+  chips:n=>`<div class="w-chips">${'<i></i>'.repeat(n||4)}</div>`,
+  cards:n=>`<div class="w-cards">${'<b></b>'.repeat(n||6)}</div>`,
+  rows: n=>`<div class="w-rows">${'<b></b>'.repeat(n||4)}</div>`,
+  shelf:n=>`<div class="w-shelf">${'<b></b>'.repeat(n||5)}</div>`,
+  img:  ()=>`<div class="w-img"></div>`,
+  ring: ()=>`<div class="w-ring"></div>`,
+  map:  ()=>`<div class="w-map"></div>`,
+  ticks:n=>`<div class="w-ticks">${'<i></i>'.repeat(n||10)}</div>`,
+  tabs: n=>`<div class="w-tabs">${'<i></i>'.repeat(n||3)}</div>`,
+  fab:  ()=>`<div class="w-fab"></div>`,
+  note: t=>`<div class="w-note">${t}</div>`
+};
+function wirePart(token){
+  const at=token.indexOf(':');
+  const name=at<0?token:token.slice(0,at);
+  const arg=at<0?null:token.slice(at+1);
+  const fn=WIRE[name];
+  if(!fn)return '';
+  return fn(arg===null?null:(/^\d+$/.test(arg)?Number(arg):arg));
+}
+function renderWires(list){
+  return `<div class="wires">${list.map(w=>`
+    <figure>
+      <div class="wf wf--${w.k}">${w.p.map(wirePart).join('')}</div>
+      <figcaption><b>${w.t}</b> — ${w.cap}</figcaption>
+    </figure>`).join('')}</div>`;
+}
 function renderWorkspace(){
   $('gridEl').innerHTML=CASES.map((c,i)=>`
     <button class="workcard" style="--acc:${c.acc}" onclick="openCase(${i})">
@@ -362,6 +423,7 @@ function openCase(i){
         ${c.chapters.map((body,n)=>`
           <section class="chap" id="chap-${n}">
             <h3><b>0${n+1}</b> ${CHAPS[n]}</h3>
+            ${n===3&&c.wires?renderWires(c.wires):''}
             ${body}
           </section>`).join('')}
         <div class="v-nav">

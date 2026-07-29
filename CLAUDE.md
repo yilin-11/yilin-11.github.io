@@ -39,6 +39,7 @@ Each case object:
 - `role` — optional, overrides the default `Solo designer` in the viewer meta row
 - `build` — optional. Its presence is what marks a case as AI-built: it adds a `Built with AI` chip to the card footer and a third `Built with` column to the viewer meta row, whose value is this string.
 - `shots[]` — optional `{src, cap}` pairs rendered as a figure grid between the CTA and the chapter nav. `src` is a filename inside `assets/shots/` (JPEG, ≤1100px wide, quality ~82); each image links to `proto`. Captures live in that directory only — the prototypes and the two apps are screenshotted, not mocked up.
+- `wires[]` — optional low-fidelity wireframes rendered at the top of chapter 04. Each is `{k:'page'|'phone', t:'01 Home', cap:'…', p:[tokens]}`; `renderWires()` maps each token through `WIRE`, where `name:5` repeats a part and `note:Some text` draws an accent-ruled callout. They are markup and CSS, never images, so they inherit the theme and the case accent — extend the `WIRE` map and the `.w-*` rules rather than shipping a picture.
 - `hook`, `lede[]` — one-liner and intro paragraphs
 - `motif` — inline SVG hero/thumbnail
 - `chapters[]` — five HTML strings, positionally matched to `CHAPS = ['Research','Pain points','IA','Wireframes','Validation']`. Adding a chapter means extending both `CHAPS` and every case's `chapters`.
