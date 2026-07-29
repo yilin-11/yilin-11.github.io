@@ -452,14 +452,15 @@ const CASES=[
 /* ---------- 04 · MUTUO ---------- */
 {
   key:'mutuo', acc:'var(--mutuo)', name:'Mu<span class="thin">tuo</span>', plain:'Mutuo',
-  type:'Full-stack repair · failure-state design', stack:'Express · Sequelize · JS',
+  type:'Full-stack repair · failure states · ranking', stack:'Express · Sequelize · Passport',
   role:'Solo — design and code', build:'Claude Code',
   proto:'https://mutuo-demo.vercel.app/', protoLabel:'Open the live app ↗',
-  protoNote:'A real deployment, seeded with twelve members — the login page offers a demo account and fills the form in for you. First request after an idle spell waits on a cold start. <a href="https://github.com/yilin-11/mutuo" target="_blank" rel="noopener">Source on GitHub ↗</a> — every defect below has a test that fails without its fix; clone it and run <code>npm test</code>.',
+  protoNote:'A real deployment, seeded with fifty members in twenty-five reciprocal pairs — the login page offers a demo account and fills the form in for you. First request after an idle spell waits on a cold start. <a href="https://github.com/yilin-11/mutuo" target="_blank" rel="noopener">Source on GitHub ↗</a> — every defect below has a test that fails without its fix; clone it and run <code>npm test</code>.',
   hook:'Teach what you know, learn what you don’t.',
   lede:['Mutuo is a skill-swapping directory: each member lists one skill they can teach and one they want to learn, then finds someone nearby to trade with. I built it early, while I was still learning the stack.',
         'Coming back to it, the interesting failures were not the ones that crashed. They were the ones that looked like nothing had happened — a save button that quietly discarded the form, a page that rendered blank with no error, a directory that looked broken because it was empty. This case is that second pass: reading my own code for the states I never designed.',
-        'I did that pass with an AI coding agent, which is why the case is written around a test suite rather than a diff. Code arrives faster than anyone can review it by eye, so the working rule was that nothing counted as a defect until a failing test reproduced it, and nothing counted as fixed until that test passed. Chapter 05 has the one place that rule paid for itself — the obvious fix was wrong, and the test is what said so.'],
+        'I did that pass with an AI coding agent, which is why the case is written around a test suite rather than a diff. Code arrives faster than anyone can review it by eye, so the working rule was that nothing counted as a defect until a failing test reproduced it, and nothing counted as fixed until that test passed. Chapter 05 has the two places that rule paid for itself — the obvious fix was wrong, and the test is what said so.',
+        'A third pass then changed the product rather than defending it, because holding up is not the same as being worth using. The directory was correct and still made you compare two skill pills on every card to work out whether a trade was possible at all — in an app whose entire premise is trading. That pass is the ordering, the distance, and the matching in chapters 03 and 04.'],
   motif:`<svg viewBox="0 0 640 360" fill="none" role="img" aria-label="Two skill tags exchanging, one each way"><rect x="96" y="118" width="182" height="70" rx="12" stroke="var(--mutuo)" stroke-width="3"/><text x="187" y="163" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="25" fill="var(--mutuo)">TEACH</text><rect x="362" y="172" width="182" height="70" rx="12" stroke="var(--mutuo)" stroke-width="3"/><text x="453" y="217" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="25" fill="var(--mutuo)">LEARN</text><path d="M288 148 H 352" stroke="var(--ink-2)" stroke-width="2.5" stroke-linecap="round"/><path d="M342 140 L 352 148 L 342 156" stroke="var(--ink-2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M352 212 H 288" stroke="var(--ink-2)" stroke-width="2.5" stroke-linecap="round"/><path d="M298 204 L 288 212 L 298 220" stroke="var(--ink-2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><text x="320" y="296" text-anchor="middle" font-family="Source Serif 4" font-style="italic" font-size="17" fill="var(--ink-2)">one each way</text></svg>`,
   chapters:[
   `<p>No user study here — this was an audit of a shipped thing. I read all 35 source files end to end, then wrote tests that pinned down what the app <i>actually did</i> rather than what it looked like it did. Where behaviour and intent disagreed, the test recorded the behaviour first, and the fix came second.</p>
@@ -467,7 +468,7 @@ const CASES=[
      <div><b>1,651</b><span>lines of application code, read line by line</span></div>
      <div><b>13</b><span>defects found and reproduced</span></div>
      <div><b>10</b><span>of those gave the person using the app no signal at all</span></div>
-     <div><b>37</b><span>tests written to hold the repairs in place</span></div>
+     <div><b>65</b><span>tests in the suite today, each named for what it holds down</span></div>
    </div>
    <p>That third number is the finding. Only two of the thirteen announced themselves as a crash, and exactly one produced an error message — which pointed at the wrong form. Everything else failed the way software fails a person who has no console open: <b>the screen simply did not change</b>. A designer's instinct is to ask what a screen shows when things go wrong; this codebase mostly answered "nothing."</p>`,
   `<p>Restated as the sentences a member would actually say:</p>
@@ -478,31 +479,55 @@ const CASES=[
      <li><b>"There's nobody here."</b> A new install opened onto an empty directory and an empty random match. Indistinguishable from broken.</li>
      <li><b>"I typed my password wrong and it just sat there."</b> The failure was written to the developer console. The person looking at the form got no response of any kind.</li>
      <li><b>"It logged me out again."</b> Sessions lived in memory, so every restart silently signed everybody out mid-task.</li>
+   </ul>
+   <p>One more surfaced later, and it was not a defect at all — every line of it worked exactly as written:</p>
+   <ul>
+     <li><b>"I pressed Match and nothing came of it."</b> Matching wrote a row and told nobody. The other member was never notified, so the only way to learn they had pressed it back was to reopen a page you had no reason to reopen. A feature can pass every test it has and still be a dead end.</li>
    </ul>`,
   `<p>The structural question was not where pages sat in a menu — it was <b>which side of the login each thing lived on</b>, and the old answer was inconsistent. Pages were guarded; the data behind them was not. The directory page required a session, while the request that filled it with every member's name, city and email address answered anyone at all.</p>
-   <div class="iablock"><b>Public</b>      landing · log in · sign up
-<b>Members</b>     directory · profile form · random match · member detail
-<b>Data</b>        every member-facing request now sits on the members side,
-            including the one that resolves a postal code to a map pin</div>
-   <p>A second boundary was physical rather than logical. Page files were sitting inside the folder the server hands out verbatim, so the member area could be fetched by its filename without ever passing the login check — the guard was real, and the pages were reachable around it. Moving them out was the fix; the lesson was that <b>an access rule is only as good as the path that cannot skip it</b>.</p>`,
+   <div class="iablock"><b>Public</b>
+    landing · log in · sign up
+
+<b>Members</b> — three pages, in the order you need them
+    <b>People nearby</b> · search · Within control · random match · member detail
+    <b>Matches</b> · mutual first · unseen count on the nav item
+    <b>My profile</b> · the form, filled in once and edited rarely
+
+<b>Data</b>
+    every member-facing request now sits on the members side,
+    including the one that puts a postal code on a map</div>
+   <p>A second boundary was physical rather than logical. Page files were sitting inside the folder the server hands out verbatim, so the member area could be fetched by its filename without ever passing the login check — the guard was real, and the pages were reachable around it. Moving them out was the fix; the lesson was that <b>an access rule is only as good as the path that cannot skip it</b>. A third boundary was leaking outward: two mapping keys were hardcoded into a script the browser downloads. Geocoding moved to the server behind a cache and a queue, and the map now draws OpenStreetMap tiles, which need no token at all.</p>
+   <p>How much location the map is allowed to claim is a design decision, not a technical one. A member gives a postal code, not an address, so their page draws a <b>circle rather than a pin</b> — a precise marker would assert precision the data does not have, and would quietly turn a directory of strangers into a list of doorsteps.</p>
+   <p>The third pass settled the order. Nearby comes first because it is the reason to open the app, and your own profile comes last because you write it once. The random match stopped being a destination and became a button on the nearby page — <b>deciding who to ask is something you do while looking at the list</b>, not on a screen of its own. And anything that depends on <i>who is asking</i> — how far away someone is, whether the two skill sets line up, whether you have matched, whether they matched back — is computed per request rather than stored, because none of it is a property of the member being looked at.</p>`,
   `<p>Then the part that was actually missing: the states nobody had drawn. Each screen had one design — the happy one. These are the rest, and every one of them is now a deliberate choice rather than an accident.</p>
    <ul>
-     <li><b>Empty.</b> A fresh directory now ships with ten members forming five reciprocal pairs, so the first screen demonstrates the idea instead of implying failure. "No members yet — be the first" replaces blankness when it really is empty.</li>
-     <li><b>No results.</b> Searching now says which term found nothing, quoted back, rather than emptying the page.</li>
-     <li><b>Working.</b> The random match disables its own button and says "Finding someone…" instead of appearing inert.</li>
+     <li><b>Empty.</b> A fresh directory now ships with fifty members forming twenty-five reciprocal pairs, so the first screen demonstrates the idea instead of implying failure. When it really is empty it says so plainly — "Nobody else has a profile yet — you are the first one here."</li>
+     <li><b>No results.</b> Three different nothings now read differently: a search term that matched nobody is quoted back, a distance bound that excluded everybody says to widen it and points at the people folded in below, and a genuinely empty app admits it. The old answer to all three was the same blank page.</li>
+     <li><b>Working.</b> The profile form's submit button disables itself and says "Saving…" rather than quietly accepting a second press, and each member page names what it is fetching — "Loading members…" — instead of showing an empty list that might be the answer.</li>
      <li><b>Rejected.</b> Form errors name the field and say what is wrong, in the voice of the form being filled in — never the neighbouring one.</li>
      <li><b>Expired.</b> A session that ran out returns the member to the login page, rather than printing "you need to be logged in" onto a directory that has nothing in it.</li>
-     <li><b>Too many attempts.</b> Repeated failed logins are refused with a wait time attached, so the limit is legible instead of feeling like a fault.</li>
+     <li><b>Too many attempts.</b> Repeated failed logins are refused with copy that says to wait and a <code>Retry-After</code> saying how long, so the limit is legible instead of feeling like a fault. Getting the password right never spends the budget.</li>
      <li><b>Not found.</b> A member id that does not exist says so, distinct from a member who exists but has filled in nothing.</li>
+   </ul>
+   <p>The third pass went after the happy state itself, which was working and still not much use. Six decisions, in the order they mattered:</p>
+   <ul>
+     <li><b>A possible swap outranks a short walk.</b> Every card now says outright what it is — <i>Straight swap</i>, <i>Teaches what you want</i>, <i>Wants what you teach</i> — and the ordering leads with those, distance deciding within each group. Complementarity is the harder constraint: a neighbour who teaches nothing you want is not a trade at all.</li>
+     <li><b>Nearby means nearby.</b> A postal code is resolved to coordinates once, when the profile is saved, so distance is arithmetic at read time rather than fifty lookups against a service that permits about one a second. A <b>Within</b> control bounds the list and everything past it folds into <i>Farther away</i> rather than vanishing — a page called "people nearby" that leads with someone 16,000 km away is arguing with its own title. A member who cannot be placed sorts to the end instead of disappearing.</li>
+     <li><b>The demo members cluster several to a city</b>, because one per city put the nearest person three hundred kilometres away and left the Within control unable to return anything at all. A filter that can only ever come back empty is worse than no filter — the seed data is part of the design.</li>
+     <li><b>The random match deals from the people worth dealing.</b> Not uniformly — from those a swap is possible with, inside the distance currently set, widening only when that group runs out. A uniform draw could hand you someone on another continent who teaches nothing you asked for, which is a coin flipped rather than a decision made for you. Each press also skips whoever it just dealt, because a button labelled "Someone else" that returns the same member is lying.</li>
+     <li><b>Matching tells someone.</b> Matching stays one-directional and needs no acceptance, but the count of new mutual matches now sits on the Matches nav item and clears when the page is opened; a mutual match turns the other member's address into a link. Clearing is a POST rather than a side effect of the GET, because a browser may prefetch a GET and <b>a badge that clears itself is a badge nobody can trust</b>.</li>
+     <li><b>Dark is the default, light is opt-in.</b> The dark values sit unqualified on <code>:root</code>, so a first visit — and a visit with JavaScript off — gets dark rather than a flash of something else. The stored choice is applied from the head before the body paints, so nobody sees the theme they did not pick. There is no CSS framework underneath it: Bootstrap was removed rather than overridden, because each stylesheet was spending most of its length arguing with it. What replaced it is one token set and one definition each for button, input, nav and card — no web font, no avatar service, and the only third-party code left is jQuery plus Leaflet on the single page that draws a map.</li>
    </ul>`,
-  `<p>Validated by execution, not by users — and that distinction matters enough to state plainly. This was a correctness pass, so the instrument is a test suite that drives the real application end to end: 37 tests over 514 lines, each named for the defect it holds down.</p>
+  `<p>Validated by execution, not by users — and that distinction matters enough to state plainly. This was a correctness pass, so the instrument is a test suite that drives the real application end to end: 65 tests over 1,208 lines, each named for the defect or the rule it holds down. CI runs them on Node 18, 20 and 22.</p>
    <div class="tasklist">
      <div class="trow"><div class="tn">T1</div><div class="tb"><div class="task">Fetch the directory with no session</div><div class="crit">Refused. Before the fix it returned every member's email address</div></div></div>
      <div class="trow"><div class="tn">T2</div><div class="tb"><div class="task">Request a member page by its filename</div><div class="crit">Not found. Before the fix it served the member area around the guard</div></div></div>
      <div class="trow"><div class="tn">T3</div><div class="tb"><div class="task">Submit the profile form twice at once</div><div class="crit">Both save, one profile exists, no error about an unrelated form</div></div></div>
      <div class="trow"><div class="tn">T4</div><div class="tb"><div class="task">Load a member page with a trailing slash</div><div class="crit">Assets referenced absolutely, so the page is never blank</div></div></div>
+     <div class="trow"><div class="tn">T5</div><div class="tb"><div class="task">Double-tap Match, then match the same member again</div><div class="crit">One match, no stray error — asking for a state you are already in is a success</div></div></div>
+     <div class="trow"><div class="tn">T6</div><div class="tb"><div class="task">Have a member match you back</div><div class="crit">Mutual on both sides, counted once on the nav, and cleared only when the page is opened</div></div></div>
    </div>
-   <p>One test earned its keep by rejecting my first fix. The textbook repair for the double-submit collision is the framework's own <code>findOrCreate</code>; the test came back red, because that call opens a transaction and this database will not run two at once. The version that shipped lets the database's uniqueness rule settle the race instead, and losing it simply means reading again. <b>I would have shipped the wrong fix without a test to argue with.</b></p>
+   <p>Two tests earned their keep by rejecting my first fix. The textbook repair for the double-submit collision is the framework's own <code>findOrCreate</code>; the test came back red, because that call opens a transaction and this database will not run two at once. The version that shipped lets the database's uniqueness rule settle the race instead, and losing it simply means reading again. The rate limiter's first draft kept its counters in one module-level map, so the login limiter and the signup limiter shared a single budget per address — a few failed logins quietly spent someone's ability to sign up. Each limiter owns its store now, and a test pins that down. <b>I would have shipped both wrong fixes without a test to argue with.</b></p>
    <p class="proto-note" style="margin-top:18px">The honest gap: no usability study was run. Every claim above is about behaviour I could reproduce and now prevent — not about whether the repaired flows test well with people. That is the next pass, and the states in chapter 04 are what I would put in front of them first.</p>`]
 },
 /* ---------- 05 · FOREDGE ---------- */
