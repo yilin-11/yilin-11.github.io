@@ -34,6 +34,7 @@ Each case object:
 - `protoLabel` — optional, overrides the default CTA text `Open the live prototype ↗`
 - `role` — optional, overrides the default `Solo designer` in the viewer meta row
 - `build` — optional. Its presence is what marks a case as AI-built: it adds a `Built with AI` chip to the card footer and a third `Built with` column to the viewer meta row, whose value is this string.
+- `shots[]` — optional `{src, cap}` pairs rendered as a figure grid between the CTA and the chapter nav. `src` is a filename inside `assets/shots/` (JPEG, ≤1100px wide, quality ~82); each image links to `proto`. Captures live in that directory only — the prototypes and the two apps are screenshotted, not mocked up.
 - `hook`, `lede[]` — one-liner and intro paragraphs
 - `motif` — inline SVG hero/thumbnail
 - `chapters[]` — five HTML strings, positionally matched to `CHAPS = ['Research','Pain points','IA','Wireframes','Validation']`. Adding a chapter means extending both `CHAPS` and every case's `chapters`.
