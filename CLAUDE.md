@@ -16,14 +16,18 @@ python3 -m http.server 8000    # then open http://localhost:8000
 
 | Path | Status | What it is |
 | --- | --- | --- |
-| `index.html` | **active** | The entire portfolio — single self-contained file (~670 lines, inline `<style>` + `<script>`) |
+| `index.html` | **active** | The portfolio's markup — head, sidebar, workspace shell and the empty viewer dialog (~130 lines) |
+| `styles.css` | **active** | Every style on the site (~215 lines) |
+| `app.js` | **active** | The `CASES` data and everything that renders it (~420 lines) |
 | `prototypes/*.html` | **active** | Three self-contained interactive prototypes linked from the first three case studies |
 
 The old CUNY coursework (`mmp210/`, `mmp240/`, `citymail/`) used to sit at the repo root. It now lives only on the `archive/coursework` branch and is no longer served, since Pages publishes `main`. Treat it as a frozen artifact: don't restore it to `main`, and don't "modernize" it if you are asked to work on that branch — it contains intentional oddities (e.g. the misspelled `mmp240/craigslist_redesign/stlyes.css`, p5.js 0.5.6 from CDN in `mmp210/memes` and `mmp210/self-portrait` vs. a vendored `p5.js` in `mmp210/midterm-project`).
 
-## `index.html` architecture
+## Architecture
 
-Content and presentation are separated inside the one file: **all case-study content lives in the `CASES` array** (starts ~line 297) and the DOM is generated from it. To add or edit a case, edit that array — never the generated markup.
+Three files, no build step: `index.html` links `styles.css` in the head and `app.js` at the end of the body. The one exception is a short inline script in `<head>` that resolves the theme into `data-theme` before the body paints — it stays inline on purpose, since an external file would paint first and flash.
+
+**All case-study content lives in the `CASES` array** at the top of `app.js`, and the DOM is generated from it. To add or edit a case, edit that array — never the generated markup.
 
 Each case object:
 
@@ -39,7 +43,7 @@ Each case object:
 - `motif` — inline SVG hero/thumbnail
 - `chapters[]` — five HTML strings, positionally matched to `CHAPS = ['Research','Pain points','IA','Wireframes','Validation']`. Adding a chapter means extending both `CHAPS` and every case's `chapters`.
 
-Rendering flow:
+Rendering flow (`app.js`):
 
 - `renderWorkspace()` builds the grid and list views from the same `CASES` data; `setView('grid'|'list')` just flips `[data-view]` on `#workspace` and CSS shows/hides the right container.
 - `openCase(i)` fills the full-screen `#viewer` dialog; `stepCase(±1)` wraps around the array; Esc / ← / → are wired globally but only while the viewer is open.

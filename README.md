@@ -27,7 +27,10 @@ The first three are single self-contained prototype files, each with its own des
 ## Repository layout
 
 ```
-index.html          the portfolio — case study content, styles, and JS in one file
+index.html          the page: head, sidebar, workspace shell, empty viewer dialog
+styles.css          every style on the site
+app.js              the case-study data and everything that renders it
+assets/shots/       screenshots shown inside each case study
 prototypes/         the three interactive prototypes (Mutuo and Foredge live in their own repos)
 og.png              social share card
 favicon.svg         also apple-touch-icon.png
