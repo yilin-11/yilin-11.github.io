@@ -104,11 +104,19 @@ h1 em{font-style:normal;text-decoration:underline;text-decoration-thickness:.06e
 .campus-in{max-width:1180px;margin:0 auto;padding:56px 32px 76px}
 .campus-lede{font-size:17px;color:var(--ink-2);max-width:62ch;margin:-8px 0 6px;line-height:1.5}
 .campus-lede span{display:block;font-size:12.5px;color:var(--ink-3);margin-top:8px}
-.campus .chips{margin:22px 0 4px}
 .campus .chip{background:#fff}
 /* newspaper columns, not a grid: a reader scanning one column straight down
    should get the list in order */
-.vlist{columns:2;column-gap:46px;margin-top:14px}
+.campus-controls{display:flex;gap:10px 12px;align-items:center;flex-wrap:wrap;margin-top:24px}
+.campus-search{flex:0 1 300px;min-width:220px}
+.campus-search input{background:#fff}
+.campus .chips{margin:0}
+.vcount{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin-top:20px;min-height:14px}
+/* forty rows is a wall. Nothing is listed until the reader narrows it. */
+.vhint{border:1px dashed var(--line-2);background:#fff;padding:38px 24px;text-align:center;color:var(--ink-2);font-size:14.5px;margin-top:10px}
+.vhint b{display:block;font-size:19px;font-weight:700;letter-spacing:-.02em;color:var(--ink);margin-bottom:6px}
+.vhint[hidden]{display:none}
+.vlist{columns:2;column-gap:46px;margin-top:8px}
 @media (max-width:900px){.vlist{columns:1}}
 .vrow{break-inside:avoid;display:grid;grid-template-columns:76px 1fr;column-gap:14px;padding:15px 6px;border-bottom:1px solid var(--line-2);text-decoration:none;color:var(--ink);align-items:baseline;transition:background .12s}
 .vrow:hover{background:#fff}
@@ -153,6 +161,7 @@ select:focus{border-color:var(--ink);outline:none}
 
 /* listing */
 .main{max-width:1180px;margin:0 auto;padding:56px 32px 90px}
+.main-lede{font-size:17px;color:var(--ink-2);max-width:62ch;margin:-10px 0 26px;line-height:1.5}
 .section-h{display:flex;align-items:baseline;gap:14px;margin-bottom:26px;border-top:2px solid var(--ink);padding-top:16px}
 .section-h h2{font-weight:700;font-size:clamp(26px,3.4vw,38px);letter-spacing:-.032em;line-height:1.05}
 /* one hairline between cells: the grid draws top and left, each card its own
@@ -264,7 +273,7 @@ footer b{color:#fff;font-weight:700}
 <div class="spectrum" aria-hidden="true"><span style="background:var(--free)"></span><span style="background:var(--disc)"></span><span style="background:var(--annual)"></span><span style="background:var(--prog)"></span></div>
 <div class="topbar">
   <span>The City University of New York</span>
-  <nav aria-label="utility"><a href="#partners">Partners</a> &nbsp;·&nbsp; <a href="#campus">On campus</a> &nbsp;·&nbsp; <a href="#" onclick="return false">Cultural Corps</a> &nbsp;·&nbsp; <a href="#" onclick="return false">Contact</a></nav>
+  <nav aria-label="utility"><a href="#partners">Where to go</a> &nbsp;·&nbsp; <a href="#campus">On campus</a> &nbsp;·&nbsp; <a href="#" onclick="return false">Cultural Corps</a> &nbsp;·&nbsp; <a href="#" onclick="return false">Contact</a></nav>
 </div>
 <header class="brand">
   <div class="mark" aria-hidden="true">CA</div>
@@ -346,7 +355,8 @@ footer b{color:#fff;font-weight:700}
 </div>
 
 <main class="main">
-  <div class="section-h"><h2>Partner institutions</h2></div>
+  <div class="section-h"><h2>Where your ID gets you in</h2></div>
+  <p class="main-lede">Twenty museums, theatres and fairs across the city. The colour on each card is the kind of benefit; the line under it is what to say at the desk.</p>
 
   <div class="map-wrap" id="mapWrap">
     <div class="map-flex">
@@ -377,7 +387,7 @@ footer b{color:#fff;font-weight:700}
   </div>
 
   <div class="grid" id="grid"></div>
-  <div class="empty" id="empty" style="display:none"><b>No matches</b>Try clearing a filter or two — 20 partners are waiting.</div>
+  <div class="empty" id="empty" style="display:none"><b>No matches</b>Try clearing a filter or two — twenty places are waiting.</div>
 </main>
 
 <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="mTitle" onclick="if(event.target===this)closeModal()">
@@ -405,8 +415,16 @@ footer b{color:#fff;font-weight:700}
   <div class="campus-in">
     <div class="section-h"><h2>Arts on your campus</h2></div>
     <p class="campus-lede">Forty galleries, theatres, museums and archives that CUNY runs on its own campuses — the ones you can walk to between classes, no partner agreement involved.<span>cuny.edu lists these as “CUNY Cultural Centers”.</span></p>
-    <div class="chips" role="group" aria-label="Filter campus venues by borough" id="boroChips"></div>
+    <div class="campus-controls">
+      <div class="search campus-search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="cq" type="search" placeholder="Search a venue, a college, a borough" aria-label="Search campus venues" oninput="renderCenters()">
+      </div>
+      <div class="chips" role="group" aria-label="Filter campus venues by borough" id="boroChips"></div>
+    </div>
+    <p class="vcount" id="vcount" aria-live="polite"></p>
     <div class="vlist" id="vlist"></div>
+    <div class="vhint" id="vhint"></div>
   </div>
 </section>
 
@@ -476,7 +494,7 @@ function setView(v){view=v;
 const DOTC={free:"#00D97E",disc:"#FFB300",annual:"#FF5C8A",prog:"#38BDF8"};
 function render(){
   const list=filtered();
-  document.getElementById('count').textContent=list.length+" of "+D.length+" partners";
+  document.getElementById('count').textContent=list.length+" of "+D.length+" places";
   const grid=document.getElementById('grid');
   document.getElementById('empty').style.display=(list.length===0&&view==='list')?'block':'none';
   grid.innerHTML=list.map((d,i)=>{
@@ -571,23 +589,39 @@ const CENTERS=[
 {v:"The Art Gallery at the College of Staten Island",c:"College of Staten Island",b:"Staten Island",k:"Gallery",u:"http://www.csi.cuny.edu/artgallery/"},
 {v:"College of Staten Island Center for the Arts",c:"College of Staten Island",b:"Staten Island",k:"Stage",u:"http://www.cfashows.com/"}
 ];
-let boro="";
+// Nothing is on until the reader picks something: forty rows opened by default
+// is a wall, and the borough you are standing in is the only one you can walk to.
+let boro=null;
 function setBoro(el){
+  const val=el.dataset.boro, wasOn=el.classList.contains('on');
   document.querySelectorAll('#boroChips .chip').forEach(c=>c.classList.remove('on'));
-  el.classList.add('on'); boro=el.dataset.boro; renderCenters();
+  if(wasOn){boro=null;}else{el.classList.add('on');boro=val;}
+  renderCenters();
 }
 function buildBoroChips(){
   const order=["Manhattan","Brooklyn","Queens","Bronx","Staten Island"];
   const counts={}; CENTERS.forEach(c=>counts[c.b]=(counts[c.b]||0)+1);
-  const chips=[`<button class="chip on" data-boro="" onclick="setBoro(this)">All ${CENTERS.length}</button>`]
+  const chips=[`<button class="chip" data-boro="" onclick="setBoro(this)">All ${CENTERS.length}</button>`]
     .concat(order.filter(b=>counts[b]).map(b=>`<button class="chip" data-boro="${b}" onclick="setBoro(this)">${b} ${counts[b]}</button>`));
   document.getElementById('boroChips').innerHTML=chips.join('');
 }
 function renderCenters(){
-  const list=boro?CENTERS.filter(c=>c.b===boro):CENTERS;
+  const q=document.getElementById('cq').value.trim().toLowerCase();
+  const idle=boro===null&&!q;
+  const list=idle?[]:CENTERS.filter(c=>
+    (!boro||c.b===boro)&&(!q||(c.v+" "+c.c+" "+c.b+" "+c.k).toLowerCase().includes(q))
+  );
   document.getElementById('vlist').innerHTML=list.map(c=>
     `<a class="vrow" href="${c.u}" target="_blank" rel="noopener"><span class="vk">${c.k}</span><span class="vn">${esc(c.v)} <i>\u2197</i></span><span class="vc">${esc(c.c)} \u00b7 ${c.b}</span></a>`
   ).join('');
+  const hint=document.getElementById('vhint');
+  hint.hidden=list.length>0;
+  if(idle){
+    hint.innerHTML='<b>Forty venues, five boroughs.</b>Pick the borough you are in — or search for a college, a gallery, a stage.';
+  }else if(!list.length){
+    hint.innerHTML='<b>Nothing matches that.</b>Try a college name, or clear the borough.';
+  }
+  document.getElementById('vcount').textContent=idle?'':list.length+(list.length===1?' venue':' venues')+(boro?' in '+boro:'')+(q?' matching \u201c'+q+'\u201d':'');
 }
 buildBoroChips();
 renderCenters();
