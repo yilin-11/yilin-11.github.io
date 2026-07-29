@@ -4,7 +4,6 @@ Portfolio of **Yi Lin** — UX/UI & product designer, New York.
 
 **→ [yilin-11.github.io](https://yilin-11.github.io)**
 
-Static site: hand-written HTML/CSS/JS, no build step, no dependencies, no framework. Pushing to `main` deploys it via GitHub Pages.
 
 ## Selected work
 
