@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Yi Lin — UX/UI & Product Designer</title>
-<meta name="description" content="Yi Lin is a New York–based UX/UI and product designer. Selected work: CUNY Arts, No Limit, Shelfie.">
+<meta name="description" content="Yi Lin is a New York–based UX/UI and product designer. Selected work: CUNY Arts, No Limit, Shelfie, Mutuo, Foredge.">
 <link rel="canonical" href="https://yilin-11.github.io/">
 
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -13,16 +13,16 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://yilin-11.github.io/">
 <meta property="og:title" content="Yi Lin — UX/UI & Product Designer">
-<meta property="og:description" content="New York–based UX/UI and product designer. Selected work: CUNY Arts, No Limit, Shelfie — each shipped as a working prototype.">
+<meta property="og:description" content="New York–based UX/UI and product designer. Selected work: CUNY Arts, No Limit, Shelfie, Mutuo, Foredge — interactive prototypes and full-stack apps built with AI.">
 <meta property="og:image" content="https://yilin-11.github.io/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Yi Lin — UX/UI & Product Designer. Selected work: CUNY Arts, No Limit, Shelfie.">
+<meta property="og:image:alt" content="Yi Lin — UX/UI & Product Designer. Selected work: CUNY Arts, No Limit, Shelfie, Mutuo, Foredge.">
 <meta property="og:site_name" content="Yi Lin">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Yi Lin — UX/UI & Product Designer">
-<meta name="twitter:description" content="New York–based UX/UI and product designer. Selected work: CUNY Arts, No Limit, Shelfie — each shipped as a working prototype.">
+<meta name="twitter:description" content="New York–based UX/UI and product designer. Selected work: CUNY Arts, No Limit, Shelfie, Mutuo, Foredge — interactive prototypes and full-stack apps built with AI.">
 <meta name="twitter:image" content="https://yilin-11.github.io/og.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,7 +32,7 @@
 :root{
   --paper:#FFFFFF; --ink:#16181D; --ink-2:#5B5F68; --ink-3:#9A9DA5;
   --line:#DDDCD6; --line-2:#C2C1BA; --card:#FFFFFF;
-  --cuny:#0033A1; --nolimit:#2A9D8F; --shelfie:#177245;
+  --cuny:#0033A1; --nolimit:#2A9D8F; --shelfie:#177245; --mutuo:#A8522F; --foredge:#7A2231;
   --sg:'Space Grotesk',system-ui,sans-serif;
   --ss:'Source Serif 4',Georgia,serif;
 }
@@ -40,7 +40,7 @@
   :root{
     --paper:#121316; --ink:#EDECE8; --ink-2:#A8ABB2; --ink-3:#6B6E76;
     --line:#26282D; --line-2:#3A3D44; --card:#1A1C20;
-    --cuny:#5B82E0; --nolimit:#4DBFAF; --shelfie:#3FA372;
+    --cuny:#5B82E0; --nolimit:#4DBFAF; --shelfie:#3FA372; --mutuo:#D4835C; --foredge:#E28B98;
   }
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -99,7 +99,9 @@ nav.worknav .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .wc-body h3{font-weight:700;font-size:21px;letter-spacing:-.01em}
 .wc-body h3 .thin{font-weight:400;color:var(--ink-2)}
 .wc-body .hook{font-family:var(--ss);font-style:italic;font-size:14px;color:var(--ink-2);margin-top:4px}
-.wc-foot{border-top:1px solid var(--line);margin-top:14px;padding-top:10px;display:flex;justify-content:space-between;font-size:11px;letter-spacing:.08em;color:var(--ink-3)}
+.wc-foot{border-top:1px solid var(--line);margin-top:14px;padding-top:10px;display:flex;justify-content:space-between;gap:12px;font-size:11px;letter-spacing:.08em;color:var(--ink-3)}
+.wc-foot .built{color:var(--acc);font-weight:500;white-space:nowrap;display:flex;align-items:center;gap:5px}
+.wc-foot .built::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--acc)}
 
 .list{display:none;flex-direction:column}
 .list .row{
@@ -161,6 +163,7 @@ section.page p+p{margin-top:14px}
 }
 .proto-cta:hover{background:var(--acc);color:var(--paper)}
 .proto-note{font-size:12px;color:var(--ink-3);margin-top:8px;line-height:1.55}
+.proto-note a{color:var(--acc);text-decoration:underline;text-underline-offset:2px}
 
 /* chapter nav pills */
 .chapnav{display:flex;gap:8px;flex-wrap:wrap;margin:28px 0 8px;position:sticky;top:78px;background:var(--paper);padding:10px 0;z-index:4;border-bottom:1px solid var(--line)}
@@ -185,6 +188,7 @@ section.page p+p{margin-top:14px}
 .statgrid b{font-size:22px;font-weight:700;display:block;letter-spacing:-.01em}
 .statgrid span{font-size:11.5px;color:var(--ink-2);line-height:1.4;display:block;margin-top:2px}
 .iablock{font-family:var(--sg);font-size:12.5px;line-height:1.9;background:var(--card);border:1px solid var(--line);padding:18px 20px;margin:14px 0;overflow-x:auto;white-space:pre;color:var(--ink-2)}
+code{font-family:var(--sg);font-size:.88em;background:var(--card);border:1px solid var(--line);border-radius:4px;padding:1px 6px;color:var(--ink);white-space:nowrap}
 .iablock b{color:var(--ink)}
 .tasklist{border:1px solid var(--line);margin:14px 0}
 .tasklist .trow{display:grid;grid-template-columns:44px 1fr;border-bottom:1px solid var(--line)}
@@ -251,6 +255,8 @@ section.page p+p{margin-top:14px}
       <button onclick="openCase(0)"><span class="num">01</span><span class="dot" style="background:var(--cuny)"></span>CUNY Arts</button>
       <button onclick="openCase(1)"><span class="num">02</span><span class="dot" style="background:var(--nolimit)"></span>No Limit</button>
       <button onclick="openCase(2)"><span class="num">03</span><span class="dot" style="background:var(--shelfie)"></span>Shelfie</button>
+      <button onclick="openCase(3)"><span class="num">04</span><span class="dot" style="background:var(--mutuo)"></span>Mutuo</button>
+      <button onclick="openCase(4)"><span class="num">05</span><span class="dot" style="background:var(--foredge)"></span>Foredge</button>
       <span class="navlab" style="margin-top:28px">Info</span>
       <a href="#about" onclick="toggleDrawer(false)">About</a>
       <a href="#contact" onclick="toggleDrawer(false)">Contact</a>
@@ -278,7 +284,8 @@ section.page p+p{margin-top:14px}
       <h2>About</h2>
       <p><b>I'm a maker and digital designer who helps people build things they didn't think they could.</b> My work runs from responsive redesigns to mobile apps to products that fold AI into everyday routines.</p>
       <p>I hold a B.A. in Digital Design (Magna Cum Laude) from City College. Three instincts carry across everything here: reduce the cost of the first step, design the failure states, and make progress visible.</p>
-      <p>Every case here follows the same spine — <b>Research → Pain points → IA → Wireframes → Validation</b> — and each shipped as a working prototype, not just frames.</p>
+      <p>Every case here follows the same spine — <b>Research → Pain points → IA → Wireframes → Validation</b> — and none of them stops at frames. Three shipped as interactive prototypes; the last two are full-stack apps, deployed and running.</p>
+      <p><b>Those two I designed and built with an AI coding agent.</b> That changes the pace, not the job. Code arrives faster than anyone can read it, so the discipline moves to deciding what to keep: on Mutuo, nothing counted as fixed until a failing test said it was; on Foredge, every way the app can fail got a drawn state instead of a blank screen. I use AI to get to a running app — the decisions inside it are still mine to defend.</p>
     </section>
 
     <section class="page" id="contact">
@@ -441,6 +448,126 @@ const CASES=[
      <div class="trow"><div class="tn">T4</div><div class="tb"><div class="task">Pick a cookable-right-now dish</div><div class="crit">Uses the missing badges and sorting, ≤ 20 s</div></div></div>
    </div>
    <p>AI-specific metrics extend standard usability: <b>recognition acceptance rate</b>, <b>correction behavior rate</b> (if nobody ever corrects, the confirmation step is theater), <b>recommendation adoption</b>, per-path import success, and <b>failure-path completion</b> — after a link fails, how many users follow the fallback and succeed. North star post-launch: at least one full photo → cook loop per week, with Use-soon consumption vs expiry-deletion as the waste-reduction proof.</p>`]
+},
+/* ---------- 04 · MUTUO ---------- */
+{
+  key:'mutuo', acc:'var(--mutuo)', name:'Mu<span class="thin">tuo</span>', plain:'Mutuo',
+  type:'Full-stack repair · failure-state design', stack:'Express · Sequelize · JS',
+  role:'Solo — design and code', build:'Claude Code',
+  proto:'https://mutuo-demo.vercel.app/', protoLabel:'Open the live app ↗',
+  protoNote:'A real deployment, seeded with twelve members — the login page offers a demo account and fills the form in for you. First request after an idle spell waits on a cold start. <a href="https://github.com/yilin-11/mutuo" target="_blank" rel="noopener">Source on GitHub ↗</a> — every defect below has a test that fails without its fix; clone it and run <code>npm test</code>.',
+  hook:'Teach what you know, learn what you don’t.',
+  lede:['Mutuo is a skill-swapping directory: each member lists one skill they can teach and one they want to learn, then finds someone nearby to trade with. I built it early, while I was still learning the stack.',
+        'Coming back to it, the interesting failures were not the ones that crashed. They were the ones that looked like nothing had happened — a save button that quietly discarded the form, a page that rendered blank with no error, a directory that looked broken because it was empty. This case is that second pass: reading my own code for the states I never designed.',
+        'I did that pass with an AI coding agent, which is why the case is written around a test suite rather than a diff. Code arrives faster than anyone can review it by eye, so the working rule was that nothing counted as a defect until a failing test reproduced it, and nothing counted as fixed until that test passed. Chapter 05 has the one place that rule paid for itself — the obvious fix was wrong, and the test is what said so.'],
+  motif:`<svg viewBox="0 0 640 360" fill="none" role="img" aria-label="Two skill tags exchanging, one each way"><rect x="96" y="118" width="182" height="70" rx="12" stroke="var(--mutuo)" stroke-width="3"/><text x="187" y="163" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="25" fill="var(--mutuo)">TEACH</text><rect x="362" y="172" width="182" height="70" rx="12" stroke="var(--mutuo)" stroke-width="3"/><text x="453" y="217" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="25" fill="var(--mutuo)">LEARN</text><path d="M288 148 H 352" stroke="var(--ink-2)" stroke-width="2.5" stroke-linecap="round"/><path d="M342 140 L 352 148 L 342 156" stroke="var(--ink-2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M352 212 H 288" stroke="var(--ink-2)" stroke-width="2.5" stroke-linecap="round"/><path d="M298 204 L 288 212 L 298 220" stroke="var(--ink-2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><text x="320" y="296" text-anchor="middle" font-family="Source Serif 4" font-style="italic" font-size="17" fill="var(--ink-2)">one each way</text></svg>`,
+  chapters:[
+  `<p>No user study here — this was an audit of a shipped thing. I read all 35 source files end to end, then wrote tests that pinned down what the app <i>actually did</i> rather than what it looked like it did. Where behaviour and intent disagreed, the test recorded the behaviour first, and the fix came second.</p>
+   <div class="statgrid">
+     <div><b>1,651</b><span>lines of application code, read line by line</span></div>
+     <div><b>13</b><span>defects found and reproduced</span></div>
+     <div><b>10</b><span>of those gave the person using the app no signal at all</span></div>
+     <div><b>37</b><span>tests written to hold the repairs in place</span></div>
+   </div>
+   <p>That third number is the finding. Only two of the thirteen announced themselves as a crash, and exactly one produced an error message — which pointed at the wrong form. Everything else failed the way software fails a person who has no console open: <b>the screen simply did not change</b>. A designer's instinct is to ask what a screen shows when things go wrong; this codebase mostly answered "nothing."</p>`,
+  `<p>Restated as the sentences a member would actually say:</p>
+   <ul>
+     <li><b>"I filled in the form and pressed save. Nothing happened."</b> Submit was wired to a link, so the browser navigated away before the request finished. The profile was never written — and the app said so in no way whatsoever.</li>
+     <li><b>"The page is blank."</b> Asset paths were relative, so the same profile URL worked with one trailing slash and loaded no JavaScript at all without it. A white screen, no error, nothing to report.</li>
+     <li><b>"It says my email is taken. I wasn't changing my email."</b> Two rapid submits collided in the database, and the collision was reported using the signup form's error copy. The one visible message in the system was about the wrong screen.</li>
+     <li><b>"There's nobody here."</b> A new install opened onto an empty directory and an empty random match. Indistinguishable from broken.</li>
+     <li><b>"I typed my password wrong and it just sat there."</b> The failure was written to the developer console. The person looking at the form got no response of any kind.</li>
+     <li><b>"It logged me out again."</b> Sessions lived in memory, so every restart silently signed everybody out mid-task.</li>
+   </ul>`,
+  `<p>The structural question was not where pages sat in a menu — it was <b>which side of the login each thing lived on</b>, and the old answer was inconsistent. Pages were guarded; the data behind them was not. The directory page required a session, while the request that filled it with every member's name, city and email address answered anyone at all.</p>
+   <div class="iablock"><b>Public</b>      landing · log in · sign up
+<b>Members</b>     directory · profile form · random match · member detail
+<b>Data</b>        every member-facing request now sits on the members side,
+            including the one that resolves a postal code to a map pin</div>
+   <p>A second boundary was physical rather than logical. Page files were sitting inside the folder the server hands out verbatim, so the member area could be fetched by its filename without ever passing the login check — the guard was real, and the pages were reachable around it. Moving them out was the fix; the lesson was that <b>an access rule is only as good as the path that cannot skip it</b>.</p>`,
+  `<p>Then the part that was actually missing: the states nobody had drawn. Each screen had one design — the happy one. These are the rest, and every one of them is now a deliberate choice rather than an accident.</p>
+   <ul>
+     <li><b>Empty.</b> A fresh directory now ships with ten members forming five reciprocal pairs, so the first screen demonstrates the idea instead of implying failure. "No members yet — be the first" replaces blankness when it really is empty.</li>
+     <li><b>No results.</b> Searching now says which term found nothing, quoted back, rather than emptying the page.</li>
+     <li><b>Working.</b> The random match disables its own button and says "Finding someone…" instead of appearing inert.</li>
+     <li><b>Rejected.</b> Form errors name the field and say what is wrong, in the voice of the form being filled in — never the neighbouring one.</li>
+     <li><b>Expired.</b> A session that ran out returns the member to the login page, rather than printing "you need to be logged in" onto a directory that has nothing in it.</li>
+     <li><b>Too many attempts.</b> Repeated failed logins are refused with a wait time attached, so the limit is legible instead of feeling like a fault.</li>
+     <li><b>Not found.</b> A member id that does not exist says so, distinct from a member who exists but has filled in nothing.</li>
+   </ul>`,
+  `<p>Validated by execution, not by users — and that distinction matters enough to state plainly. This was a correctness pass, so the instrument is a test suite that drives the real application end to end: 37 tests over 514 lines, each named for the defect it holds down.</p>
+   <div class="tasklist">
+     <div class="trow"><div class="tn">T1</div><div class="tb"><div class="task">Fetch the directory with no session</div><div class="crit">Refused. Before the fix it returned every member's email address</div></div></div>
+     <div class="trow"><div class="tn">T2</div><div class="tb"><div class="task">Request a member page by its filename</div><div class="crit">Not found. Before the fix it served the member area around the guard</div></div></div>
+     <div class="trow"><div class="tn">T3</div><div class="tb"><div class="task">Submit the profile form twice at once</div><div class="crit">Both save, one profile exists, no error about an unrelated form</div></div></div>
+     <div class="trow"><div class="tn">T4</div><div class="tb"><div class="task">Load a member page with a trailing slash</div><div class="crit">Assets referenced absolutely, so the page is never blank</div></div></div>
+   </div>
+   <p>One test earned its keep by rejecting my first fix. The textbook repair for the double-submit collision is the framework's own <code>findOrCreate</code>; the test came back red, because that call opens a transaction and this database will not run two at once. The version that shipped lets the database's uniqueness rule settle the race instead, and losing it simply means reading again. <b>I would have shipped the wrong fix without a test to argue with.</b></p>
+   <p class="proto-note" style="margin-top:18px">The honest gap: no usability study was run. Every claim above is about behaviour I could reproduce and now prevent — not about whether the repaired flows test well with people. That is the next pass, and the states in chapter 04 are what I would put in front of them first.</p>`]
+},
+/* ---------- 05 · FOREDGE ---------- */
+{
+  key:'foredge', acc:'var(--foredge)', name:'Fore<span class="thin">dge</span>', plain:'Foredge',
+  type:'Full-stack app · third-party API', stack:'Express · PostgreSQL · EJS',
+  role:'Solo — design and code', build:'Claude Code',
+  proto:'https://foredge.onrender.com/', protoLabel:'Open the live app ↗',
+  protoNote:'Deployed and running, with five books already on the shelf. The free tier sleeps after fifteen minutes idle, so a first visit can take up to a minute to wake — everything after that is instant. <a href="https://github.com/yilin-11/foredge" target="_blank" rel="noopener">Source on GitHub ↗</a>',
+  hook:'What stays after the last page.',
+  lede:['Foredge is a reading log for one person. Search a title and Open Library fills in the author, the cover, the year and the ISBN; you supply the rating, the finish date and the notes. It sorts by rating, recency or title, and it lives in a PostgreSQL database rather than inside somebody else’s social network.',
+        'The fore edge is the outer edge of a book’s pages, opposite the spine — the rough stack of paper your thumb runs along when you flip through. The rating here is drawn after it: ten short vertical ticks, not stars. The name points at the one decision the whole interface is built around, so the two explain each other.',
+        'This one was built end to end with an AI coding agent and then actually deployed, which is the point of putting it here: the case below is organised around the decisions that were mine to make, because those are the part the agent could not supply.'],
+  motif:`<svg viewBox="0 0 640 360" fill="none" role="img" aria-label="A shelf of book spines beside a ten-tick fore-edge rating gauge"><path d="M84 232 H 336" stroke="var(--ink-2)" stroke-width="3" stroke-linecap="round"/><rect x="92" y="138" width="22" height="94" stroke="var(--ink-2)" stroke-width="2.5"/><rect x="119" y="116" width="26" height="116" stroke="var(--ink-2)" stroke-width="2.5"/><rect x="150" y="148" width="20" height="84" stroke="var(--ink-2)" stroke-width="2.5"/><rect x="175" y="84" width="28" height="130" fill="var(--foredge)"/><rect x="208" y="130" width="22" height="102" stroke="var(--ink-2)" stroke-width="2.5"/><rect x="235" y="110" width="25" height="122" stroke="var(--ink-2)" stroke-width="2.5"/><rect x="265" y="142" width="20" height="90" stroke="var(--ink-2)" stroke-width="2.5"/><rect x="290" y="122" width="26" height="110" stroke="var(--ink-2)" stroke-width="2.5"/><text x="404" y="132" font-family="Space Grotesk" font-weight="700" font-size="24" fill="var(--foredge)">7 / 10</text><rect x="404" y="150" width="4" height="54" fill="var(--foredge)"/><rect x="418" y="150" width="4" height="54" fill="var(--foredge)"/><rect x="432" y="150" width="4" height="54" fill="var(--foredge)"/><rect x="446" y="150" width="4" height="54" fill="var(--foredge)"/><rect x="460" y="150" width="4" height="54" fill="var(--foredge)"/><rect x="474" y="150" width="4" height="54" fill="var(--foredge)"/><rect x="488" y="150" width="4" height="54" fill="var(--foredge)"/><rect x="502" y="150" width="4" height="54" fill="var(--line-2)"/><rect x="516" y="150" width="4" height="54" fill="var(--line-2)"/><rect x="530" y="150" width="4" height="54" fill="var(--line-2)"/><text x="320" y="300" text-anchor="middle" font-family="Source Serif 4" font-style="italic" font-size="17" fill="var(--ink-2)">ten ticks, not five stars</text></svg>`,
+  chapters:[
+  `<p>The research here was not about people, it was about an API — because what the machine can fill in decides what the reader has to type, and a reading log dies at exactly the point where logging a book means copying a title, an author, a year and a cover URL by hand. So I read Open Library’s search and cover endpoints before drawing anything.</p>
+   <div class="statgrid">
+     <div><b>6</b><span>fields one title search can fill in for you</span></div>
+     <div><b>4</b><span>fields only the reader can supply</span></div>
+     <div><b>2</b><span>ways covers are served, neither guaranteed</span></div>
+     <div><b>1</b><span>table, because the data is genuinely one row per book</span></div>
+   </div>
+   <p>Two findings shaped everything after. First, <b>covers cannot be assumed</b>. Open Library serves them by cover id and by ISBN; one ISBN can point at several editions, and not every edition has artwork at all. Any design that treats a cover as a given will show broken images on somebody’s real shelf — so both identifiers are stored, cover id is tried first, and a book with neither gets a drawn spine rather than a gap.</p>
+   <p>Second, the schema splits cleanly in two, and that split <i>is</i> the product. <b>Title, author, ISBN, cover, year</b> are facts a lookup already knows. <b>Rating, finish date, takeaway, notes</b> are the only things that are actually yours. The machine does the clerical half; every field the reader touches is one no API could have answered.</p>`,
+  `<p>Stated as the sentences a reader would say, plus the two nobody would ever report:</p>
+   <ul>
+     <li><b>"I’ll add it later."</b> Four fields of transcription per book is how a log gets abandoned. Search fills them, and title is the only field the form insists on — a rating, a date and notes can all arrive whenever they arrive.</li>
+     <li><b>"The date is off by a day."</b> A <code>DATE</code> column comes back through the driver as a JS <code>Date</code> read in the local timezone, so a book finished on 5 March in New York displays as 4 March. Silently wrong, in the one field the reader typed themselves.</li>
+     <li><b>"That cover is a broken image."</b> The 404 arrives after the page has already rendered, so it cannot be caught server-side — the layout has to survive an image that disappears mid-view.</li>
+     <li><b>"I left the rating blank and it wouldn’t save."</b> An untouched input posts an empty string, and writing <code>""</code> into an <code>INTEGER</code> or <code>DATE</code> column makes PostgreSQL throw. The most common way to fill the form is the way that breaks it.</li>
+     <li><b>"Nothing came back and I don’t know why."</b> Open Library answering with an error and never reaching Open Library at all are one blank result to the reader, and two completely different next moves.</li>
+     <li><b>The one nobody would report.</b> <code>ORDER BY</code> cannot take a parameterised placeholder, so the sort has to be built into the SQL — which is precisely where injection lives.</li>
+     <li><b>The one nobody would click.</b> Browsers and crawlers prefetch links, so a delete route behind an <code>&lt;a&gt;</code> can fire with nobody touching it.</li>
+   </ul>`,
+  `<p>One table. Splitting this into books, authors and notes would add joins and buy nothing, because the data really is one row per book. Tags would change that — one book has many tags, one tag has many books — and until there are tags, one table is the honest answer.</p>
+   <div class="iablock"><b>books</b> — one table, one row per book
+    <b>from Open Library</b> · title · author · isbn · cover_id · ol_key · published
+    <b>from the reader</b> · rating 1–10 · date_read · takeaway · notes
+    <b>indexed on</b> · rating DESC, date_read DESC — the two sorts people use
+
+<b>routes</b>
+    <b>read</b> · GET / — shelf + list, with ?sort= and ?q= · GET /books/:id
+    <b>write</b> · GET /books/new · POST /books · POST /books/:id/edit · POST /books/:id/delete
+    <b>data</b> · GET /api/search — Open Library, reshaped to one known format</div>
+   <p>HTML forms only speak GET and POST, so update and delete both travel over POST rather than pretending to be <code>PUT</code> and <code>DELETE</code>. Two details are load-bearing. <b>The sort parameter is a lookup key, never a string.</b> <code>?sort=</code> only ever selects an entry from a hard-coded table of three orderings, so <code>?sort=;DROP TABLE books</code> quietly falls back to the default; the search keyword takes the normal parameterised treatment. And <b>the API endpoint returns a shape the app owns</b>, not Open Library’s — eight results trimmed to the six fields the form needs, on an eight-second timeout, so an occasionally slow service cannot hang the page.</p>`,
+  `<p>The name is the design decision. The rating is not stars; it is ten short vertical ticks drawn after the fore edge of the pages. That gauge is also why the scale is ten rather than five — <b>ten ticks read as an edge, five read as a row of marks.</b> Everything else follows the same rule: make the state a drawn object rather than an absence.</p>
+   <ul>
+     <li><b>The shelf.</b> Every book is a different height, the way a real shelf looks — hashed from the title rather than randomised, so a book keeps its own height across reloads instead of jumping around the row. Hovering pulls one up out of the shelf; <code>prefers-reduced-motion</code> stops that.</li>
+     <li><b>No cover.</b> A book without artwork becomes a dark spine with its title set vertically. The same object catches the cover that 404s after render, so a failure lands on a designed state instead of a hole.</li>
+     <li><b>Empty shelf.</b> "The shelf is empty. The first book is the hard one," with the add button beside it — the first screen states the next action instead of implying breakage.</li>
+     <li><b>No results.</b> The search term is quoted back, with a way out: <i>Show everything</i>.</li>
+     <li><b>Search that failed.</b> Two messages, because the next move differs. One says Open Library returned an error and to try again; the other says check the connection, or type the details in by hand.</li>
+     <li><b>One form, two jobs.</b> Add and edit share a single template. The sort choice rides along through search as a hidden field, so finding a book never throws away the order you chose.</li>
+     <li><b>The footer is a colophon</b> — in a printed book, the note on how the thing was made. Here it carries the same: where the name comes from, where the covers come from, what it runs on.</li>
+   </ul>`,
+  `<p>Validated against deliberately hostile data rather than against users. A second seed file loads books built to break the interface, and the checks run by hand against them:</p>
+   <div class="tasklist">
+     <div class="trow"><div class="tn">T1</div><div class="tb"><div class="task">Load the shelf with the edge-case seed</div><div class="crit">A title long enough to wrap three times, a non-Latin title, and one full of quotes and angle brackets all sit in the row without breaking it or escaping into markup</div></div></div>
+     <div class="trow"><div class="tn">T2</div><div class="tb"><div class="task">Open a book whose cover 404s</div><div class="crit">Falls back to the drawn spine after the failure — never a broken image</div></div></div>
+     <div class="trow"><div class="tn">T3</div><div class="tb"><div class="task">Visit <code>/?sort=;DROP TABLE books</code></div><div class="crit">Falls back to the default order, because the parameter is only ever a lookup key</div></div></div>
+     <div class="trow"><div class="tn">T4</div><div class="tb"><div class="task">Search with the network set to offline</div><div class="crit">Shows the unreachable message and the type-it-in-by-hand fallback, not the service-error one</div></div></div>
+   </div>
+   <p>Checked on every pass alongside those: ratings at 1, at 10 and absent; books with no notes; thirty filler titles to see a full shelf; keyboard tab order and focus rings; reduced motion; and the layout at 375px and either side of the 720px breakpoint. The deployment carries one more decision — the database is Neon rather than the host’s own, because that host deletes free PostgreSQL instances after thirty days, and a link in a portfolio has to outlive that.</p>
+   <p>And the AI question, answered plainly: an agent wrote most of these lines and none of these decisions. Ten ticks instead of five stars, one table instead of three, a lookup key instead of a concatenated string, a drawn spine instead of a broken image, two failure messages instead of one — that list is the case study, and it is the part I brought. <b>Generating a reading log takes minutes now; knowing what the screen should say when Open Library is down is still the job.</b></p>
+   <p class="proto-note" style="margin-top:18px">The honest gap, as with Mutuo: no usability study. The states above are reasoned and reproducible, not yet tested with readers.</p>`]
 }
 ];
 
@@ -454,7 +581,7 @@ function renderWorkspace(){
         <div class="wc-tag"><i></i>${c.type}</div>
         <h3>${c.name}</h3>
         <p class="hook">${c.hook}</p>
-        <div class="wc-foot"><span>${c.stack}</span></div>
+        <div class="wc-foot"><span>${c.stack}</span>${c.build?`<span class="built">Built with AI</span>`:''}</div>
       </div>
     </button>`).join('');
   $('listEl').innerHTML=CASES.map((c,i)=>`
@@ -488,10 +615,11 @@ function openCase(i){
         <p class="v-hook" style="color:${c.acc}">${c.hook}</p>
         <div class="v-meta">
           <div><span class="lab">Stack</span><span class="val">${c.stack}</span></div>
-          <div><span class="lab">Role</span><span class="val">Solo designer</span></div>
+          <div><span class="lab">Role</span><span class="val">${c.role||'Solo designer'}</span></div>
+          ${c.build?`<div><span class="lab">Built with</span><span class="val" style="color:${c.acc}">${c.build}</span></div>`:''}
         </div>
         ${c.lede.map(p=>`<p class="lede">${p}</p>`).join('')}
-        <a class="proto-cta" href="${c.proto}" target="_blank" rel="noopener">Open the live prototype ↗</a>
+        <a class="proto-cta" href="${c.proto}" target="_blank" rel="noopener">${c.protoLabel||'Open the live prototype ↗'}</a>
         <p class="proto-note">${c.protoNote}</p>
         <nav class="chapnav" aria-label="Chapters">
           ${CHAPS.map((ch,n)=>`<a href="#chap-${n}" onclick="jumpChap(event,${n})">${'0'+(n+1)} ${ch}</a>`).join('')}

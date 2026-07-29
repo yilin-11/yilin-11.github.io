@@ -16,8 +16,8 @@ python3 -m http.server 8000    # then open http://localhost:8000
 
 | Path | Status | What it is |
 | --- | --- | --- |
-| `index.html` | **active** | The entire portfolio — single self-contained file (~530 lines, inline `<style>` + `<script>`) |
-| `prototypes/*.html` | **active** | Three self-contained interactive prototypes linked from the case studies |
+| `index.html` | **active** | The entire portfolio — single self-contained file (~670 lines, inline `<style>` + `<script>`) |
+| `prototypes/*.html` | **active** | Three self-contained interactive prototypes linked from the first three case studies |
 | `mmp210/`, `mmp240/`, `citymail/` | archived | Old CUNY coursework, kept as-is for links that may exist in the wild |
 
 Treat the archived directories as frozen artifacts: fix them only if asked, and don't "modernize" or refactor them. They contain intentional oddities (e.g. the misspelled `mmp240/craigslist_redesign/stlyes.css`, p5.js 0.5.6 from CDN in `mmp210/memes` and `mmp210/self-portrait` vs. a vendored `p5.js` in `mmp210/midterm-project`).
@@ -29,9 +29,12 @@ Content and presentation are separated inside the one file: **all case-study con
 Each case object:
 
 - `key`, `plain` (plain-text name), `name` (may contain `<span class="thin">` for the two-tone title treatment)
-- `acc` — the case's accent color, always a CSS var (`var(--cuny)`, `var(--nolimit)`, `var(--shelfie)`), defined for both themes in `:root`
+- `acc` — the case's accent color, always a CSS var (`var(--cuny)`, `var(--nolimit)`, `var(--shelfie)`, `var(--mutuo)`, `var(--foredge)`), defined for both themes in `:root`
 - `type`, `stack` — shown in card footers and the viewer meta row
-- `proto` / `protoNote` — relative path to the prototype file, plus the caveat text under the CTA
+- `proto` / `protoNote` — the CTA target plus the caveat text under it. For cases 01–03 that's a relative path to a `prototypes/*.html` file; for Mutuo and Foredge it's an absolute URL to the deployed app, and `protoNote` carries an inline `<a>` to the GitHub repo.
+- `protoLabel` — optional, overrides the default CTA text `Open the live prototype ↗`
+- `role` — optional, overrides the default `Solo designer` in the viewer meta row
+- `build` — optional. Its presence is what marks a case as AI-built: it adds a `Built with AI` chip to the card footer and a third `Built with` column to the viewer meta row, whose value is this string.
 - `hook`, `lede[]` — one-liner and intro paragraphs
 - `motif` — inline SVG hero/thumbnail
 - `chapters[]` — five HTML strings, positionally matched to `CHAPS = ['Research','Pain points','IA','Wireframes','Validation']`. Adding a chapter means extending both `CHAPS` and every case's `chapters`.
@@ -46,13 +49,13 @@ Rendering flow:
 Chapter HTML uses a fixed set of styled blocks — reuse them instead of inventing new ones:
 
 - `.statgrid` with `<div><b>number</b><span>caption</span></div>` — audit metrics
-- `.iablock` — preformatted information-architecture tree (whitespace is significant)
+- `.iablock` — preformatted information-architecture tree (whitespace is significant). It is set in Space Grotesk, a **proportional** font, so space-padded columns do not line up across rows whose labels differ in width or weight. Align on the left edge with indentation only, and let the rest of each line run inline after a `·` separator (see the Foredge block); do not build multi-column tables out of spaces.
 - `.tasklist` > `.trow` > `.tn` + `.tb` (`.task` + `.crit`) — usability test tasks and success criteria
 - plain `<ul><li><b>Lead-in.</b> …</li></ul>` — pain points and design decisions
 
 ### Head assets
 
-`og.png` (1200×630), `favicon.svg`, and `apple-touch-icon.png` sit at the repo root and are referenced from `<head>` with absolute `https://yilin-11.github.io/…` URLs for the Open Graph tags (relative URLs are not resolved by most crawlers). `og.png` bakes in the name and the tagline, so **if the `<title>` or the sidebar `.disc` line changes, the image is now stale** — it was generated with Pillow from the site's own tokens (paper/ink/line colors, the `.reg-mini` corner mark, the three case accent colors) and has to be redrawn, not edited.
+`og.png` (1200×630), `favicon.svg`, and `apple-touch-icon.png` sit at the repo root and are referenced from `<head>` with absolute `https://yilin-11.github.io/…` URLs for the Open Graph tags (relative URLs are not resolved by most crawlers). `og.png` bakes in the name, the tagline, and a dot-and-label for every case, so **if the `<title>`, the sidebar `.disc` line, or the case list changes, the image is now stale** — it is generated with Pillow from the site's own tokens (paper/ink/line colors, the `.reg-mini` corner mark, each case accent color) and has to be redrawn, not edited. No generator script is checked in; redraw it at 1200×630 with Pillow using Arial Bold and Times New Roman Italic from `/System/Library/Fonts/Supplemental/`, and keep `og:image:alt` in sync with the names on the card.
 
 ### Conventions to preserve
 
