@@ -168,7 +168,7 @@ select:focus{border-color:var(--ink);outline:none}
 /* listing */
 .main{max-width:1180px;margin:0 auto;padding:56px 32px 90px}
 .main-lede{font-size:17px;color:var(--ink-2);max-width:62ch;margin:-10px 0 26px;line-height:1.5}
-.section-h{display:flex;align-items:baseline;gap:14px;margin-bottom:26px;border-top:2px solid var(--ink);padding-top:16px}
+.section-h{scroll-margin-top:130px;display:flex;align-items:baseline;gap:14px;margin-bottom:26px;border-top:2px solid var(--ink);padding-top:16px}
 .section-h h2{font-weight:700;font-size:clamp(26px,3.4vw,38px);letter-spacing:-.032em;line-height:1.05}
 /* one hairline between cells: the grid draws top and left, each card its own
    right and bottom, so a half-empty last row leaves no rule hanging in space */
@@ -361,7 +361,7 @@ footer b{color:#fff;font-weight:700}
 </div>
 
 <main class="main">
-  <div class="section-h"><h2>Where your ID gets you in</h2></div>
+  <div class="section-h" id="listing"><h2>Where your ID gets you in</h2></div>
   <p class="main-lede">Twenty museums, theatres and fairs across the city. The colour on each card is the kind of benefit; the line under it is what to say at the desk.</p>
 
   <div class="map-wrap" id="mapWrap">
@@ -442,7 +442,7 @@ footer b{color:#fff;font-weight:700}
       <li><b>02 · Check before you go</b><span>Some are walk-up, some want a timed ticket booked first, one wants a phone call. Each card says which, in the line under the name.</span></li>
       <li><b>03 · Say it at the desk</b><span>Tell them you are a CUNY student <i>before</i> you pay, and show the ID. That is the whole transaction.</span></li>
     </ol>
-    <a href="#partners" onclick="showFree();return false;">Show me the 14 free ones ↑</a>
+    <a href="#listing" onclick="showFree();return false;">Show me the 14 free ones ↑</a>
   </div>
 </section>
 
@@ -554,7 +554,14 @@ function showFree(){
   setView('list');
   const chip=document.querySelector('.chip[data-perk="free"]');
   if(chip) setPerk(chip);
-  document.getElementById('partners').scrollIntoView({behavior:'smooth',block:'start'});
+  scrollToListing();
+}
+// Land on the section heading, not on the toolbar — and clear the sticky bar,
+// whose height changes with the width the chips wrap at (118px wide, 276 narrow).
+function scrollToListing(){
+  const bar=document.querySelector('.toolbar-wrap').getBoundingClientRect().height;
+  const top=document.getElementById('listing').getBoundingClientRect().top+window.scrollY-bar-20;
+  window.scrollTo({top:Math.max(top,0),behavior:'smooth'});
 }
 function closeModal(){document.getElementById('overlay').classList.remove('show');document.body.style.overflow='';}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
