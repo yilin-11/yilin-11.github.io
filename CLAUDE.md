@@ -86,7 +86,7 @@ same `og.png`** — the card is the site's, not the page's. `404.html` is
 
 ### Where the info content lives
 
-**Contact is not a page.** It was sixteen words at the bottom of the home page's scroll, and as a destination it made someone navigate away at the exact moment they had decided to get in touch. It now sits in the sidebar footer (`.foot-status` / `.foot-links` / `.foot-place`) on every page, plus a fuller section on `/about/`. If you add a channel, add it to the footer in all three pages **and** to the About section.
+**Contact is not a page.** It was sixteen words at the bottom of the home page's scroll, and as a destination it made someone navigate away at the exact moment they had decided to get in touch. It now sits in the sidebar footer (`.foot-links` / `.foot-place`) on every page, plus a fuller section on `/about/`. If you add a channel, add it to the footer in all three pages **and** to the About section.
 
 **About is a page because its value is the prose.** `/about/` carries its own `<title>`, `description`, `canonical` and OG tags, and its content is written as markup rather than generated from JS — it is the one page a crawler is served that is worth indexing on its own. Do not move it into `CASES` or render it from JavaScript.
 

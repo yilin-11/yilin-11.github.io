@@ -57,7 +57,6 @@ nav.worknav a[aria-current="page"]{color:var(--ink);font-weight:500}
    the work for. */
 .side .foot{margin-top:auto;font-size:12px;color:var(--ink-3);line-height:1.7}
 .side .foot a{text-decoration:underline;text-underline-offset:3px}
-.foot-status{color:var(--ink-2);font-family:var(--ss);font-size:13px;line-height:1.55}
 .foot-links{display:flex;flex-wrap:wrap;gap:4px 12px;margin:11px 0 9px}
 .foot-links a{color:var(--ink-2);min-height:auto}
 .foot-links a:hover{color:var(--ink)}
