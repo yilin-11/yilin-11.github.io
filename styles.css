@@ -75,7 +75,10 @@ nav.worknav a[aria-current="page"]{color:var(--ink);font-weight:500}
 .themebtn{border:1px solid var(--line-2);border-radius:8px;min-width:44px;min-height:44px;padding:10px 14px;font-size:13px;color:var(--ink-2);display:inline-flex;align-items:center;justify-content:center;transition:color .15s,border-color .15s}
 .themebtn:hover{color:var(--ink);border-color:var(--ink-3)}
 
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:24px}
+/* min() is load-bearing: a bare minmax(820px,1fr) keeps an 820px track even
+   when the column is narrower than that, which pushed a horizontal scrollbar
+   onto the page between roughly 940 and 1140px. */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(820px,100%),1fr));gap:24px}
 /* The cards carry a lot of motif, so each one gets the opening of its lede —
    clamped, because the point is a taste of the argument, not the argument. */
 .wc-lede{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
@@ -97,6 +100,23 @@ nav.worknav a[aria-current="page"]{color:var(--ink);font-weight:500}
 .wc-foot{border-top:1px solid var(--line);margin-top:14px;padding-top:10px;display:flex;justify-content:space-between;gap:12px;font-size:11px;letter-spacing:.08em;color:var(--ink-3)}
 .wc-foot .built{color:var(--acc);font-weight:500;white-space:nowrap;display:flex;align-items:center;gap:5px}
 .wc-foot .built::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--acc)}
+
+/* Double-width cards, laid on their side. Stacked vertically at this width the
+   card ran ~750px tall — one per screen, a line drawing scaled to poster size,
+   and a lede line ~90 characters long. Turned horizontal it keeps the width,
+   loses two thirds of the height, and the text column keeps a readable measure.
+   This block must stay after .workcard: same specificity, so source order is
+   what decides whether flex-direction:row survives. */
+@media (min-width:1080px){
+  /* Fixed height, not just a fixed width: Foredge's type line wraps to two
+     lines and made that one card taller than the rest. */
+  .workcard{flex-direction:row;align-items:stretch;min-height:300px}
+  .workcard .thumb{flex:0 0 46%;aspect-ratio:auto;min-height:270px;border-bottom:none;border-right:1px solid var(--line)}
+  .workcard .wc-body{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;padding:28px 32px}
+  .workcard .wc-body h3{font-size:26px}
+  .workcard .hook{font-size:15.5px;margin-top:6px}
+  .workcard .wc-lede{-webkit-line-clamp:3;margin-top:12px}
+}
 
 }
 
