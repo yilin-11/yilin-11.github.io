@@ -185,6 +185,37 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 .item .buy{color:var(--ink-3);font-size:14px;padding:4px 2px 4px 8px}
 .item .buy:hover{color:var(--green-deep)}
 
+/* ---------- recipe detail ----------
+   Borrowed from listing-detail pages: a real screen rather than an accordion,
+   opening on a full-bleed photo, and a bar pinned to the bottom holding the
+   one thing you came to do. Cooking out of a card that expands inside a
+   scrolling list means losing your place every time you look up. */
+#vRecipe{padding-bottom:0}
+.rd-hero{position:relative;height:250px;flex-shrink:0;background:var(--green-bg)}
+.rd-hero img{width:100%;height:100%;object-fit:cover;display:block}
+.rd-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,26,18,.34) 0%,rgba(0,0,0,0) 38%)}
+.rd-back{position:absolute;top:48px;left:16px;z-index:3;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.94);font-size:17px;font-weight:700;color:var(--ink);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.rd-save{position:absolute;top:48px;right:16px;z-index:3;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.94);font-size:17px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.rd-save.on{background:var(--green);color:#fff}
+.rd-body{padding:18px 22px 26px}
+.rd-body h2{font-family:var(--disp);font-size:24px;line-height:1.2;margin-bottom:8px}
+.rd-facts{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.rd-facts span{background:var(--paper);border-radius:999px;padding:4px 10px;font-size:11.5px;font-weight:600;color:var(--ink-2)}
+.rd-facts .warn{background:var(--amber-bg);color:var(--amber);font-weight:700}
+.rd-facts .ok{background:var(--green-bg);color:var(--green-deep);font-weight:700}
+/* The listing-detail equivalent of host and reviews: where this came from and
+   how much of it you have already done. It is the only social proof a cookbook
+   for one person can honestly offer. */
+.rd-trust{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:18px;display:flex;flex-direction:column;gap:8px}
+.rd-trust div{display:flex;align-items:flex-start;gap:9px;font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.rd-trust b{color:var(--ink);font-weight:700}
+.rd-trust .ic{font-size:14px;line-height:1.3;flex-shrink:0}
+.rd-sec{margin-bottom:20px}
+.rd-sec h3{font-family:var(--disp);font-size:15px;margin-bottom:9px}
+.rd-bar{position:sticky;bottom:0;margin-top:auto;background:var(--card);border-top:1px solid var(--line);padding:12px 22px 26px;display:flex;gap:10px;align-items:center}
+.rd-bar .btn-made{margin:0;flex:1}
+.rd-bar .btn-list{margin:0;flex:0 0 auto;width:auto;padding:11px 14px}
+
 /* cook segments */
 .seg{display:flex;background:#EDF1EE;border-radius:999px;padding:4px;margin:6px 22px 4px}
 .seg button{flex:1;padding:9px;border-radius:999px;font-size:13.5px;font-weight:700;color:var(--ink-2)}
@@ -231,9 +262,6 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 .rec .meta .ok{background:var(--green-bg);color:var(--green-deep);font-weight:700}
 .rec .meta .tag{background:var(--lime-bg);color:var(--lime-deep);font-weight:700;letter-spacing:.02em}
 .rec .chev{margin-left:auto;color:var(--ink-3);transition:transform .2s;align-self:center}
-.rec.open .chev{transform:rotate(90deg)}
-.rec-body{display:none;border-top:1px solid var(--line);padding:14px 18px 16px}
-.rec.open .rec-body{display:block}
 .uses{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 .uses span{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--green-bg);color:var(--green-deep)}
 .uses span.miss{background:var(--amber-bg);color:var(--amber)}
@@ -489,6 +517,17 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
     <div class="recipes" id="impPreview" style="margin-top:12px"></div>
   </div>
 
+  <!-- RECIPE DETAIL -->
+  <div class="view" id="vRecipe">
+    <div class="rd-hero">
+      <button class="rd-back" onclick="closeRecipe()" aria-label="Back">‹</button>
+      <button class="rd-save" id="rdSave" onclick="toggleSaved()" aria-label="Save to cookbook" aria-pressed="false">♡</button>
+      <img id="rdImg" alt="" loading="lazy">
+    </div>
+    <div class="rd-body" id="rdBody"></div>
+    <div class="rd-bar" id="rdBar"></div>
+  </div>
+
   <!-- ACCOUNT -->
   <div class="view" id="vAcct">
     <div class="head"><div><div class="lg">Account</div><div class="sub">Your data, saved and synced</div></div></div>
@@ -647,8 +686,10 @@ let toastT;
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2100);}
 function go(k){
   if(!profile)return;
-  ['vPantry','vAdd','vCook','vAcct','vImport'].forEach(v=>$(v).classList.remove('on'));
-  $({pantry:'vPantry',add:'vAdd',cook:'vCook',acct:'vAcct',import:'vImport'}[k]).classList.add('on');
+  ['vPantry','vAdd','vCook','vAcct','vImport','vRecipe'].forEach(v=>$(v).classList.remove('on'));
+  $({pantry:'vPantry',add:'vAdd',cook:'vCook',acct:'vAcct',import:'vImport',recipe:'vRecipe'}[k]).classList.add('on');
+  /* the detail screen carries its own bottom bar, so the tabs step aside */
+  $('tabbar').classList.toggle('show',k!=='recipe');
   $('tPantry').classList.toggle('on',k==='pantry');
   $('tCook').classList.toggle('on',k==='cook'||k==='import');
   if(k==='pantry'){renderPantry();renderList();updateCounts();}
@@ -656,6 +697,7 @@ function go(k){
   if(k==='acct')updateStats();
 }
 function setCookMode(m){
+  cookMode=m;
   $('segAI').classList.toggle('on',m==='ai');
   $('segBook').classList.toggle('on',m==='book');
   $('modeAI').style.display=m==='ai'?'block':'none';
@@ -739,18 +781,6 @@ function addMissingFrom(names,dish){
   if(!added.length){toast('Already on your list');return false;}
   toast(added.length+(added.length>1?' things':' thing')+' added for '+dish);
   return true;
-}
-function addRecMissing(i){
-  const rc=window._recs[i];
-  if(addMissingFrom(rc.missing||[],rc.name)){
-    const b=$('lbtn'+i); if(b){b.textContent='✓ On your shopping list';b.classList.add('done');}
-  }
-}
-function addBookMissing(i){
-  const r=cookbook[i];
-  if(addMissingFrom(missingFor(r),r.name)){
-    const b=$('blbtn'+i); if(b){b.textContent='✓ On your shopping list';b.classList.add('done');}
-  }
 }
 function buyAgain(i){
   const p=pantry[i];
@@ -1131,25 +1161,14 @@ function previewImport(rec){
   pendingRecipe=rec;
   const miss=missingFor(rec);
   $('impPreview').innerHTML=`
-    <div class="rec open">
-      <div class="rec-top">${dishThumb(rec)}
+    <div class="rec">
+      <button class="rec-top" onclick="openRecipe('import',0)">${dishThumb(rec)}
         <div><h3>${esc(rec.name)}</h3>
           <div class="meta"><span>⏱ ${rec.time_min||'?'} min</span><span>${rec.servings||1} serving${(rec.servings||1)>1?'s':''}</span>${missBadge(miss)}</div>
-        </div></div>
-      <div class="rec-body">
-        <div class="uses">${(rec.ingredients||[]).map(g=>{const has=!miss.includes(g.name);return `<span class="${has?'':'miss'}">${has?'':'+ '}${esc(g.name)}</span>`;}).join('')}</div>
-        <ol class="steps">${(rec.steps||[]).slice(0,6).map((s,n)=>`<li><b>${n+1}</b><span>${esc(s)}</span></li>`).join('')}</ol>
-        ${rec.source?`<div class="src-line">Source: ${esc(rec.source)}</div>`:''}
-        ${miss.length?`<button class="btn-list" id="ilbtn" onclick="addImportMissing()">🛒 Put the missing ${miss.length===1?'one':miss.length} on my shopping list</button>`:''}
-        <button class="btn-made" onclick="saveRecipe()">Save to my cookbook</button>
-      </div>
-    </div>`;
-}
-function addImportMissing(){
-  if(!pendingRecipe)return;
-  if(addMissingFrom(missingFor(pendingRecipe),pendingRecipe.name)){
-    const b=$('ilbtn'); if(b){b.textContent='✓ On your shopping list';b.classList.add('done');}
-  }
+        </div><span class="chev">›</span>
+      </button>
+    </div>
+    <p class="imp-hint" style="margin-top:10px">Read it through before you keep it \u2014 open the card, then save from the bar at the bottom.</p>`;
 }
 function saveRecipe(){
   cookbook.unshift(pendingRecipe);
@@ -1157,6 +1176,129 @@ function saveRecipe(){
   toast('Saved — I\u2019ll always tell you what\u2019s missing');
   $('impPreview').innerHTML='';$('impText').value='';$('shotPreview').style.display='none';$('shotFile').value='';
   go('cook'); setCookMode('book');
+}
+
+/* ---------- recipe detail ----------
+   Three sources produce three different shapes — an AI idea carries uses/
+   missing, a saved recipe carries ingredients with quantities, an import is a
+   saved recipe that has not been saved yet. normRecipe() is where they become
+   one thing, so the detail screen is written once. */
+let curRecipe=null, cookMode='ai';        // {kind:'ai'|'book'|'import', i}
+function normRecipe(rec,kind){
+  const ing = kind==='ai'
+    ? (rec.uses||[]).map(n=>({name:n,qty:'',have:true}))
+        .concat((rec.missing||[]).map(n=>({name:n,qty:'',have:false})))
+    : (rec.ingredients||[]).map(g=>({name:g.name,qty:g.qty||'',have:haveIngredient(g.name)}));
+  return {
+    name:rec.name||'Untitled', emoji:rec.emoji||'\u{1F37D}\u{FE0F}',
+    time:rec.time_min, servings:kind==='ai'?servings:(rec.servings||1),
+    ing, missing:ing.filter(g=>!g.have).map(g=>g.name),
+    steps:rec.steps||[], prep_note:rec.prep_note||'', tip:rec.tip||'',
+    source:rec.source||'', cooked:rec.cooked||0
+  };
+}
+function currentRaw(){
+  if(!curRecipe)return null;
+  if(curRecipe.kind==='ai')return (window._recs||[])[curRecipe.i];
+  if(curRecipe.kind==='book')return cookbook[curRecipe.i];
+  return pendingRecipe;
+}
+function openRecipe(kind,i){
+  curRecipe={kind,i};
+  renderRecipe();
+  go('recipe');
+  $('vRecipe').scrollTop=0;
+}
+function closeRecipe(){
+  const back=curRecipe&&curRecipe.kind==='import'?'import':'cook';
+  curRecipe=null; go(back);
+  if(back==='cook')setCookMode(cookMode);
+}
+/* An AI idea used to exist only until you left the tab — cookable, never
+   keepable. The save control is what the missing verb needed. */
+function ideaSaved(name){
+  return cookbook.some(r=>norm(r.name)===norm(name));
+}
+function toggleSaved(){
+  const raw=currentRaw(); if(!raw)return;
+  const at=cookbook.findIndex(r=>norm(r.name)===norm(raw.name));
+  if(at>-1){ cookbook.splice(at,1); toast('Removed from your cookbook'); }
+  else{
+    cookbook.unshift(curRecipe.kind==='ai'?aiToRecipe(raw):raw);
+    toast('Saved \u2014 I\u2019ll always tell you what\u2019s missing');
+  }
+  persist(); renderSaveBtn(); renderBook();
+}
+function aiToRecipe(rc){
+  return {name:rc.name,emoji:rc.emoji,time_min:rc.time_min,servings:servings,
+    ingredients:(rc.uses||[]).concat(rc.missing||[]).map(n=>({name:n,qty:''})),
+    steps:rc.steps||[],source:'your pantry',cooked:0};
+}
+function renderSaveBtn(){
+  const raw=currentRaw(); if(!raw)return;
+  const on=ideaSaved(raw.name);
+  const b=$('rdSave');
+  b.textContent=on?'\u2665':'\u2661';
+  b.classList.toggle('on',on);
+  b.setAttribute('aria-pressed',String(on));
+  b.setAttribute('aria-label',on?'Remove from cookbook':'Save to cookbook');
+}
+function renderRecipe(){
+  const raw=currentRaw(); if(!raw)return;
+  const r=normRecipe(raw,curRecipe.kind);
+  $('rdImg').src=dishPhoto(r.name);
+  renderSaveBtn();
+
+  const facts=[r.time?`\u23f1 ${r.time} min`:'',
+    `${r.servings} serving${r.servings>1?'s':''}`,
+    r.missing.length?`<span class="warn">buy ${r.missing.length}</span>`
+                    :`<span class="ok">\u2713 all from your pantry</span>`]
+    .filter(Boolean).map(f=>f.startsWith('<')?f:`<span>${f}</span>`).join('');
+
+  /* where it came from, and what you have already done with it */
+  const trust=[];
+  trust.push(curRecipe.kind==='ai'
+    ? `<div><span class="ic">\u2728</span><span>Built from what is in your pantry right now, leading with <b>${esc((r.ing.filter(g=>g.have)[0]||{}).name||'what expires first')}</b>.</span></div>`
+    : `<div><span class="ic">\u{1F4D6}</span><span>Saved from <b>${esc(r.source||'your cookbook')}</b>.</span></div>`);
+  const own=r.ing.filter(g=>g.have).length;
+  trust.push(`<div><span class="ic">\u{1F9FA}</span><span><b>${own} of ${r.ing.length}</b> ingredients are already on your shelf.</span></div>`);
+  if(r.cooked)trust.push(`<div><span class="ic">\u{1F373}</span><span>You have cooked this <b>${r.cooked} time${r.cooked>1?'s':''}</b> before.</span></div>`);
+
+  $('rdBody').innerHTML=`
+    <h2>${esc(r.name)}</h2>
+    <div class="rd-facts">${facts}</div>
+    <div class="rd-trust">${trust.join('')}</div>
+    <div class="rd-sec">
+      <h3>What goes in</h3>
+      <div class="uses">${r.ing.map(g=>`<span class="${g.have?'':'miss'}">${g.have?'\u2713 ':'+ buy '}${esc(g.name)}${g.qty?' \u00b7 '+esc(g.qty):''}</span>`).join('')}</div>
+    </div>
+    ${r.steps.length?`<div class="rd-sec"><h3>How</h3>
+      <ol class="steps">${r.steps.map((x,n)=>`<li><b>${n+1}</b><span>${esc(x)}</span></li>`).join('')}</ol></div>`:''}
+    ${r.prep_note?`<div class="prepnote"><b>\u{1F371} Make-ahead</b>${esc(r.prep_note)}</div>`:''}
+    ${r.tip?`<div class="tip"><b>Tip \u00b7 </b>${esc(r.tip)}</div>`:''}
+    ${curRecipe.kind==='book'?`<button class="rdel" onclick="delRecipe(${curRecipe.i})">Remove from cookbook</button>`:''}`;
+
+  const bar=[];
+  if(r.missing.length)bar.push(`<button class="btn-list" id="rdList" onclick="detailMissing()">\u{1F6D2} ${r.missing.length}</button>`);
+  if(curRecipe.kind==='import')bar.push(`<button class="btn-made" onclick="saveRecipe()">Save to my cookbook</button>`);
+  else bar.push(`<button class="btn-made" id="rdMade" onclick="detailMade()">I made this${(curRecipe.kind==='ai'&&servings>1)?` \u2014 save ${servings-1} for later`:''}</button>`);
+  $('rdBar').innerHTML=bar.join('');
+}
+function detailMissing(){
+  const raw=currentRaw(); const r=normRecipe(raw,curRecipe.kind);
+  if(addMissingFrom(r.missing,r.name)){
+    const b=$('rdList'); if(b){b.textContent='\u2713 on your list';b.classList.add('done');}
+  }
+}
+function detailMade(){
+  const b=$('rdMade');
+  if(b&&b.classList.contains('done'))return;
+  const prepping=curRecipe.kind==='ai'&&servings>1;
+  if(curRecipe.kind==='ai')madeIt(curRecipe.i); else cookSaved(curRecipe.i);
+  if(b){
+    b.textContent=prepping?'\u2713 Prepped \u2014 waiting in your pantry':'\u2713 Logged';
+    b.classList.add('done');
+  }
 }
 
 /* ---------- missing-ingredient engine ---------- */
@@ -1194,24 +1336,17 @@ function renderBook(){
   const sorted=cookbook.map((r,i)=>({r,i,miss:missingFor(r)})).sort((a,b)=>a.miss.length-b.miss.length);
   $('bookList').innerHTML=sorted.map(({r,i,miss})=>`
     <div class="rec" id="bk${i}">
-      <button class="rec-top" onclick="$('bk${i}').classList.toggle('open')" aria-expanded="false">
+      <button class="rec-top" onclick="openRecipe('book',${i})">
         ${dishThumb(r)}
         <div><h3>${esc(r.name)}</h3>
           <div class="meta"><span>⏱ ${r.time_min||'?'} min</span>${missBadge(miss)}</div>
         </div><span class="chev">›</span>
       </button>
-      <div class="rec-body">
-        <div class="uses">${(r.ingredients||[]).map(g=>{const has=!miss.includes(g.name);return `<span class="${has?'':'miss'}">${has?'✓ ':'+ buy '}${esc(g.name)}${g.qty?' · '+esc(g.qty):''}</span>`;}).join('')}</div>
-        <ol class="steps">${(r.steps||[]).map((s,n)=>`<li><b>${n+1}</b><span>${esc(s)}</span></li>`).join('')}</ol>
-        ${r.source?`<div class="src-line">Source: ${esc(r.source)}</div>`:''}
-        ${miss.length?`<button class="btn-list" id="blbtn${i}" onclick="addBookMissing(${i})">🛒 Put the missing ${miss.length===1?'one':miss.length} on my shopping list</button>`
-                     :`<button class="btn-made" onclick="cookSaved(${i})">I made this</button>`}
-        <button class="rdel" onclick="delRecipe(${i})">Remove from cookbook</button>
-      </div>
     </div>`).join('');
 }
 function cookSaved(i){
   cookedCount++; saved+=4;
+  cookbook[i].cooked=(cookbook[i].cooked||0)+1;
   $('savedChip').textContent='est. $'+saved+' saved';
   toast('Logged — est. $4 saved vs takeout');
   persist();
@@ -1295,20 +1430,12 @@ async function getRecipes(){
     window._recs=recs;
     $('recipes').innerHTML=recs.map((rc,i)=>`
       <div class="rec${i===0?' rec--hero':''}" id="rec${i}">
-        <button class="rec-top" onclick="$('rec${i}').classList.toggle('open')" aria-expanded="false">
+        <button class="rec-top" onclick="openRecipe('ai',${i})">
           ${i===0?'<span class="flag">Tonight\u2019s pick</span>':''}${dishThumb(rc)}
           <div><h3>${esc(rc.name)}</h3>
             <div class="meta"><span>⏱ ${rc.time_min} min</span>${(rc.missing&&rc.missing.length)?`<span class="warn">buy: ${rc.missing.map(esc).join(', ')}</span>`:'<span class="ok">✓ all from your pantry</span>'}${recTags(rc)}</div>
           </div><span class="chev">›</span>
         </button>
-        <div class="rec-body">
-          <div class="uses">${(rc.uses||[]).map(u=>`<span>${esc(u)}</span>`).join('')}${(rc.missing||[]).map(m=>`<span class="miss">+ ${esc(m)}</span>`).join('')}</div>
-          <ol class="steps">${(rc.steps||[]).map((s,n)=>`<li><b>${n+1}</b><span>${esc(s)}</span></li>`).join('')}</ol>
-          ${(servings>1&&rc.prep_note)?`<div class="prepnote"><b>🍱 Make-ahead</b>${esc(rc.prep_note)}</div>`:''}
-          ${rc.tip?`<div class="tip"><b>Tip · </b>${esc(rc.tip)}</div>`:''}
-          ${(rc.missing&&rc.missing.length)?`<button class="btn-list" id="lbtn${i}" onclick="addRecMissing(${i})">🛒 Put the missing ${rc.missing.length===1?'one':rc.missing.length} on my shopping list</button>`:''}
-          <button class="btn-made" id="made${i}" onclick="madeIt(${i})">I made this${servings>1?' — save '+(servings-1)+' portion'+(servings>2?'s':'')+' for later':''}</button>
-        </div>
       </div>`).join('');
   }catch(e){
     $('cookLoad').style.display='none';$('cookBtn').disabled=false;
@@ -1327,9 +1454,9 @@ function recTags(rc){
   if(servings>1)t.push(servings+' meals in one cook');
   return t.map(x=>`<span class="tag">${esc(x)}</span>`).join('');
 }
+/* The detail bar owns the button state now; this only does the bookkeeping. */
 function madeIt(i){
-  const rc=window._recs[i]; const btn=$('made'+i);
-  if(btn.classList.contains('done'))return;
+  const rc=window._recs[i]; if(!rc)return;
   cookedCount++;
   (rc.uses||[]).forEach(u=>{
     const idx=pantry.findIndex(p=>p.name.toLowerCase()===String(u).toLowerCase());
@@ -1340,8 +1467,6 @@ function madeIt(i){
     toast((servings-1)+' portion'+(servings>2?'s':'')+' of '+rc.name+' added to Prepped');
   }else{saved+=4;toast('Logged — est. $4 saved vs takeout');}
   $('savedChip').textContent='est. $'+saved+' saved';
-  btn.classList.add('done');
-  btn.textContent=servings>1?'✓ Prepped — waiting in your pantry':'✓ Logged';
   persist();
 }
 
