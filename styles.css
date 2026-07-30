@@ -118,8 +118,6 @@ nav.worknav a[aria-current="page"]{color:var(--ink);font-weight:500}
   .workcard .wc-lede{-webkit-line-clamp:3;margin-top:12px}
 }
 
-}
-
 .list{display:none;flex-direction:column}
 .list .row{
   display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;
