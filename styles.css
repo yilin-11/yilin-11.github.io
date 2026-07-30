@@ -231,6 +231,13 @@ code{font-family:var(--sg);font-size:.88em;background:var(--card);border:1px sol
 .scrim{position:fixed;inset:0;background:rgb(0 0 0/.4);z-index:60;display:none}
 @media (max-width:880px){
   .app{grid-template-columns:1fr}
+  /* The type label is nowrap in an auto track, so on a phone it demanded more
+     width than the row had and pushed the whole page into horizontal scroll.
+     Stacked, with the label as an eyebrow above the name — the same place the
+     card puts it — and free to wrap. */
+  .list .row{grid-template-columns:1fr;gap:5px;padding:18px 2px}
+  .list .row .r-type{grid-row:1;white-space:normal;font-size:10.5px;letter-spacing:.14em}
+  .list .row .r-name{grid-row:2}
   .topbar{
     display:flex;position:sticky;top:0;z-index:50;background:var(--paper);
     border-bottom:1px solid var(--line);padding:14px 20px;align-items:center;justify-content:space-between;
