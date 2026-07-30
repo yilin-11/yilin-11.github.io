@@ -71,7 +71,9 @@ Chapter HTML uses a fixed set of styled blocks — reuse them instead of inventi
 
 `prototypes/cuny-arts.html`, `no-limit.html`, `shelfie.html` are each a standalone single file with its **own** design system, fonts, and tokens — they deliberately do not share `index.html`'s CSS variables, since each is meant to look like a different product. Same internal pattern in all three: a data constant near the top of the `<script>` (`D` for the CUNY partner list, `DATA` for No Limit's chart series, etc.), string-template `render()` functions, and a `go(view)` / modal helper for navigation. State is in module-level `let`s, with `esc()` applied to any interpolated user or data text.
 
-`shelfie.html` is the only page that calls a network API: four `fetch` calls to `https://api.anthropic.com/v1/messages` for grocery photo recognition, recipe generation, and recipe import from text/URL/screenshot. Notes if you touch them:
+`shelfie.html` is the only page that calls a network API: five `fetch` calls to `https://api.anthropic.com/v1/messages` for receipt parsing, grocery photo recognition, recipe generation, and recipe import from text/URL/screenshot. Notes if you touch them:
+
+- The pantry has **three entrances — receipt scan, food photo, typed entry — and all three land in the same editable `detected[]` review list**; `commitReview()` is the only writer into `pantry`. Keep that funnel: adding a fourth source means feeding the same review, not a second path into `pantry`. `addErr()` renders every scan failure with a "type it in instead" button, which is what keeps the AI paths from being dead ends — don't reduce it to a plain message.
 
 - The requests are sent **without any auth header**, so they cannot succeed from a plain browser — the page expects to sit behind an authenticating proxy. This is why `protoNote` for the case says the AI features need an API backend. Don't "fix" this by embedding a key in the page.
 - Prompts ask for bare JSON and the parsers strip ``` fences and regex out the first `{…}` — keep both guards if editing a prompt. `RECIPE_SCHEMA` is the shared shape for all three recipe-import paths.

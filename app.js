@@ -112,51 +112,61 @@ const CASES=[
 {
   key:'shelfie', acc:'var(--shelfie)', name:'Shel<span class="thin">fie</span>', plain:'Shelfie',
   type:'AI-native product', stack:'Claude API · JS',
-  proto:'prototypes/shelfie.html', protoNote:'Explore the full UI and flows in your browser. AI features (photo recognition, recipe generation) require an API backend — the demo video shows them running live.',
-  hook:'Snap your groceries. Cook what you have.',
-  lede:['For solo cooks trying to save money, the real enemy is waste — bought, forgotten, spoiled, tossed. Shelfie cuts tracking cost to a single photo: AI recognizes each grocery, estimates shelf life, and sorts the pantry by what to use first.',
-        'This shipped as a working AI prototype across three iterations — the vision, recipe generation, and link parsing make real model calls, failures included.'],
+  proto:'prototypes/shelfie.html', protoNote:'Explore the full UI and flows in your browser. AI features (receipt parsing, photo recognition, recipe generation) require an API backend — the demo video shows them running live.',
+  hook:'Scan the receipt. Cook what you have.',
+  lede:['For solo cooks trying to save money, the real enemy is waste — bought, forgotten, spoiled, tossed. Shelfie cuts tracking cost to one photo of the receipt: AI reads every line, expands the store’s shorthand into real names, carries the prices across, and sorts the pantry by what to use first.',
+        'This shipped as a working AI prototype across four iterations — the receipt and vision parsing, recipe generation, and link import make real model calls, failures included.'],
   motif:`<svg viewBox="0 0 640 360" fill="none" role="img" aria-label="Camera viewfinder over a grocery shelf illustration"><line x1="170" y1="240" x2="470" y2="240" stroke="var(--ink)" stroke-width="3"/><circle cx="240" cy="215" r="21" stroke="var(--shelfie)" stroke-width="3"/><rect x="295" y="188" width="40" height="52" rx="6" stroke="var(--shelfie)" stroke-width="3"/><path d="M382 240 v-36 a17 17 0 0 1 34 0 v36" stroke="var(--shelfie)" stroke-width="3"/><path d="M188 118 h-24 v24 M452 118 h24 v24 M188 302 h-24 v-24 M452 302 h24 v-24" stroke="var(--shelfie)" stroke-width="4" stroke-linecap="round"/><text x="320" y="104" text-anchor="middle" font-family="Source Serif 4" font-style="italic" font-size="17" fill="var(--ink-2)">3 items · est. 5 days</text></svg>`,
-  shots:[{src:'shelfie-pantry.jpg',cap:'The pantry, grouped by urgency: Use soon is the first thing you see.'},
+  shots:[{src:'shelfie-add.jpg',cap:'Three ways in, stacked in the order of what they cost you — and one review step all of them pass through.'},
+         {src:'shelfie-pantry.jpg',cap:'The pantry, grouped by urgency: Use soon is the first thing you see, receipt prices carried across.'},
          {src:'shelfie-cook.jpg',cap:'The serving selector speaks in meals — tonight, plus tomorrow\u2019s lunch, plus the day after.'}],
   wires:[
-    {k:'phone',t:'01 Pantry',cap:'Grouped by urgency, not by taxonomy — "use soon" is the first thing on screen. The camera is the only entrance.',p:['nav:2','note:Use soon','rows:6','fab','tabs:3']},
-    {k:'phone',t:'02 Confirm',cap:'Every AI output gets a human slot: recognition returns a checklist you correct before anything is saved.',p:['nav:2','img','note:Check what it found','rows:4','btn']},
-    {k:'phone',t:'03 Cook',cap:'Servings stated as meals — tonight, plus tomorrow\u2019s lunch — and the cookbook sorted by what is missing.',p:['nav:2','head','chips:3','cards:6','tabs:3']}
+    {k:'phone',t:'01 Pantry',cap:'Grouped by urgency, not by taxonomy — "use soon" is the first thing on screen. A single ＋ leads to every way in.',p:['nav:2','note:Use soon','rows:6','fab','tabs:3']},
+    {k:'phone',t:'02 Three ways in',cap:'Receipt, photo, typing — stacked in cost order with the cheapest expanded. Whichever you pick, the next screen is the same one.',p:['nav:2','note:Scan the receipt · fastest','rows:2','img','btn']},
+    {k:'phone',t:'03 Review',cap:'The gate everything passes through: names, quantities and shelf life all editable, a row for whatever got missed, nothing saved until you say so.',p:['nav:2','note:Before it goes in','rows:4','btn']},
+    {k:'phone',t:'04 Cook',cap:'Servings stated as meals — tonight, plus tomorrow\u2019s lunch — and the cookbook sorted by what is missing.',p:['nav:2','head','chips:3','cards:6','tabs:3']}
   ],
   chapters:[
   `<p>Decomposing "cook to save money" into a behavior chain — buy → store → remember → decide → cook → finish — showed the breakage clusters in the middle: the fridge is a black box, "what's for dinner" arrives at the day's lowest-energy moment, and recipes saved from YouTube live in a parallel world from the actual inventory.</p>
    <p>A competitive walkthrough found one shared cause of death in inventory apps: <b>manual entry</b>. Typing groceries item by item costs more than it returns; most users quit within a week.</p>
-   <p>The project's pivotal artifact is an <b>AI opportunity map</b> — every step evaluated on "can AI substantially lower the cost here," not "can AI be bolted on." Adopted: photo recognition, inventory-driven recipe generation, and recipe parsing from links, text, and screenshots. Deliberately non-AI: missing-ingredient checks (local matching — instant, free, explainable). Rejected outright: a chat assistant, which adds interaction cost and contradicts the zero-typing thesis.</p>`,
+   <p>The project's pivotal artifact is an <b>AI opportunity map</b> — every step evaluated on "can AI substantially lower the cost here," not "can AI be bolted on." Adopted: receipt parsing, photo recognition, inventory-driven recipe generation, and recipe import from links, text, and screenshots. Deliberately non-AI: missing-ingredient checks (local matching — instant, free, explainable). Rejected outright: a chat assistant, which adds interaction cost and contradicts the zero-typing thesis.</p>
+   <p>Looking harder at the buy step is what moved the receipt to the front. <b>The receipt is the only complete, itemised, priced record of what actually entered the kitchen</b> — printed for free, by someone else, at the exact moment of purchase. A photo of the counter can only see what is unwrapped and facing the lens; the receipt already lists the boxed, bagged and frozen half of the haul, with weights and prices attached.</p>`,
   `<ul>
      <li><b>Entry equals abandonment.</b> Every manual-entry solution dies within a week.</li>
+     <li><b>A photo of food is a partial inventory.</b> It cannot see inside packaging, read a weight off a label, or price anything — so the half of the haul that arrives boxed and bagged goes silently untracked.</li>
+     <li><b>An AI-only entrance is a dead end.</b> When recognition misfires or the network drops, an app with no typed path has nothing left to offer — the user is left holding groceries.</li>
      <li><b>The fridge black box.</b> Invisible inventory makes "forgot → spoiled → tossed" the default ending.</li>
      <li><b>Decision paralysis.</b> An open-ended dinner question at the lowest-energy moment slides toward takeout.</li>
      <li><b>Recipes disconnected from inventory.</b> Saved recipes scatter across camera rolls with zero link to the kitchen; missing ingredients surface at cooking time.</li>
      <li><b>Serving-size mismatch.</b> Recipes default to four servings; "cook once for the next few days" — the real saving strategy — has no product support.</li>
    </ul>`,
-  `<p>Three tabs plus a central camera FAB — the only way into the pantry:</p>
+  `<p>Three tabs plus a central ＋ — the only way into the pantry, with three sources behind it:</p>
    <div class="iablock"><b>Pantry</b> (home) — Prepped & ready · ⏳ Use soon · Fresh · Staples · $-saved counter
-<b>[Snap FAB]</b> — photo → AI recognition → checkbox confirm → in
+<b>[＋ FAB]</b> — 🧾 receipt scan (open by default) / 📸 food photo / ✍️ typed entry
+       — all three land in one editable review → in
 <b>Cook</b> — ✨ AI ideas (servings: tonight / +lunch / +day after · Make-ahead cards)
        — 📖 My cookbook (import via link / text / screenshot · live missing-check)
 <b>Auth</b> — random food-themed username · email required once · auto-login after</div>
    <p>Four AI-interaction principles anchor the architecture: <b>AI is an invisible worker</b>, not a conversation partner — there is no chat box anywhere; <b>every AI output gets a human confirmation slot</b> — an AI you can correct is an AI you can trust; <b>structured schemas are design contracts</b> — prompt engineering is interface design; and <b>failure paths get designed as carefully as success</b> — every AI touchpoint has a fallback exit.</p>`,
   `<ul>
      <li><b>Inventory is the home screen, grouped by freshness.</b> "Use soon" is the first thing you see — taxonomy yields to urgency.</li>
-     <li><b>The photo is the only entrance</b>, built as a central FAB. No first-level manual add — deliberate restraint.</li>
+     <li><b>Three ways in, stacked in cost order.</b> Receipt scan sits first and open by default, food photo second, typing third and collapsed. Same destination, honest ranking: the interface pushes the cheapest path without hiding the fallback.</li>
+     <li><b>One review step, shared by all three.</b> Names, quantities and shelf life are editable in place, unchecking drops a row, and a blank row catches whatever the scan missed. Nothing reaches the pantry any other way — which makes the confirmation a real gate rather than a receipt for the AI.</li>
+     <li><b>Every failure exits into typing.</b> A failed scan prints its own way out — "type it in instead, that always works" — which is how manual entry earns a place in the product that its own research says kills apps.</li>
+     <li><b>Prices ride along from the receipt.</b> Because the scan carries dollar amounts, the savings counter stops estimating: using a $7.81 pack of chicken before it turns credits $7.81, not a flat guess.</li>
      <li><b>The serving selector speaks intent</b>: Just tonight / + tomorrow's lunch / + the day after — servings translated into meal-prep scenarios.</li>
      <li><b>The cookbook sorts by missing count.</b> Cookable-right-now rises to the top; choosing dinner requires opening nothing.</li>
      <li><b>The savings counter compounds visibly</b> — using something before it expires, or eating a prepped portion, turns "waste avoided" into a growing number.</li>
    </ul>`,
-  `<p>Testing uses participants' <b>own grocery photos and recipe links</b> — probing the AI's real behavior, mistakes included:</p>
+  `<p>Testing uses participants' <b>own receipts, grocery photos and recipe links</b> — probing the AI's real behavior, mistakes included:</p>
    <div class="tasklist">
-     <div class="trow"><div class="tn">T1</div><div class="tb"><div class="task">Snap your own groceries and add them</div><div class="crit">Completes recognition + confirmation, actively corrects wrong items</div></div></div>
-     <div class="trow"><div class="tn">T2</div><div class="tb"><div class="task">Get a 3-serving recommendation and "cook" it</div><div class="crit">Understands the Make-ahead note, finds the Prepped group</div></div></div>
-     <div class="trow"><div class="tn">T3</div><div class="tb"><div class="task">Save a YouTube recipe to the cookbook</div><div class="crit">Succeeds via any import path, understands the preview step</div></div></div>
-     <div class="trow"><div class="tn">T4</div><div class="tb"><div class="task">Pick a cookable-right-now dish</div><div class="crit">Uses the missing badges and sorting, ≤ 20 s</div></div></div>
+     <div class="trow"><div class="tn">T1</div><div class="tb"><div class="task">Scan your last grocery receipt and add the haul</div><div class="crit">Completes parse + review, actively corrects a wrong line, notices the prices</div></div></div>
+     <div class="trow"><div class="tn">T2</div><div class="tb"><div class="task">Add something that came with no receipt — photo or typed, your choice</div><div class="crit">Finds the other two sources unprompted; after a forced scan failure, takes the typed exit</div></div></div>
+     <div class="trow"><div class="tn">T3</div><div class="tb"><div class="task">Get a 3-serving recommendation and "cook" it</div><div class="crit">Understands the Make-ahead note, finds the Prepped group</div></div></div>
+     <div class="trow"><div class="tn">T4</div><div class="tb"><div class="task">Save a YouTube recipe to the cookbook</div><div class="crit">Succeeds via any import path, understands the preview step</div></div></div>
+     <div class="trow"><div class="tn">T5</div><div class="tb"><div class="task">Pick a cookable-right-now dish</div><div class="crit">Uses the missing badges and sorting, ≤ 20 s</div></div></div>
    </div>
-   <p>AI-specific metrics extend standard usability: <b>recognition acceptance rate</b>, <b>correction behavior rate</b> (if nobody ever corrects, the confirmation step is theater), <b>recommendation adoption</b>, per-path import success, and <b>failure-path completion</b> — after a link fails, how many users follow the fallback and succeed. North star post-launch: at least one full photo → cook loop per week, with Use-soon consumption vs expiry-deletion as the waste-reduction proof.</p>`]
+   <p>AI-specific metrics extend standard usability: <b>per-line receipt accuracy</b> against the paper itself (names expanded correctly, non-food lines skipped, nothing invented), <b>recognition acceptance rate</b>, <b>correction behavior rate</b> (if nobody ever corrects, the review step is theater), <b>recommendation adoption</b>, per-path import success, and <b>failure-path completion</b> — after a scan or a link fails, how many users follow the offered fallback and finish. North star post-launch: at least one full receipt → cook loop per week, with Use-soon consumption vs expiry-deletion as the waste-reduction proof.</p>`]
 },
 /* ---------- 04 · MUTUO ---------- */
 {

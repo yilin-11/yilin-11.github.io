@@ -10,6 +10,7 @@
 <style>
 :root{
   --green:#177245; --green-deep:#0E5232; --green-bg:#E7F3EC;
+  --lime:#8FC03C; --lime-deep:#4F7314; --lime-bg:#F2F8E4;
   --amber:#B26B00; --amber-bg:#FCF0DC;
   --red:#B03A2E; --red-bg:#FBE9E6;
   --prep:#5B4AA6; --prep-bg:#EDEAF8;
@@ -78,25 +79,74 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 .empty-pan .big{font-size:40px;margin-bottom:8px}
 .empty-pan b{color:var(--ink)}
 
-/* snap */
+/* add to pantry — source picker */
+.srcs{padding:2px 22px 0;display:flex;flex-direction:column;gap:8px}
+.src{display:flex;gap:11px;align-items:flex-start;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:12px 14px;transition:border-color .12s,background .12s}
+.src:hover{border-color:#A9CDB9}
+.src .ic{font-size:20px;line-height:1.25;width:24px;text-align:center;flex-shrink:0}
+.src .tx{min-width:0}
+.src b{font-family:var(--disp);font-size:14.5px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.src em{font-style:normal;font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;background:var(--green-bg);color:var(--green-deep);padding:3px 7px;border-radius:999px}
+.src small{display:block;font-size:12px;color:var(--ink-2);line-height:1.5;margin-top:3px}
+.src.on{border-color:var(--green);background:var(--green-bg)}
+.src.on em{background:#fff}
+.src.on small{color:var(--green-deep)}
+.src:not(.on) small{display:none}
+.pane{display:none}
+.pane.on{display:block}
+
+/* typed entry */
+.mform{margin:12px 22px 0}
+.mform label{display:block;font-size:12.5px;font-weight:700;color:var(--ink-2);margin-bottom:6px}
+.mform input{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:14px;font-size:14.5px;font-family:var(--sans);background:#fff;margin-bottom:13px}
+.mform input:focus{border-color:var(--green);outline:none}
+.lifechips{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.lifechips button{border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:9px 6px;text-align:center;font-size:13px;font-weight:700;color:var(--ink)}
+.lifechips button span{display:block;font-size:10.5px;font-weight:500;color:var(--ink-3);margin-top:2px}
+.lifechips button.on{border-color:var(--green);background:var(--green-bg);color:var(--green-deep)}
+.lifechips button.on span{color:var(--green-deep)}
+
+/* shared review step */
+.review{margin:0 22px;display:none}
+.rev-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:16px 0 3px}
+.rev-h h3{font-family:var(--disp);font-size:16px}
+.rev-h .from{font-size:11px;color:var(--ink-3);font-weight:700;text-align:right;white-space:nowrap}
+.rev-note{font-size:12px;color:var(--ink-2);line-height:1.55;margin-bottom:10px}
+.rev{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:9px 12px;display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.rev.off{opacity:.42}
+.rev input[type=checkbox]{width:18px;height:18px;accent-color:var(--green);flex-shrink:0}
+.rev .em{font-size:19px;width:23px;text-align:center;flex-shrink:0}
+.rev .f{flex:1;min-width:0}
+.rev .nm{width:100%;border:none;background:none;font-family:var(--sans);font-size:14px;font-weight:700;color:var(--ink);padding:2px 0}
+.rev .nm:focus{outline:none;box-shadow:inset 0 -1.5px 0 var(--green)}
+.rev .sub{display:flex;align-items:center;gap:9px;margin-top:2px}
+.rev .qt{border:none;background:none;font-family:var(--sans);font-size:12px;color:var(--ink-2);width:66px;padding:1px 0}
+.rev .qt:focus{outline:none;box-shadow:inset 0 -1.5px 0 var(--green)}
+.rev .days{display:flex;align-items:center;background:var(--paper);border-radius:999px;padding:2px}
+.rev .days button{width:26px;height:26px;border-radius:50%;font-size:14px;font-weight:700;color:var(--ink-2);line-height:1}
+.rev .days button:hover{background:#fff;color:var(--green-deep)}
+.rev .days b{font-size:11.5px;font-weight:700;min-width:34px;text-align:center}
+.rev .pr{font-size:11.5px;font-weight:700;color:var(--ink-3);margin-left:auto;flex-shrink:0}
+.addrow{width:100%;border:1.5px dashed var(--line);border-radius:14px;padding:11px;font-size:13px;font-weight:700;color:var(--ink-2)}
+.addrow:hover{border-color:var(--green);color:var(--green-deep)}
+.err .fallback{display:block;margin-top:9px;font-weight:700;color:var(--red);text-decoration:underline;text-underline-offset:3px}
+
+/* photo / receipt capture */
 .snap-hero{margin:10px 22px;background:var(--green-bg);border:1.5px dashed #A9CDB9;border-radius:20px;padding:28px 20px;text-align:center;cursor:pointer;display:block}
 .snap-hero:hover{border-color:var(--green)}
 .snap-hero .ic{font-size:36px;margin-bottom:8px}
 .snap-hero b{font-family:var(--disp);font-size:17px;display:block;margin-bottom:4px}
 .snap-hero p{font-size:13px;color:var(--ink-2);line-height:1.6}
+/* once there is a list to review, the capture prompt steps out of its way */
+#vAdd.reviewing .snap-hero{padding:13px 20px}
+#vAdd.reviewing .snap-hero .ic{font-size:20px;margin-bottom:2px}
+#vAdd.reviewing .snap-hero p{display:none}
+#vAdd.reviewing .snap-hero b{font-size:14px;margin-bottom:0}
 .preview{margin:0 22px 12px;border-radius:18px;overflow:hidden;display:none}
 .preview img{width:100%;display:block;max-height:210px;object-fit:cover}
 .scanning{display:none;margin:6px 22px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;font-size:14px;font-weight:500;color:var(--ink-2)}
 .scanning .dots::after{content:'';animation:dots 1.2s steps(4) infinite}
 @keyframes dots{0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}}
-.detected{margin:0 22px;display:none}
-.detected h3{font-family:var(--disp);font-size:16px;margin:14px 0 10px}
-.det-item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:11px;margin-bottom:8px}
-.det-item input[type=checkbox]{width:18px;height:18px;accent-color:var(--green)}
-.det-item .em{font-size:20px}
-.det-item .nm{font-size:14px;font-weight:700}
-.det-item .qt{font-size:12px;color:var(--ink-2)}
-.det-item .life{margin-left:auto;font-size:11.5px;color:var(--ink-3);font-weight:600}
 .btn-block{display:block;width:calc(100% - 44px);margin:14px 22px}
 .err{display:none;margin:6px 22px;background:var(--red-bg);border-radius:14px;padding:12px 16px;font-size:13px;color:var(--red);line-height:1.5}
 
@@ -115,13 +165,16 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 .serv button.on b{color:var(--green-deep)}
 .recipes{margin:8px 22px;display:flex;flex-direction:column;gap:14px}
 .rec{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
-.rec-top{padding:15px 18px 13px;display:flex;gap:13px;align-items:flex-start;cursor:pointer;width:100%;text-align:left}
-.rec .em{font-size:29px;line-height:1}
-.rec h3{font-family:var(--disp);font-size:16.5px;margin-bottom:3px}
-.rec .meta{font-size:12px;color:var(--ink-2);display:flex;gap:9px;flex-wrap:wrap}
-.rec .meta .warn{color:var(--amber);font-weight:700}
-.rec .meta .ok{color:var(--green-deep);font-weight:700}
-.rec .chev{margin-left:auto;color:var(--ink-3);transition:transform .2s}
+.rec-top{padding:13px 15px 13px 13px;display:flex;gap:13px;align-items:flex-start;cursor:pointer;width:100%;text-align:left}
+/* the emoji sits in a tinted tile where a meal-kit app would put the photo */
+.rec .em{font-size:30px;line-height:1;width:66px;height:66px;flex-shrink:0;border-radius:15px;display:flex;align-items:center;justify-content:center;background:linear-gradient(150deg,var(--lime-bg),var(--green-bg))}
+.rec h3{font-family:var(--disp);font-size:16.5px;margin-bottom:5px;line-height:1.2}
+.rec .meta{font-size:11px;color:var(--ink-2);display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.rec .meta span{background:var(--paper);border-radius:999px;padding:3px 8px;font-weight:600;white-space:nowrap}
+.rec .meta .warn{background:var(--amber-bg);color:var(--amber);font-weight:700}
+.rec .meta .ok{background:var(--green-bg);color:var(--green-deep);font-weight:700}
+.rec .meta .tag{background:var(--lime-bg);color:var(--lime-deep);font-weight:700;letter-spacing:.02em}
+.rec .chev{margin-left:auto;color:var(--ink-3);transition:transform .2s;align-self:center}
 .rec.open .chev{transform:rotate(90deg)}
 .rec-body{display:none;border-top:1px solid var(--line);padding:14px 18px 16px}
 .rec.open .rec-body{display:block}
@@ -198,7 +251,7 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
   <!-- AUTH -->
   <div class="view on" id="vAuth">
     <div class="auth-logo">Shel<span>fie</span></div>
-    <p class="auth-sub">Snap groceries. Save recipes from anywhere.<br>Always know what's missing.</p>
+    <p class="auth-sub">Scan the receipt. Snap the rest.<br>Cook what you have, know what's missing.</p>
     <div id="signupBox">
       <div class="uname-box">
         <div><span class="lab">Your username</span><span class="un" id="unameTxt">—</span></div>
@@ -234,22 +287,74 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
     <div id="pantryList"></div>
   </div>
 
-  <!-- SNAP -->
-  <div class="view" id="vSnap">
-    <div class="head"><div><div class="lg">Snap groceries</div><div class="sub">One photo. Zero typing.</div></div></div>
-    <label class="snap-hero" for="file">
-      <div class="ic">📸</div>
-      <b>Photograph your haul</b>
-      <p>Lay your groceries on the counter — or shoot the open fridge.<br>AI identifies each item and estimates its shelf life.</p>
-    </label>
-    <input type="file" id="file" accept="image/*" capture="environment" style="display:none" onchange="onPhoto(this,'grocery')">
-    <div class="preview" id="preview"><img id="previewImg" alt="Your grocery photo"></div>
-    <div class="scanning" id="scanning">🧠 Recognizing your groceries<span class="dots"></span></div>
+  <!-- ADD -->
+  <div class="view" id="vAdd">
+    <div class="head"><div><div class="lg">Add to pantry</div><div class="sub">Three ways in — take whichever is fastest</div></div></div>
+
+    <div class="srcs">
+      <button class="src on" id="srcReceipt" onclick="setSrc('receipt')">
+        <span class="ic">🧾</span>
+        <span class="tx"><b>Scan the receipt<em>fastest</em></b>
+        <small>Exact names, quantities and prices, straight off the paper — including everything already bagged.</small></span>
+      </button>
+      <button class="src" id="srcPhoto" onclick="setSrc('photo')">
+        <span class="ic">📸</span>
+        <span class="tx"><b>Photograph the food</b>
+        <small>Market produce, a gift, leftovers, the open fridge — whatever came home without a receipt.</small></span>
+      </button>
+      <button class="src" id="srcType" onclick="setSrc('type')">
+        <span class="ic">✍️</span>
+        <span class="tx"><b>Type one in</b>
+        <small>Slower, but it never fails and it is always here — one item, four taps.</small></span>
+      </button>
+    </div>
+
+    <div class="pane on" id="paneReceipt">
+      <label class="snap-hero" for="recFile">
+        <div class="ic">🧾</div>
+        <b>Photograph your receipt</b>
+        <p>Flatten it and shoot top to bottom.<br>AI reads each line, skips the bags and tax, and expands<br>the store's shorthand back into real food names.</p>
+      </label>
+      <input type="file" id="recFile" accept="image/*" capture="environment" style="display:none" onchange="onPhoto(this,'receipt')">
+      <div class="preview" id="recPreview"><img id="recImg" alt="Your grocery receipt"></div>
+    </div>
+
+    <div class="pane" id="panePhoto">
+      <label class="snap-hero" for="file">
+        <div class="ic">📸</div>
+        <b>Photograph your haul</b>
+        <p>Lay the groceries on the counter — or shoot the open fridge.<br>AI identifies each item and estimates its shelf life.</p>
+      </label>
+      <input type="file" id="file" accept="image/*" capture="environment" style="display:none" onchange="onPhoto(this,'grocery')">
+      <div class="preview" id="preview"><img id="previewImg" alt="Your grocery photo"></div>
+    </div>
+
+    <div class="pane" id="paneType">
+      <div class="mform">
+        <label for="mName">What did you get?</label>
+        <input id="mName" placeholder="e.g. Chicken thighs" autocomplete="off">
+        <label for="mQty">How much of it?</label>
+        <input id="mQty" placeholder="e.g. 4 pieces — or leave it blank" autocomplete="off">
+        <label>Good for about</label>
+        <div class="lifechips" id="lifeChips">
+          <button class="on" data-d="2" onclick="setLife(this)">2 days<span>meat, fish, greens</span></button>
+          <button data-d="5" onclick="setLife(this)">5 days<span>most produce</span></button>
+          <button data-d="10" onclick="setLife(this)">10 days<span>dairy, bread</span></button>
+          <button data-d="180" onclick="setLife(this)">6 months<span>staples, cans, rice</span></button>
+        </div>
+        <button class="btn-main" onclick="addTyped()">Put it on the list ↓</button>
+      </div>
+    </div>
+
+    <div class="scanning" id="scanning">🧠 Reading your groceries<span class="dots"></span></div>
     <div class="err" id="snapErr"></div>
-    <div class="detected" id="detected">
-      <h3>Found in your photo — uncheck anything wrong</h3>
-      <div id="detList"></div>
-      <button class="btn-main btn-block" onclick="addDetected()">Add to pantry</button>
+
+    <div class="review" id="review">
+      <div class="rev-h"><h3>Before it goes in</h3><span class="from" id="revFrom"></span></div>
+      <p class="rev-note" id="revNote">Correct anything that is wrong, uncheck what you don't want, and set how long you expect it to last.</p>
+      <div id="revList"></div>
+      <button class="addrow" onclick="addBlankRow()">＋ Add something it missed</button>
+      <button class="btn-main btn-block" id="revBtn" onclick="commitReview()">Add to pantry</button>
     </div>
   </div>
 
@@ -274,7 +379,7 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
       <div class="scanning" id="cookLoad">👩‍🍳 Planning your portions<span class="dots"></span></div>
       <div class="err" id="cookErr"></div>
       <div class="recipes" id="recipes"></div>
-      <div class="cook-empty" id="cookEmpty" style="display:none"><div class="big">🥕</div>Your pantry is empty.<br>Snap your groceries first and I'll take it from there.</div>
+      <div class="cook-empty" id="cookEmpty" style="display:none"><div class="big">🥕</div>Your pantry is empty.<br>Scan a receipt or snap your groceries first —<br>I'll take it from there.</div>
     </div>
 
     <!-- Cookbook mode -->
@@ -337,7 +442,7 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
   <!-- TABS -->
   <nav class="tabbar" id="tabbar">
     <button class="tab on" id="tPantry" onclick="go('pantry')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 10h16M4 10V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4M4 10v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M9 14h6"/></svg>Pantry</button>
-    <div class="tab-snap"><button class="snap-fab" aria-label="Snap groceries" onclick="go('snap')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.4"/></svg></button></div>
+    <div class="tab-snap"><button class="snap-fab" aria-label="Add to pantry" onclick="go('add')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></div>
     <button class="tab" id="tCook" onclick="go('cook')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v3M12 2v4M16 3v3M5 10h14l-1 10a1.5 1.5 0 0 1-1.5 1.3h-9A1.5 1.5 0 0 1 6 20z"/></svg>Cook</button>
   </nav>
   <div class="toast" id="toast"></div>
@@ -358,8 +463,10 @@ let pantry=[
   {name:"Soy sauce",emoji:"🫙",qty:"1 bottle",days:365}
 ];
 let prepped=[], cookbook=[], saved=0, cookedCount=0, servings=1, detected=[], pendingRecipe=null;
+let src='receipt', typedDays=2;
 const $=id=>document.getElementById(id);
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function escA(s){return esc(s).replace(/"/g,'&quot;');}
 
 let signedIn=false;
 async function persist(){
@@ -468,8 +575,8 @@ let toastT;
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2100);}
 function go(k){
   if(!profile)return;
-  ['vPantry','vSnap','vCook','vAcct','vImport'].forEach(v=>$(v).classList.remove('on'));
-  $({pantry:'vPantry',snap:'vSnap',cook:'vCook',acct:'vAcct',import:'vImport'}[k]).classList.add('on');
+  ['vPantry','vAdd','vCook','vAcct','vImport'].forEach(v=>$(v).classList.remove('on'));
+  $({pantry:'vPantry',add:'vAdd',cook:'vCook',acct:'vAcct',import:'vImport'}[k]).classList.add('on');
   $('tPantry').classList.toggle('on',k==='pantry');
   $('tCook').classList.toggle('on',k==='cook'||k==='import');
   if(k==='pantry')renderPantry();
@@ -491,17 +598,23 @@ function setImp(m){
 }
 
 /* ---------- pantry ---------- */
-function lifeLabel(d){return d<=1?(d<=0?'eat today':'1 day left'):d+' days left';}
+function lifeLabel(d){
+  if(d<=0)return 'eat today';
+  if(d===1)return '1 day left';
+  if(d>=60)return '~'+Math.round(d/30)+' months left';
+  return d+' days left';
+}
 function lifeClass(d){return d<=1?'d0':(d<=3?'d1':'d2');}
 function renderPantry(){
   const el=$('pantryList');
-  if(!pantry.length&&!prepped.length){el.innerHTML='<div class="empty-pan"><div class="big">🧺</div><b>Nothing tracked yet.</b><br>Tap the camera below after your next grocery run.</div>';return;}
+  if(!pantry.length&&!prepped.length){el.innerHTML='<div class="empty-pan"><div class="big">🧺</div><b>Nothing tracked yet.</b><br>Tap ＋ below and scan the receipt from your<br>last grocery run — it takes one photo.</div>';return;}
   const soon=pantry.filter(p=>p.days<=3).sort((a,b)=>a.days-b.days);
   const fresh=pantry.filter(p=>p.days>3&&p.days<=30).sort((a,b)=>a.days-b.days);
   const staple=pantry.filter(p=>p.days>30);
   const prow=(p,i)=>`<div class="item prepitem"><span class="em">🍱</span><div><div class="nm">${esc(p.name)}</div><div class="qt">${p.portions} portion${p.portions>1?'s':''} ready to eat</div></div><span class="life dp">eat within ${p.days}d</span><button class="del" aria-label="Eat one portion" onclick="eatPrep(${i})">✓</button></div>`;
   const row=p=>{const i=pantry.indexOf(p);
-    return `<div class="item"><span class="em">${p.emoji||'🛒'}</span><div><div class="nm">${esc(p.name)}</div><div class="qt">${esc(p.qty||'')}</div></div><span class="life ${lifeClass(p.days)}">${lifeLabel(p.days)}</span><button class="del" aria-label="Remove ${esc(p.name)}" onclick="delItem(${i})">✕</button></div>`;};
+    const sub=[p.qty,p.price?'$'+Number(p.price).toFixed(2):''].filter(Boolean).join(' · ');
+    return `<div class="item"><span class="em">${p.emoji||'🛒'}</span><div><div class="nm">${esc(p.name)}</div><div class="qt">${esc(sub)}</div></div><span class="life ${lifeClass(p.days)}">${lifeLabel(p.days)}</span><button class="del" aria-label="Remove ${esc(p.name)}" onclick="delItem(${i})">✕</button></div>`;};
   const grp=(cls,title,html,n)=>n?`<div class="grp"><div class="grp-h ${cls}"><b>${title}</b><span class="n">${n}</span></div>${html}</div>`:'';
   el.innerHTML=
     grp('prep','🍱 Prepped &amp; ready',prepped.map(prow).join(''),prepped.length)+
@@ -511,7 +624,12 @@ function renderPantry(){
 }
 function delItem(i){
   const p=pantry[i]; pantry.splice(i,1);
-  if(p.days<=3){saved+=3;toast('Nice — used before it expired');}else toast('Removed '+p.name);
+  /* A receipt-scanned item knows its real price, so the counter stops guessing. */
+  if(p.days<=3){
+    const c=Math.max(1,Math.round(Number(p.price)||3));
+    saved+=c;
+    toast(p.price?`Nice — $${Number(p.price).toFixed(2)} rescued instead of binned`:'Nice — used before it expired');
+  }else toast('Removed '+p.name);
   $('savedChip').textContent='est. $'+saved+' saved';
   renderPantry(); persist();
 }
@@ -523,7 +641,37 @@ function eatPrep(i){
   renderPantry(); persist();
 }
 
-/* ---------- shared photo handler ---------- */
+/* ---------- add to pantry: three sources, one review ---------- */
+/* Receipt, photo and typing all land in the same editable `detected` list.
+   Nothing reaches the pantry until it has been through that list, and no
+   source is a dead end: when a scan fails the error offers the typed path. */
+function setSrc(s){
+  src=s;
+  [['receipt','srcReceipt','paneReceipt'],['photo','srcPhoto','panePhoto'],['type','srcType','paneType']]
+    .forEach(([k,btn,pane])=>{$(btn).classList.toggle('on',k===s);$(pane).classList.toggle('on',k===s);});
+  $('snapErr').style.display='none';
+  if(s==='type')setTimeout(()=>$('mName').focus(),60);
+}
+function setLife(el){
+  [...$('lifeChips').children].forEach(b=>b.classList.remove('on'));
+  el.classList.add('on'); typedDays=+el.dataset.d;
+}
+
+/* keyword → emoji, so a typed item still gets a face without an API call */
+const EMOJI=[[/chicken|thigh|wing|poultry/,'🍗'],[/beef|steak|mince|pork|lamb|bacon/,'🥩'],
+  [/fish|salmon|tuna|shrimp|prawn/,'🐟'],[/egg/,'🥚'],[/milk|cream|yogurt|yoghurt/,'🥛'],
+  [/cheese|parmesan|mozzarella/,'🧀'],[/bread|bagel|bun|toast/,'🍞'],[/rice|grain/,'🍚'],
+  [/pasta|noodle|spaghetti|ramen/,'🍝'],[/spinach|lettuce|kale|salad|greens|cabbage/,'🥬'],
+  [/tomato/,'🍅'],[/onion|shallot/,'🧅'],[/garlic/,'🧄'],[/potato/,'🥔'],[/carrot/,'🥕'],
+  [/pepper|chili|chilli/,'🌶️'],[/mushroom/,'🍄'],[/broccoli/,'🥦'],[/cucumber|zucchini/,'🥒'],
+  [/apple/,'🍎'],[/banana/,'🍌'],[/lemon|lime/,'🍋'],[/berry|berries/,'🫐'],[/avocado/,'🥑'],
+  [/tofu|bean|lentil/,'🫘'],[/oil|sauce|vinegar|soy/,'🫙'],[/corn/,'🌽'],[/butter/,'🧈']];
+function guessEmoji(name){
+  const n=String(name).toLowerCase();
+  const hit=EMOJI.find(([re])=>re.test(n));
+  return hit?hit[1]:'🛒';
+}
+
 function onPhoto(inp,kind){
   const f=inp.files&&inp.files[0]; if(!f)return;
   const img=new Image();
@@ -532,21 +680,59 @@ function onPhoto(inp,kind){
     const c=document.createElement('canvas'); c.width=img.width*sc; c.height=img.height*sc;
     c.getContext('2d').drawImage(img,0,0,c.width,c.height);
     const dataUrl=c.toDataURL('image/jpeg',.85);
-    if(kind==='grocery'){
-      $('snapErr').style.display='none';$('detected').style.display='none';
-      $('previewImg').src=dataUrl;$('preview').style.display='block';
-      scanGroceries(dataUrl.split(',')[1]);
-    }else{
+    if(kind==='recipe'){
       $('impErr').style.display='none';$('impPreview').innerHTML='';
       $('shotImg').src=dataUrl;$('shotPreview').style.display='block';
       importFromImage(dataUrl.split(',')[1]);
+      return;
+    }
+    $('snapErr').style.display='none';
+    if(kind==='receipt'){
+      $('recImg').src=dataUrl;$('recPreview').style.display='block';
+      scanReceipt(dataUrl.split(',')[1]);
+    }else{
+      $('previewImg').src=dataUrl;$('preview').style.display='block';
+      scanGroceries(dataUrl.split(',')[1]);
     }
   };
   img.src=URL.createObjectURL(f);
 }
 
-/* ---------- grocery scan ---------- */
+/* ---------- receipt scan ---------- */
+async function scanReceipt(b64){
+  $('scanning').textContent='🧾 Reading the receipt';
+  $('scanning').insertAdjacentHTML('beforeend','<span class="dots"></span>');
+  $('scanning').style.display='block';
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1400,messages:[{role:'user',content:[
+        {type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},
+        {type:'text',text:'This is a photo of a grocery store receipt. Extract only the food and drink line items. Expand the store’s abbreviations into plain English names (e.g. "CHKN THGH BNLS" becomes "Chicken thighs"). Respond with ONLY this JSON object, no markdown fences, no prose: {"store":"store name or empty string","date":"purchase date as printed, or empty string","items":[{"name":"plain english name","emoji":"one fitting emoji","qty":"quantity as printed, e.g. 2 or 1.4 lb, or empty string","price":number in dollars,"days":estimated days until it should be used (integer; produce 2-7, meat/fish 2-3, dairy 7-14, eggs 21, pantry staples 180+)}],"skipped":number of non-food lines you ignored such as bags, tax, totals and household goods}. Max 20 items. If this image is not a receipt, respond with exactly {"error":"notreceipt"}.'}
+      ]}]})
+    });
+    const data=await r.json();
+    const txt=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+    const jm=txt.match(/\{[\s\S]*\}/);
+    const out=JSON.parse((jm?jm[0]:txt).replace(/```json|```/g,'').trim());
+    $('scanning').style.display='none';
+    if(out.error||!Array.isArray(out.items)||!out.items.length){
+      addErr("That doesn't read like a receipt — try a flatter shot with the item lines in frame.");return;
+    }
+    detected=out.items.map(normRow);
+    const bits=[out.store,out.date].filter(Boolean).join(' · ');
+    showReview(bits||'From your receipt',
+      `${detected.length} food line${detected.length>1?'s':''} read off the receipt${out.skipped?`, ${out.skipped} non-food line${out.skipped>1?'s':''} skipped`:''}. Prices came with them, so the pantry knows what each item cost.`);
+  }catch(e){
+    $('scanning').style.display='none';
+    addErr("The receipt scan didn't go through. Check your connection and try again.");
+  }
+}
+
+/* ---------- grocery photo scan ---------- */
 async function scanGroceries(b64){
+  $('scanning').textContent='🧠 Recognizing your groceries';
+  $('scanning').insertAdjacentHTML('beforeend','<span class="dots"></span>');
   $('scanning').style.display='block';
   try{
     const r=await fetch('https://api.anthropic.com/v1/messages',{
@@ -558,22 +744,113 @@ async function scanGroceries(b64){
     });
     const data=await r.json();
     const txt=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
-    detected=JSON.parse(txt.replace(/```json|```/g,'').trim());
+    const jm=txt.match(/\[[\s\S]*\]/);
+    const rows=JSON.parse((jm?jm[0]:txt).replace(/```json|```/g,'').trim());
     $('scanning').style.display='none';
-    if(!Array.isArray(detected)||!detected.length){const e=$('snapErr');e.textContent="Couldn't spot any food in that photo — try better lighting or a closer shot.";e.style.display='block';return;}
-    $('detList').innerHTML=detected.map((d,i)=>`<label class="det-item"><input type="checkbox" checked data-i="${i}"><span class="em">${d.emoji||'🛒'}</span><div><div class="nm">${esc(d.name)}</div><div class="qt">${esc(d.qty||'')}</div></div><span class="life">~${d.days} days</span></label>`).join('');
-    $('detected').style.display='block';
+    if(!Array.isArray(rows)||!rows.length){
+      addErr("Couldn't spot any food in that photo — try better lighting or a closer shot.");return;
+    }
+    detected=rows.map(normRow);
+    showReview('From your photo',
+      `${detected.length} item${detected.length>1?'s':''} recognized. A photo can't see inside packaging or read weights, so check the quantities — and add anything still in the bag.`);
   }catch(e){
     $('scanning').style.display='none';
-    const el=$('snapErr');el.textContent="The scan didn't go through. Check your connection and try again.";el.style.display='block';
+    addErr("The scan didn't go through. Check your connection and try again.");
   }
 }
-function addDetected(){
-  const picks=[...document.querySelectorAll('#detList input:checked')].map(c=>detected[+c.dataset.i]);
-  pantry=pantry.concat(picks.map(p=>({name:p.name,emoji:p.emoji,qty:p.qty,days:Math.max(1,parseInt(p.days)||3)})));
-  toast(picks.length+' items added to pantry');
-  $('detected').style.display='none';$('preview').style.display='none';$('file').value='';
+
+/* ---------- typed entry ---------- */
+function addTyped(){
+  const name=$('mName').value.trim();
+  if(!name){toast('Type what you got first');return;}
+  detected.push(normRow({name,qty:$('mQty').value.trim(),days:typedDays,emoji:guessEmoji(name)}));
+  $('mName').value='';$('mQty').value='';$('mName').focus();
+  showReview('Typed in','Keep going if you have more, then send the whole list in at once.');
+  toast(name+' added to the list below');
+}
+
+/* ---------- the review step everything passes through ---------- */
+function normRow(d){
+  return {name:String(d.name||'Unnamed item'),
+    emoji:d.emoji||guessEmoji(d.name||''),
+    qty:d.qty?String(d.qty):'',
+    price:(typeof d.price==='number'&&d.price>0)?d.price:null,
+    days:Math.max(1,parseInt(d.days)||3), off:false};
+}
+function showReview(from,note){
+  $('revFrom').textContent=from;
+  $('revNote').textContent=note;
+  $('review').style.display='block';
+  $('vAdd').classList.add('reviewing');
+  renderReview();
+}
+function renderReview(){
+  $('revList').innerHTML=detected.map((d,i)=>`
+    <div class="rev${d.off?' off':''}" id="rev${i}">
+      <input type="checkbox" ${d.off?'':'checked'} onchange="keepRow(${i},this.checked)" aria-label="Keep ${escA(d.name)}">
+      <span class="em">${esc(d.emoji)}</span>
+      <div class="f">
+        <input class="nm" value="${escA(d.name)}" oninput="editRow(${i},'name',this.value)" aria-label="Item name">
+        <div class="sub">
+          <input class="qt" value="${escA(d.qty)}" placeholder="how much" oninput="editRow(${i},'qty',this.value)" aria-label="Quantity">
+          <span class="days">
+            <button onclick="bumpDays(${i},-1)" aria-label="Shorter shelf life">−</button>
+            <b id="d${i}">${lifeShort(d.days)}</b>
+            <button onclick="bumpDays(${i},1)" aria-label="Longer shelf life">+</button>
+          </span>
+          ${d.price?`<span class="pr">$${d.price.toFixed(2)}</span>`:''}
+        </div>
+      </div>
+    </div>`).join('');
+  updateRevBtn();
+}
+function lifeShort(d){return d>=60?Math.round(d/30)+' mo':d+'d';}
+function editRow(i,k,v){detected[i][k]=v;}
+function keepRow(i,on){
+  detected[i].off=!on;
+  $('rev'+i).classList.toggle('off',!on);
+  updateRevBtn();
+}
+function bumpDays(i,dir){
+  const cur=detected[i].days;
+  const step=cur<=7?1:(cur<=30?7:30);
+  detected[i].days=Math.max(1,cur+dir*step);
+  $('d'+i).textContent=lifeShort(detected[i].days);
+}
+function addBlankRow(){
+  detected.push(normRow({name:'',qty:'',days:5,emoji:'🛒'}));
+  renderReview();
+  const rows=document.querySelectorAll('#revList .nm');
+  rows[rows.length-1].focus();
+}
+function updateRevBtn(){
+  const n=detected.filter(d=>!d.off&&d.name.trim()).length;
+  const b=$('revBtn');
+  b.disabled=!n;
+  b.textContent=n?`Add ${n} item${n>1?'s':''} to pantry`:'Nothing checked';
+}
+function commitReview(){
+  const picks=detected.filter(d=>!d.off&&d.name.trim());
+  if(!picks.length)return;
+  pantry=pantry.concat(picks.map(p=>({name:p.name.trim(),emoji:p.emoji,qty:p.qty,price:p.price,days:p.days})));
+  toast(picks.length+(picks.length>1?' items':' item')+' added to pantry');
+  resetAdd();
   renderPantry(); persist(); go('pantry');
+}
+function resetAdd(){
+  detected=[];
+  $('review').style.display='none';
+  $('vAdd').classList.remove('reviewing');
+  $('snapErr').style.display='none';
+  $('preview').style.display='none';$('recPreview').style.display='none';
+  $('file').value='';$('recFile').value='';
+  $('mName').value='';$('mQty').value='';
+}
+/* No scan is a dead end: the failure message carries the typed path with it. */
+function addErr(msg){
+  const el=$('snapErr');
+  el.innerHTML=esc(msg)+'<button class="fallback" onclick="setSrc(\'type\')">Type it in instead — that always works ›</button>';
+  el.style.display='block';
 }
 
 /* ---------- recipe import ---------- */
@@ -740,7 +1017,7 @@ async function getRecipes(){
         <button class="rec-top" onclick="$('rec${i}').classList.toggle('open')" aria-expanded="false">
           <span class="em">${rc.emoji||'🍽️'}</span>
           <div><h3>${esc(rc.name)}</h3>
-            <div class="meta"><span>⏱ ${rc.time_min} min</span><span>${servings} serving${servings>1?'s':''}</span>${(rc.missing&&rc.missing.length)?`<span class="warn">buy: ${rc.missing.map(esc).join(', ')}</span>`:'<span class="ok">✓ all from your pantry</span>'}</div>
+            <div class="meta"><span>⏱ ${rc.time_min} min</span>${(rc.missing&&rc.missing.length)?`<span class="warn">buy: ${rc.missing.map(esc).join(', ')}</span>`:'<span class="ok">✓ all from your pantry</span>'}${recTags(rc)}</div>
           </div><span class="chev">›</span>
         </button>
         <div class="rec-body">
@@ -755,6 +1032,18 @@ async function getRecipes(){
     $('cookLoad').style.display='none';$('cookBtn').disabled=false;
     const el=$('cookErr');el.textContent="Couldn't fetch ideas just now — give it another try in a moment.";el.style.display='block';
   }
+}
+/* Meal-kit apps badge their cards with lifestyle labels; ours badges them with
+   facts only this pantry knows — what the dish rescues, how far it stretches. */
+function recTags(rc){
+  const t=[];
+  const soon=pantry.filter(p=>p.days<=3).map(p=>norm(p.name));
+  const rescues=(rc.uses||[]).filter(u=>{
+    const n=norm(u); return soon.some(s=>s.includes(n)||n.includes(s));
+  }).length;
+  if(rescues)t.push('rescues '+rescues+' expiring');
+  if(servings>1)t.push(servings+' meals in one cook');
+  return t.map(x=>`<span class="tag">${esc(x)}</span>`).join('');
 }
 function madeIt(i){
   const rc=window._recs[i]; const btn=$('made'+i);
