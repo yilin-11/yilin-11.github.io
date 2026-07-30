@@ -38,7 +38,9 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 
 /* auth */
 #vAuth{background:linear-gradient(180deg,var(--green-bg) 0%,var(--paper) 46%);padding:0 26px;justify-content:center}
-.auth-logo{font-family:var(--disp);font-weight:700;font-size:44px;text-align:center;letter-spacing:-.02em}
+.auth-shot{border-radius:20px;overflow:hidden;margin-bottom:20px;box-shadow:0 10px 30px rgba(15,40,28,.14)}
+.auth-shot img{display:block;width:100%;height:150px;object-fit:cover}
+.auth-logo{font-family:var(--disp);font-weight:700;font-size:40px;text-align:center;letter-spacing:-.02em}
 .auth-logo span{color:var(--green)}
 .auth-sub{text-align:center;font-size:14px;color:var(--ink-2);margin:6px 0 26px;line-height:1.6}
 .uname-box{background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:13px}
@@ -65,7 +67,10 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 .grp-h.fresh b{color:var(--green-deep)}.grp-h.staple b{color:var(--ink-3)}
 .item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 14px;display:flex;align-items:center;gap:12px;margin-bottom:8px}
 .item.prepitem{border-color:#D8D2EE;background:#FBFAFE}
-.item .em{font-size:22px;width:30px;text-align:center}
+.item .em,.rev .em{position:relative;flex-shrink:0;width:42px;height:42px;border-radius:11px;overflow:hidden;background:var(--green-bg);display:flex;align-items:center;justify-content:center;font-size:20px}
+.item .em img,.rev .em img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.item .em i,.rev .em i{font-style:normal}
+.rev .em{width:38px;height:38px;border-radius:10px}
 .item .nm{font-size:14.5px;font-weight:700}
 .item .qt{font-size:12px;color:var(--ink-2)}
 .item .life{margin-left:auto;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}
@@ -115,15 +120,14 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 .rev{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:9px 12px;display:flex;align-items:center;gap:10px;margin-bottom:8px}
 .rev.off{opacity:.42}
 .rev input[type=checkbox]{width:18px;height:18px;accent-color:var(--green);flex-shrink:0}
-.rev .em{font-size:19px;width:23px;text-align:center;flex-shrink:0}
 .rev .f{flex:1;min-width:0}
-.rev .nm{width:100%;border:none;background:none;font-family:var(--sans);font-size:14px;font-weight:700;color:var(--ink);padding:2px 0}
+.rev .nm{width:100%;border:none;border-bottom:1px dashed #C8D3CC;background:none;font-family:var(--sans);font-size:14px;font-weight:700;color:var(--ink);padding:2px 0}
 .rev .nm:focus{outline:none;box-shadow:inset 0 -1.5px 0 var(--green)}
 .rev .sub{display:flex;align-items:center;gap:9px;margin-top:2px}
-.rev .qt{border:none;background:none;font-family:var(--sans);font-size:12px;color:var(--ink-2);width:66px;padding:1px 0}
+.rev .qt{border:none;border-bottom:1px dashed #C8D3CC;background:none;font-family:var(--sans);font-size:12px;color:var(--ink-2);width:66px;padding:1px 0}
 .rev .qt:focus{outline:none;box-shadow:inset 0 -1.5px 0 var(--green)}
 .rev .days{display:flex;align-items:center;background:var(--paper);border-radius:999px;padding:2px}
-.rev .days button{width:26px;height:26px;border-radius:50%;font-size:14px;font-weight:700;color:var(--ink-2);line-height:1}
+.rev .days button{width:30px;height:30px;border-radius:50%;font-size:15px;font-weight:700;color:var(--ink-2);line-height:1}
 .rev .days button:hover{background:#fff;color:var(--green-deep)}
 .rev .days b{font-size:11.5px;font-weight:700;min-width:34px;text-align:center}
 .rev .pr{font-size:11.5px;font-weight:700;color:var(--ink-3);margin-left:auto;flex-shrink:0}
@@ -158,11 +162,16 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 .cook-intro b{color:var(--ink)}
 .serv-label{margin:12px 22px 8px;font-size:13px;font-weight:700}
 /* menu preferences: a picker inside the cooking flow, not a settings screen */
-.mchips{display:flex;flex-wrap:wrap;gap:7px;margin:0 22px 4px}
-.mchips button{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:700;color:var(--ink-2);display:flex;align-items:center;gap:6px}
-.mchips button:hover{border-color:#A9CDB9}
-.mchips button.on{border-color:var(--lime);background:var(--lime-bg);color:var(--lime-deep)}
-.mchips .none{font-size:12px;color:var(--ink-3);align-self:center;margin-left:2px}
+.mchips{display:flex;gap:9px;margin:0 0 6px;padding:2px 22px 4px;overflow-x:auto;scrollbar-width:none}
+.mchips::-webkit-scrollbar{display:none}
+.mtile{position:relative;flex:0 0 108px;height:74px;border-radius:14px;overflow:hidden;border:2px solid transparent;background:var(--green-bg);text-align:left;display:block}
+.mtile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.mtile::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 30%,rgba(10,26,18,.72) 100%)}
+.mtile .lab{position:absolute;left:8px;right:8px;bottom:7px;z-index:2;color:#fff;font-size:11.5px;font-weight:700;line-height:1.25;text-shadow:0 1px 3px rgba(0,0,0,.45)}
+.mtile .tick{position:absolute;top:6px;right:6px;z-index:2;width:20px;height:20px;border-radius:50%;background:var(--lime);color:#12280f;font-size:12px;font-weight:700;display:none;align-items:center;justify-content:center}
+.mtile.on{border-color:var(--lime)}
+.mtile.on .tick{display:flex}
+.mhint{margin:0 22px 4px;font-size:12px;color:var(--ink-3);font-weight:600}
 .serv{display:flex;gap:8px;margin:0 22px}
 .serv button{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:10px 6px;text-align:center;transition:all .12s}
 .serv button b{display:block;font-family:var(--disp);font-size:17px}
@@ -172,8 +181,18 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 .recipes{margin:8px 22px;display:flex;flex-direction:column;gap:14px}
 .rec{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
 .rec-top{padding:13px 15px 13px 13px;display:flex;gap:13px;align-items:flex-start;cursor:pointer;width:100%;text-align:left}
-/* the emoji sits in a tinted tile where a meal-kit app would put the photo */
-.rec .em{font-size:30px;line-height:1;width:66px;height:66px;flex-shrink:0;border-radius:15px;display:flex;align-items:center;justify-content:center;background:linear-gradient(150deg,var(--lime-bg),var(--green-bg))}
+/* photo tile, with the emoji underneath it as the fallback if it fails to load */
+.rec .em{font-size:30px;line-height:1;width:66px;height:66px;flex-shrink:0;border-radius:15px;display:flex;align-items:center;justify-content:center;background:linear-gradient(150deg,var(--lime-bg),var(--green-bg));position:relative;overflow:hidden}
+.rec .em img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.rec .em i{font-style:normal}
+/* the first idea gets the full-bleed treatment a meal-kit menu leads with */
+.rec--hero .rec-top{display:block;padding:0;position:relative}
+.rec--hero .em{width:100%;height:168px;border-radius:0;font-size:44px}
+.rec--hero .em::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 45%,rgba(12,28,20,.62) 100%)}
+.rec--hero .rec-top>div{padding:12px 16px 14px}
+.rec--hero h3{font-size:19px}
+.rec--hero .chev{display:none}
+.rec--hero .flag{position:absolute;top:12px;left:12px;z-index:2;background:var(--lime);color:#12280f;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border-radius:999px}
 .rec h3{font-family:var(--disp);font-size:16.5px;margin-bottom:5px;line-height:1.2}
 .rec .meta{font-size:11px;color:var(--ink-2);display:flex;gap:5px;flex-wrap:wrap;align-items:center}
 .rec .meta span{background:var(--paper);border-radius:999px;padding:3px 8px;font-weight:600;white-space:nowrap}
@@ -256,6 +275,7 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 
   <!-- AUTH -->
   <div class="view on" id="vAuth">
+    <div class="auth-shot"><img src="assets/shelfie/hero.jpg" alt="A home-cooked dinner plated on a table" loading="lazy"></div>
     <div class="auth-logo">Shel<span>fie</span></div>
     <p class="auth-sub">Scan the receipt. Snap the rest.<br>Cook what you have, know what's missing.</p>
     <div id="signupBox">
@@ -298,17 +318,17 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
     <div class="head"><div><div class="lg">Add to pantry</div><div class="sub">Three ways in — take whichever is fastest</div></div></div>
 
     <div class="srcs">
-      <button class="src on" id="srcReceipt" onclick="setSrc('receipt')">
+      <button class="src on" id="srcReceipt" aria-pressed="true" onclick="setSrc('receipt')">
         <span class="ic">🧾</span>
         <span class="tx"><b>Scan the receipt<em>fastest</em></b>
         <small>Exact names, quantities and prices, straight off the paper — including everything already bagged.</small></span>
       </button>
-      <button class="src" id="srcPhoto" onclick="setSrc('photo')">
+      <button class="src" id="srcPhoto" aria-pressed="false" onclick="setSrc('photo')">
         <span class="ic">📸</span>
         <span class="tx"><b>Photograph the food</b>
         <small>Market produce, a gift, leftovers, the open fridge — whatever came home without a receipt.</small></span>
       </button>
-      <button class="src" id="srcType" onclick="setSrc('type')">
+      <button class="src" id="srcType" aria-pressed="false" onclick="setSrc('type')">
         <span class="ic">✍️</span>
         <span class="tx"><b>Type one in</b>
         <small>Slower, but it never fails and it is always here — one item, four taps.</small></span>
@@ -377,6 +397,7 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
       <p class="cook-intro" id="cookIntro"></p>
       <div class="serv-label">Anything I should stick to?</div>
       <div class="mchips" id="menuChips" role="group" aria-label="Menu preferences"></div>
+      <p class="mhint" id="menuHint">Nothing picked — anything goes</p>
       <div class="serv-label">How many servings?</div>
       <div class="serv" role="radiogroup" aria-label="Servings">
         <button class="on" data-s="1" onclick="setServ(this)"><b>1</b><span>Just tonight</span></button>
@@ -622,7 +643,7 @@ function renderPantry(){
   const prow=(p,i)=>`<div class="item prepitem"><span class="em">🍱</span><div><div class="nm">${esc(p.name)}</div><div class="qt">${p.portions} portion${p.portions>1?'s':''} ready to eat</div></div><span class="life dp">eat within ${p.days}d</span><button class="del" aria-label="Eat one portion" onclick="eatPrep(${i})">✓</button></div>`;
   const row=p=>{const i=pantry.indexOf(p);
     const sub=[p.qty,p.price?'$'+Number(p.price).toFixed(2):''].filter(Boolean).join(' · ');
-    return `<div class="item"><span class="em">${p.emoji||'🛒'}</span><div><div class="nm">${esc(p.name)}</div><div class="qt">${esc(sub)}</div></div><span class="life ${lifeClass(p.days)}">${lifeLabel(p.days)}</span><button class="del" aria-label="Remove ${esc(p.name)}" onclick="delItem(${i})">✕</button></div>`;};
+    return `<div class="item">${ingThumb(p)}<div><div class="nm">${esc(p.name)}</div><div class="qt">${esc(sub)}</div></div><span class="life ${lifeClass(p.days)}">${lifeLabel(p.days)}</span><button class="del" aria-label="Remove ${esc(p.name)}" onclick="delItem(${i})">✕</button></div>`;};
   const grp=(cls,title,html,n)=>n?`<div class="grp"><div class="grp-h ${cls}"><b>${title}</b><span class="n">${n}</span></div>${html}</div>`:'';
   el.innerHTML=
     grp('prep','🍱 Prepped &amp; ready',prepped.map(prow).join(''),prepped.length)+
@@ -656,13 +677,43 @@ function eatPrep(i){
 function setSrc(s){
   src=s;
   [['receipt','srcReceipt','paneReceipt'],['photo','srcPhoto','panePhoto'],['type','srcType','paneType']]
-    .forEach(([k,btn,pane])=>{$(btn).classList.toggle('on',k===s);$(pane).classList.toggle('on',k===s);});
+    .forEach(([k,btn,pane])=>{
+      $(btn).classList.toggle('on',k===s);
+      $(btn).setAttribute('aria-pressed',String(k===s));
+      $(pane).classList.toggle('on',k===s);
+    });
   $('snapErr').style.display='none';
   if(s==='type')setTimeout(()=>$('mName').focus(),60);
 }
 function setLife(el){
   [...$('lifeChips').children].forEach(b=>b.classList.remove('on'));
   el.classList.add('on'); typedDays=+el.dataset.d;
+}
+
+/* Dish photos: a small fixed library keyed by what is in the name. A generated
+   recipe can be anything, so a real photo per dish is impossible — a category
+   photo plus the emoji as fallback is the honest version of a photo-led card. */
+const IMG='assets/shelfie/';
+const PHOTO=[[/chicken|thigh|poultry|wing/,'chicken'],[/beef|steak|pork|lamb|mince|burger|bacon/,'beef'],
+  [/salmon|fish|tuna|cod|shrimp|prawn|seafood/,'fish'],[/egg|omelet|frittata|shakshuka/,'eggs'],
+  [/rice bowl|bibimbap|donburi|fried rice|rice$|over rice|congee/,'ricebowl'],
+  [/noodle|ramen|pho|udon|soba|yakisoba|lo mein/,'noodles'],
+  [/pasta|spaghetti|penne|linguine|carbonara|lasagna|mac and cheese/,'pasta'],
+  [/salad|slaw|greens bowl/,'salad'],[/soup|broth|chowder|stew|congee/,'soup'],
+  [/stir[- ]?fry|wok|sauté|saute/,'stirfry'],[/curry|masala|tikka|dal|daal/,'curry'],
+  [/toast|sandwich|bagel|panini|bread|bruschetta/,'toast'],
+  [/taco|burrito|quesadilla|wrap|tortilla/,'tacos'],
+  [/roast|sheet[- ]?pan|tray[- ]?bake|baked vegetable/,'roastveg'],
+  [/tofu|tempeh|lentil|chickpea|bean/,'tofu']];
+function dishPhoto(name){
+  const n=String(name||'').toLowerCase();
+  const hit=PHOTO.find(([re])=>re.test(n));
+  return IMG+(hit?hit[1]:'generic')+'.jpg';
+}
+/* The photo carries no information the text does not, so it is decorative:
+   alt stays empty rather than repeating the dish name to a screen reader. */
+function dishThumb(rec){
+  return `<span class="em"><img src="${dishPhoto(rec.name)}" alt="" loading="lazy"><i>${esc(rec.emoji||'\u{1F37D}\u{FE0F}')}</i></span>`;
 }
 
 /* keyword → emoji, so a typed item still gets a face without an API call */
@@ -678,6 +729,31 @@ function guessEmoji(name){
   const n=String(name).toLowerCase();
   const hit=EMOJI.find(([re])=>re.test(n));
   return hit?hit[1]:'🛒';
+}
+/* Ingredient photos for the pantry rows. Same idea as the dish photos: a fixed
+   category library, matched on the name, with the emoji showing through when
+   nothing matches. Raw-ingredient shots, not plated dishes — a pantry row is
+   a thing you own, not a meal you made. */
+const ING=[[/chicken|thigh|breast|poultry|wing|turkey/,'chicken'],
+  [/beef|steak|pork|lamb|mince|bacon|sausage|ham/,'beef'],
+  [/fish|salmon|tuna|cod|shrimp|prawn|squid|seafood/,'fish'],
+  [/egg/,'eggs'],[/milk|cream|yogurt|yoghurt|butter/,'milk'],[/cheese|feta|parmesan|mozzarella/,'cheese'],
+  [/bread|loaf|bagel|bun|tortilla|pita|toast/,'bread'],
+  [/rice|quinoa|couscous|oat|flour|pasta|noodle|spaghetti/,'rice'],
+  [/spinach|kale|lettuce|greens|cabbage|bok choy|arugula|herb|cilantro|basil|scallion/,'greens'],
+  [/tomato/,'tomato'],[/onion|shallot|garlic|ginger|leek/,'onion'],
+  [/carrot|potato|beet|turnip|radish|squash|pumpkin|sweet potato/,'root'],
+  [/pepper|chili|chilli|broccoli|cauliflower|zucchini|cucumber|mushroom|corn|bean sprout|celery|vegetable/,'pepper'],
+  [/apple|banana|orange|berry|berries|lemon|lime|grape|melon|mango|pear|peach|avocado|fruit/,'fruit'],
+  [/sauce|oil|vinegar|soy|paste|stock|broth|honey|syrup|jam|spice|salt|sugar/,'sauce'],
+  [/tofu|tempeh|lentil|chickpea|bean/,'tofu']];
+function ingPhoto(name){
+  const n=String(name||'').toLowerCase();
+  const hit=ING.find(([re])=>re.test(n));
+  return IMG+'i-'+(hit?hit[1]:'generic')+'.jpg';
+}
+function ingThumb(p){
+  return `<span class="em"><img src="${ingPhoto(p.name)}" alt="" loading="lazy"><i>${esc(p.emoji||'🛒')}</i></span>`;
 }
 
 function onPhoto(inp,kind){
@@ -796,7 +872,7 @@ function renderReview(){
   $('revList').innerHTML=detected.map((d,i)=>`
     <div class="rev${d.off?' off':''}" id="rev${i}">
       <input type="checkbox" ${d.off?'':'checked'} onchange="keepRow(${i},this.checked)" aria-label="Keep ${escA(d.name)}">
-      <span class="em">${esc(d.emoji)}</span>
+      ${ingThumb(d)}
       <div class="f">
         <input class="nm" value="${escA(d.name)}" oninput="editRow(${i},'name',this.value)" aria-label="Item name">
         <div class="sub">
@@ -917,7 +993,7 @@ function previewImport(rec){
   const miss=missingFor(rec);
   $('impPreview').innerHTML=`
     <div class="rec open">
-      <div class="rec-top"><span class="em">${rec.emoji||'🍽️'}</span>
+      <div class="rec-top">${dishThumb(rec)}
         <div><h3>${esc(rec.name)}</h3>
           <div class="meta"><span>⏱ ${rec.time_min||'?'} min</span><span>${rec.servings||1} serving${(rec.servings||1)>1?'s':''}</span>${missBadge(miss)}</div>
         </div></div>
@@ -964,7 +1040,7 @@ function renderBook(){
   $('bookList').innerHTML=sorted.map(({r,i,miss})=>`
     <div class="rec" id="bk${i}">
       <button class="rec-top" onclick="$('bk${i}').classList.toggle('open')" aria-expanded="false">
-        <span class="em">${r.emoji||'🍽️'}</span>
+        ${dishThumb(r)}
         <div><h3>${esc(r.name)}</h3>
           <div class="meta"><span>⏱ ${r.time_min||'?'} min</span>${missBadge(miss)}</div>
         </div><span class="chev">›</span>
@@ -1000,16 +1076,22 @@ function setServ(btn){
    in settings, so these live in the cooking flow and feed the prompt directly.
    Nothing selected is a valid, common answer — hence the "anything goes" hint. */
 const MENU=[
-  {k:'quick', ic:'⚡', lab:'Quick & easy',  rule:'keep every recipe under 20 minutes of active time'},
-  {k:'veg',   ic:'🥬', lab:'Veggie',        rule:'no meat, poultry or fish in any recipe'},
-  {k:'pesc',  ic:'🐟', lab:'Pescatarian',   rule:'no meat or poultry; fish and seafood are fine'},
-  {k:'light', ic:'🥗', lab:'Fit & light',   rule:'keep it light — vegetable-forward, easy on oil and refined carbs'},
-  {k:'hearty',ic:'🍚', lab:'Filling & cheap',rule:'maximise how filling each portion is per dollar; lean on the staples'}
+  {k:'quick', ic:'⚡', pic:'eggs',     lab:'Quick & easy',   rule:'keep every recipe under 20 minutes of active time'},
+  {k:'veg',   ic:'🥬', pic:'roastveg', lab:'Veggie',         rule:'no meat, poultry or fish in any recipe'},
+  {k:'pesc',  ic:'🐟', pic:'fish',     lab:'Pescatarian',    rule:'no meat or poultry; fish and seafood are fine'},
+  {k:'light', ic:'🥗', pic:'salad',    lab:'Fit & light',    rule:'keep it light — vegetable-forward, easy on oil and refined carbs'},
+  {k:'hearty',ic:'🍚', pic:'ricebowl', lab:'Filling & cheap',rule:'maximise how filling each portion is per dollar; lean on the staples'}
 ];
 function renderMenuChips(){
+  /* Picked as pictures, the way a meal-kit menu shows its plans — the label
+     alone made "fit & light" and "filling & cheap" read as abstractions. */
   $('menuChips').innerHTML=MENU.map(m=>
-    `<button class="${menu.includes(m.k)?'on':''}" aria-pressed="${menu.includes(m.k)}" onclick="toggleMenu('${m.k}')"><span>${m.ic}</span>${m.lab}</button>`
-  ).join('')+(menu.length?'':'<span class="none">nothing picked — anything goes</span>');
+    `<button class="mtile${menu.includes(m.k)?' on':''}" aria-pressed="${menu.includes(m.k)}" onclick="toggleMenu('${m.k}')">
+      <img src="${IMG}${m.pic}.jpg" alt="" loading="lazy">
+      <span class="lab">${m.ic} ${m.lab}</span>
+      <span class="tick">✓</span>
+    </button>`).join('');
+  $('menuHint').textContent=menu.length?menuLabel():'Nothing picked — anything goes';
 }
 function toggleMenu(k){
   /* Veggie and pescatarian contradict each other; picking one drops the other. */
@@ -1056,9 +1138,9 @@ async function getRecipes(){
     $('cookLoad').style.display='none';$('cookBtn').disabled=false;
     window._recs=recs;
     $('recipes').innerHTML=recs.map((rc,i)=>`
-      <div class="rec" id="rec${i}">
+      <div class="rec${i===0?' rec--hero':''}" id="rec${i}">
         <button class="rec-top" onclick="$('rec${i}').classList.toggle('open')" aria-expanded="false">
-          <span class="em">${rc.emoji||'🍽️'}</span>
+          ${i===0?'<span class="flag">Tonight\u2019s pick</span>':''}${dishThumb(rc)}
           <div><h3>${esc(rc.name)}</h3>
             <div class="meta"><span>⏱ ${rc.time_min} min</span>${(rc.missing&&rc.missing.length)?`<span class="warn">buy: ${rc.missing.map(esc).join(', ')}</span>`:'<span class="ok">✓ all from your pantry</span>'}${recTags(rc)}</div>
           </div><span class="chev">›</span>
