@@ -144,7 +144,7 @@ const CASES=[
    <div class="iablock"><b>Pantry</b> (home) — Prepped & ready · ⏳ Use soon · Fresh · Staples · $-saved counter
 <b>[＋ FAB]</b> — 🧾 receipt scan (open by default) / 📸 food photo / ✍️ typed entry
        — all three land in one editable review → in
-<b>Cook</b> — ✨ AI ideas (servings: tonight / +lunch / +day after · Make-ahead cards)
+<b>Cook</b> — ✨ AI ideas (menu chips: quick / veggie / pescatarian / light / filling · servings: tonight / +lunch / +day after · Make-ahead cards)
        — 📖 My cookbook (import via link / text / screenshot · live missing-check)
 <b>Auth</b> — random food-themed username · email required once · auto-login after</div>
    <p>Four AI-interaction principles anchor the architecture: <b>AI is an invisible worker</b>, not a conversation partner — there is no chat box anywhere; <b>every AI output gets a human confirmation slot</b> — an AI you can correct is an AI you can trust; <b>structured schemas are design contracts</b> — prompt engineering is interface design; and <b>failure paths get designed as carefully as success</b> — every AI touchpoint has a fallback exit.</p>`,
@@ -155,6 +155,7 @@ const CASES=[
      <li><b>Every failure exits into typing.</b> A failed scan prints its own way out — "type it in instead, that always works" — which is how manual entry earns a place in the product that its own research says kills apps.</li>
      <li><b>Prices ride along from the receipt.</b> Because the scan carries dollar amounts, the savings counter stops estimating: using a $7.81 pack of chicken before it turns credits $7.81, not a flat guess.</li>
      <li><b>The serving selector speaks intent</b>: Just tonight / + tomorrow's lunch / + the day after — servings translated into meal-prep scenarios.</li>
+     <li><b>Menu preferences sit in the cooking flow, not in settings.</b> Quick, veggie, pescatarian, light, filling-and-cheap are chips right above the servings row, because that is the moment the constraint is actually felt; picking veggie drops pescatarian, and picking nothing is a real answer the copy names ("anything goes"). Each chip carries the sentence it adds to the prompt, so the filter and the model instruction can never drift apart.</li>
      <li><b>The cookbook sorts by missing count.</b> Cookable-right-now rises to the top; choosing dinner requires opening nothing.</li>
      <li><b>The savings counter compounds visibly</b> — using something before it expires, or eating a prepped portion, turns "waste avoided" into a growing number.</li>
    </ul>`,

@@ -157,6 +157,12 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 .cook-intro{margin:8px 22px 4px;font-size:13.5px;color:var(--ink-2);line-height:1.6}
 .cook-intro b{color:var(--ink)}
 .serv-label{margin:12px 22px 8px;font-size:13px;font-weight:700}
+/* menu preferences: a picker inside the cooking flow, not a settings screen */
+.mchips{display:flex;flex-wrap:wrap;gap:7px;margin:0 22px 4px}
+.mchips button{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:700;color:var(--ink-2);display:flex;align-items:center;gap:6px}
+.mchips button:hover{border-color:#A9CDB9}
+.mchips button.on{border-color:var(--lime);background:var(--lime-bg);color:var(--lime-deep)}
+.mchips .none{font-size:12px;color:var(--ink-3);align-self:center;margin-left:2px}
 .serv{display:flex;gap:8px;margin:0 22px}
 .serv button{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:10px 6px;text-align:center;transition:all .12s}
 .serv button b{display:block;font-family:var(--disp);font-size:17px}
@@ -369,6 +375,8 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
     <!-- AI mode -->
     <div id="modeAI">
       <p class="cook-intro" id="cookIntro"></p>
+      <div class="serv-label">Anything I should stick to?</div>
+      <div class="mchips" id="menuChips" role="group" aria-label="Menu preferences"></div>
       <div class="serv-label">How many servings?</div>
       <div class="serv" role="radiogroup" aria-label="Servings">
         <button class="on" data-s="1" onclick="setServ(this)"><b>1</b><span>Just tonight</span></button>
@@ -432,7 +440,7 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
     <div class="sync-line"><span class="sync-dot" id="syncDot"></span><span id="syncTxt">Synced — everything restores automatically</span></div>
     <div class="slist">
       <button class="sitem" onclick="rollName();applyProfile();persist();toast('New username: '+profile.name)">Shuffle my username<span class="val" id="unVal">—</span><span class="chev">›</span></button>
-      <button class="sitem" onclick="toast('Dietary preferences — next iteration')">Dietary preferences<span class="val">None set</span><span class="chev">›</span></button>
+      <button class="sitem" onclick="go('cook');setCookMode('ai')">Menu preferences<span class="val" id="menuVal">Anything goes</span><span class="chev">›</span></button>
       <button class="sitem" onclick="toast('Expiry reminders — next iteration')">Expiry reminders<span class="val">On</span><span class="chev">›</span></button>
       <button class="sitem" onclick="clearData()">Clear my data<span class="chev">›</span></button>
       <button class="sitem danger" onclick="signOut()">Sign out</button>
@@ -463,7 +471,7 @@ let pantry=[
   {name:"Soy sauce",emoji:"🫙",qty:"1 bottle",days:365}
 ];
 let prepped=[], cookbook=[], saved=0, cookedCount=0, servings=1, detected=[], pendingRecipe=null;
-let src='receipt', typedDays=2;
+let src='receipt', typedDays=2, menu=[];
 const $=id=>document.getElementById(id);
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
 function escA(s){return esc(s).replace(/"/g,'&quot;');}
@@ -471,7 +479,7 @@ function escA(s){return esc(s).replace(/"/g,'&quot;');}
 let signedIn=false;
 async function persist(){
   if(!hasStore)return;
-  try{ await window.storage.set(KEY, JSON.stringify({profile,signedIn,pantry,prepped,cookbook,saved,cookedCount})); setSync(true); }
+  try{ await window.storage.set(KEY, JSON.stringify({profile,signedIn,pantry,prepped,cookbook,saved,cookedCount,menu})); setSync(true); }
   catch(e){ setSync(false); }
 }
 async function restore(){
@@ -482,7 +490,7 @@ async function restore(){
     if(r&&r.value){
       const s=JSON.parse(r.value);
       profile=s.profile||null; signedIn=!!s.signedIn; pantry=s.pantry||pantry; prepped=s.prepped||[];
-      cookbook=s.cookbook||[]; saved=s.saved||0; cookedCount=s.cookedCount||0;
+      cookbook=s.cookbook||[]; saved=s.saved||0; cookedCount=s.cookedCount||0; menu=s.menu||[];
       if(profile&&signedIn){ enterApp(true); }
       else if(profile){ showLoginMode(); }
     }
@@ -580,7 +588,7 @@ function go(k){
   $('tPantry').classList.toggle('on',k==='pantry');
   $('tCook').classList.toggle('on',k==='cook'||k==='import');
   if(k==='pantry')renderPantry();
-  if(k==='cook'){renderCookIntro();renderBook();}
+  if(k==='cook'){renderCookIntro();renderMenuChips();renderBook();}
   if(k==='acct')updateStats();
 }
 function setCookMode(m){
@@ -987,6 +995,41 @@ function setServ(btn){
   btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
 }
+/* ---------- menu preferences ---------- */
+/* Meal-kit apps let you pick a lane while you browse rather than burying diet
+   in settings, so these live in the cooking flow and feed the prompt directly.
+   Nothing selected is a valid, common answer — hence the "anything goes" hint. */
+const MENU=[
+  {k:'quick', ic:'⚡', lab:'Quick & easy',  rule:'keep every recipe under 20 minutes of active time'},
+  {k:'veg',   ic:'🥬', lab:'Veggie',        rule:'no meat, poultry or fish in any recipe'},
+  {k:'pesc',  ic:'🐟', lab:'Pescatarian',   rule:'no meat or poultry; fish and seafood are fine'},
+  {k:'light', ic:'🥗', lab:'Fit & light',   rule:'keep it light — vegetable-forward, easy on oil and refined carbs'},
+  {k:'hearty',ic:'🍚', lab:'Filling & cheap',rule:'maximise how filling each portion is per dollar; lean on the staples'}
+];
+function renderMenuChips(){
+  $('menuChips').innerHTML=MENU.map(m=>
+    `<button class="${menu.includes(m.k)?'on':''}" aria-pressed="${menu.includes(m.k)}" onclick="toggleMenu('${m.k}')"><span>${m.ic}</span>${m.lab}</button>`
+  ).join('')+(menu.length?'':'<span class="none">nothing picked — anything goes</span>');
+}
+function toggleMenu(k){
+  /* Veggie and pescatarian contradict each other; picking one drops the other. */
+  if(menu.includes(k))menu=menu.filter(x=>x!==k);
+  else{
+    if(k==='veg')menu=menu.filter(x=>x!=='pesc');
+    if(k==='pesc')menu=menu.filter(x=>x!=='veg');
+    menu=menu.concat(k);
+  }
+  renderMenuChips(); updateMenuVal(); persist();
+}
+function menuRules(){
+  const rules=MENU.filter(m=>menu.includes(m.k)).map(m=>m.rule);
+  return rules.length?` Constraints I want respected: ${rules.join('; ')}.`:'';
+}
+function menuLabel(){
+  const on=MENU.filter(m=>menu.includes(m.k)).map(m=>m.lab);
+  return on.length?on.join(', '):'Anything goes';
+}
+function updateMenuVal(){const el=$('menuVal');if(el)el.textContent=menuLabel();}
 function renderCookIntro(){
   const soon=pantry.filter(p=>p.days<=3);
   $('cookEmpty').style.display=pantry.length?'none':'block';
@@ -1004,7 +1047,7 @@ async function getRecipes(){
     const r=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:
-        `I live alone, I'm busy, and I cook to save money. My pantry: ${inv}. Suggest exactly 3 recipes under 35 minutes for ${servings} serving(s), prioritizing ingredients with the fewest days left. Choose dishes that keep and reheat well when making ahead.${prep} Prefer using only my pantry; at most 1-2 cheap missing items per recipe. Respond with ONLY a JSON array, no markdown fences, no prose: [{"name":"","emoji":"","time_min":number,"uses":["pantry items used"],"missing":["items to buy, or empty array"],"steps":["3-5 short imperative steps with amounts for ${servings} serving(s)"],"prep_note":"${servings>1?'how to portion, store, and reheat the extra servings, and how many days they keep':''}","tip":"one money-saving tip"}]`
+        `I live alone, I'm busy, and I cook to save money. My pantry: ${inv}. Suggest exactly 3 recipes under 35 minutes for ${servings} serving(s), prioritizing ingredients with the fewest days left.${menuRules()} Choose dishes that keep and reheat well when making ahead.${prep} Prefer using only my pantry; at most 1-2 cheap missing items per recipe. Respond with ONLY a JSON array, no markdown fences, no prose: [{"name":"","emoji":"","time_min":number,"uses":["pantry items used"],"missing":["items to buy, or empty array"],"steps":["3-5 short imperative steps with amounts for ${servings} serving(s)"],"prep_note":"${servings>1?'how to portion, store, and reheat the extra servings, and how many days they keep':''}","tip":"one money-saving tip"}]`
       }]})
     });
     const data=await r.json();
@@ -1065,6 +1108,7 @@ function madeIt(i){
 
 /* ---------- stats ---------- */
 function updateStats(){
+  updateMenuVal();
   $('stItems').textContent=pantry.length;
   $('stBook').textContent=cookbook.length;
   $('stPrep').textContent=cookedCount;
