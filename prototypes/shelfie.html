@@ -55,8 +55,13 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 .btn-main{display:block;width:100%;background:var(--green);color:#fff;font-size:15.5px;font-weight:700;padding:15px;border-radius:16px;text-align:center;transition:background .15s}
 .btn-main:hover{background:var(--green-deep)}
 .btn-main:disabled{background:#B9C6BF;cursor:default}
-.auth-skip{display:block;width:100%;margin-top:10px;padding:12px;font-size:13.5px;font-weight:700;color:var(--green-deep);border-radius:14px}
-.auth-skip:hover{background:var(--green-bg)}
+.demo-card{margin-top:14px;border:1.5px solid #A9CDB9;border-radius:16px;padding:13px 14px;background:var(--green-bg)}
+.dc-top{display:flex;gap:10px;align-items:flex-start;margin-bottom:11px}
+.dc-top .ic{font-size:19px;line-height:1.2}
+.dc-top b{display:block;font-family:var(--disp);font-size:14.5px}
+.dc-top span span,.dc-top div span{display:block;font-size:12px;color:var(--green-deep);line-height:1.5;margin-top:1px}
+.btn-demo{display:block;width:100%;background:#fff;border:1.5px solid var(--green);color:var(--green-deep);font-size:14px;font-weight:700;padding:11px;border-radius:13px}
+.btn-demo:hover{background:var(--green);color:#fff}
 .auth-note{font-size:12px;color:var(--ink-3);text-align:center;margin-top:14px;line-height:1.6}
 .storage-warn{display:none;margin-top:14px;background:var(--amber-bg);border-radius:12px;padding:10px 14px;font-size:12px;color:var(--amber);line-height:1.55}
 
@@ -347,7 +352,13 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
       <div class="field"><label for="aMail">Email</label><input id="aMail" type="email" placeholder="you@example.com" required></div>
       <div class="err" id="authErr" style="margin:0 0 12px"></div>
       <button class="btn-main" onclick="signUp()">Start cooking</button>
-      <button class="auth-skip" onclick="lookAround()">Just show me the app ›</button>
+      <div class="demo-card">
+        <div class="dc-top">
+          <span class="ic">🥕</span>
+          <div><b>Demo account</b><span>demo@shelfie.app · a week of groceries already in it</span></div>
+        </div>
+        <button class="btn-demo" onclick="demoIn()">Log in as the demo →</button>
+      </div>
       <p class="auth-note">No real name needed — you're just a username here.<br>You'll only type your email this once: after that we sign you in automatically, and it's how you get back in if you ever sign out.</p>
     </div>
     <div id="loginBox" style="display:none">
@@ -358,7 +369,7 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
       <div class="field"><label for="lMail">Enter your email to log in</label><input id="lMail" type="email" placeholder="you@example.com" required></div>
       <div class="err" id="loginErr" style="margin:0 0 12px"></div>
       <button class="btn-main" onclick="logIn()">Log in</button>
-      <p class="auth-note">This is the email you signed up with.<br><button style="color:var(--green-deep);font-weight:700;text-decoration:underline;text-underline-offset:3px" onclick="startFresh()">Not you? Start fresh with a new account</button></p>
+      <p class="auth-note">This is the email you signed up with.<br><button style="color:var(--green-deep);font-weight:700;text-decoration:underline;text-underline-offset:3px" onclick="startFresh()">Not you? Start fresh with a new account</button><br><button style="color:var(--green-deep);font-weight:700;text-decoration:underline;text-underline-offset:3px;margin-top:6px" onclick="demoIn()">Or log in as the demo account</button></p>
     </div>
     <div class="storage-warn" id="storeWarn">Persistent storage isn't available in this environment — the app will still work, but data resets when you close it.</div>
   </div>
@@ -656,14 +667,50 @@ function signUp(){
   profile={name:uname,mail}; signedIn=true;
   persist(); enterApp(false);
 }
-/* The email is the case study's argument, not a toll gate on a prototype.
-   This gets a first-time visitor into the app in one tap; everything after
-   it behaves exactly as it would for a signed-up account. */
-function lookAround(){
+/* A demo account, because the email is the case study's argument and not a
+   toll gate on a prototype. It is deliberately mid-use rather than empty:
+   something is expiring, a meal is prepped, two recipes are saved and the
+   shopping list is half ticked off, so every screen has something to say
+   the moment it opens. */
+const DEMO={
+  profile:{name:'CrispyDumpling_07',mail:'demo@shelfie.app'},
+  pantry:[
+    {name:'Chicken thighs',emoji:'🍗',qty:'1.42 lb',price:7.81,days:2},
+    {name:'Baby spinach',emoji:'🥬',qty:'1 bag',price:3.49,days:3},
+    {name:'Tomatoes',emoji:'🍅',qty:'3',price:2.64,days:4},
+    {name:'Whole milk',emoji:'🥛',qty:'1 gal',price:4.29,days:12},
+    {name:'Eggs',emoji:'🥚',qty:'12',price:5.19,days:21},
+    {name:'Garlic',emoji:'🧄',qty:'1 bulb',price:0.79,days:21},
+    {name:'Jasmine rice',emoji:'🍚',qty:'5 lb',price:8.99,days:365},
+    {name:'Soy sauce',emoji:'🫙',qty:'1 bottle',price:3.99,days:365},
+    {name:'Noodles',emoji:'🍜',qty:'2 packs',price:2.49,days:365},
+    {name:'Chili oil',emoji:'🌶️',qty:'1 jar',price:5.49,days:365}
+  ],
+  prepped:[{name:'Ginger chicken rice',portions:2,days:3}],
+  cookbook:[
+    {name:'Spicy garlic noodles',emoji:'🍝',time_min:20,servings:2,cooked:2,
+     ingredients:[{name:'noodles',qty:'200g'},{name:'Garlic',qty:'4 cloves'},{name:'Soy sauce',qty:'2 tbsp'},{name:'chili oil',qty:'1 tbsp'}],
+     steps:['Boil the noodles a minute under the packet time.','Fry the sliced garlic in cold oil until it just turns gold.','Toss everything with the soy and chili oil off the heat.'],
+     source:'youtube.com'},
+    {name:'Shakshuka',emoji:'🍳',time_min:25,servings:2,cooked:0,
+     ingredients:[{name:'Eggs',qty:'4'},{name:'Tomatoes',qty:'400g'},{name:'Garlic',qty:'3 cloves'},{name:'feta',qty:'60g'}],
+     steps:['Cook the tomatoes and garlic down until jammy.','Make four wells and crack an egg into each.','Cover and cook until the whites set but the yolks do not.'],
+     source:'Screenshot'}
+  ],
+  list:[{name:'scallions',why:'Tomato egg over rice',forRecipe:true,got:false},
+        {name:'feta',why:'Shakshuka',forRecipe:true,got:false},
+        {name:'paper towels',why:'you added it',forRecipe:false,got:true}],
+  saved:17, cookedCount:4, menu:['quick']
+};
+function demoIn(){
   $('authErr').style.display='none';
-  profile={name:uname,mail:'you@example.com'}; signedIn=true;
+  const d=JSON.parse(JSON.stringify(DEMO));   // a fresh copy, so poking about never edits the template
+  profile=d.profile; pantry=d.pantry; prepped=d.prepped; cookbook=d.cookbook;
+  list=d.list; saved=d.saved; cookedCount=d.cookedCount; menu=d.menu;
+  signedIn=true; uname=profile.name;
   persist(); enterApp(false);
-  toast('Looking around as '+profile.name);
+  $('hello').textContent='Demo account — poke at anything, nothing here is real.';
+  toast('Signed in to the demo');
 }
 function logIn(){
   const mail=$('lMail').value.trim().toLowerCase();
