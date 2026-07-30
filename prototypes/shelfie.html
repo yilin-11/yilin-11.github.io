@@ -55,6 +55,8 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 .btn-main{display:block;width:100%;background:var(--green);color:#fff;font-size:15.5px;font-weight:700;padding:15px;border-radius:16px;text-align:center;transition:background .15s}
 .btn-main:hover{background:var(--green-deep)}
 .btn-main:disabled{background:#B9C6BF;cursor:default}
+.auth-skip{display:block;width:100%;margin-top:10px;padding:12px;font-size:13.5px;font-weight:700;color:var(--green-deep);border-radius:14px}
+.auth-skip:hover{background:var(--green-bg)}
 .auth-note{font-size:12px;color:var(--ink-3);text-align:center;margin-top:14px;line-height:1.6}
 .storage-warn{display:none;margin-top:14px;background:var(--amber-bg);border-radius:12px;padding:10px 14px;font-size:12px;color:var(--amber);line-height:1.55}
 
@@ -345,6 +347,7 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
       <div class="field"><label for="aMail">Email</label><input id="aMail" type="email" placeholder="you@example.com" required></div>
       <div class="err" id="authErr" style="margin:0 0 12px"></div>
       <button class="btn-main" onclick="signUp()">Start cooking</button>
+      <button class="auth-skip" onclick="lookAround()">Just show me the app ›</button>
       <p class="auth-note">No real name needed — you're just a username here.<br>You'll only type your email this once: after that we sign you in automatically, and it's how you get back in if you ever sign out.</p>
     </div>
     <div id="loginBox" style="display:none">
@@ -562,7 +565,27 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 <script>
 /* ---------- state & persistence ---------- */
 const KEY='shelfie-account-and-state';
-const hasStore=(typeof window!=='undefined'&&typeof window.storage!=='undefined');
+/* window.storage is the sandbox API this was first built against; on a plain
+   web host it does not exist, which meant nothing was ever saved and every
+   single visit began at the sign-up form. localStorage is the fallback, and
+   only if both are missing do we admit the app cannot remember anything. */
+const STORE=(function(){
+  try{
+    if(typeof window!=='undefined'&&window.storage){
+      return {ok:true, get:k=>window.storage.get(k), set:(k,v)=>window.storage.set(k,v), del:k=>window.storage.delete(k)};
+    }
+  }catch(e){}
+  try{
+    const probe='__shelfie_probe__';
+    localStorage.setItem(probe,'1'); localStorage.removeItem(probe);
+    return {ok:true,
+      get:async k=>({value:localStorage.getItem(k)}),
+      set:async (k,v)=>localStorage.setItem(k,v),
+      del:async k=>localStorage.removeItem(k)};
+  }catch(e){}
+  return {ok:false, get:async()=>null, set:async()=>{}, del:async()=>{}};
+})();
+const hasStore=STORE.ok;
 let profile=null;
 let pantry=[
   {name:"Chicken thighs",emoji:"🍗",qty:"4 pieces",days:2},
@@ -582,14 +605,14 @@ function escA(s){return esc(s).replace(/"/g,'&quot;');}
 let signedIn=false;
 async function persist(){
   if(!hasStore)return;
-  try{ await window.storage.set(KEY, JSON.stringify({profile,signedIn,pantry,prepped,cookbook,saved,cookedCount,menu,list})); setSync(true); }
+  try{ await STORE.set(KEY, JSON.stringify({profile,signedIn,pantry,prepped,cookbook,saved,cookedCount,menu,list})); setSync(true); }
   catch(e){ setSync(false); }
 }
 async function restore(){
   rollName();
   if(!hasStore){ $('storeWarn').style.display='block'; return; }
   try{
-    const r=await window.storage.get(KEY);
+    const r=await STORE.get(KEY);
     if(r&&r.value){
       const s=JSON.parse(r.value);
       profile=s.profile||null; signedIn=!!s.signedIn; pantry=s.pantry||pantry; prepped=s.prepped||[];
@@ -633,6 +656,15 @@ function signUp(){
   profile={name:uname,mail}; signedIn=true;
   persist(); enterApp(false);
 }
+/* The email is the case study's argument, not a toll gate on a prototype.
+   This gets a first-time visitor into the app in one tap; everything after
+   it behaves exactly as it would for a signed-up account. */
+function lookAround(){
+  $('authErr').style.display='none';
+  profile={name:uname,mail:'you@example.com'}; signedIn=true;
+  persist(); enterApp(false);
+  toast('Looking around as '+profile.name);
+}
 function logIn(){
   const mail=$('lMail').value.trim().toLowerCase();
   const err=$('loginErr');
@@ -646,7 +678,7 @@ function logIn(){
 async function startFresh(){
   profile=null; signedIn=false;
   pantry=[];prepped=[];cookbook=[];saved=0;cookedCount=0;list=[];
-  if(hasStore){try{await window.storage.delete(KEY);}catch(e){}}
+  if(hasStore){try{await STORE.del(KEY);}catch(e){}}
   rollName();
   $('loginBox').style.display='none';
   $('signupBox').style.display='block';
@@ -664,6 +696,9 @@ function enterApp(returning){
   $('tabbar').classList.add('show');
   applyProfile();
   $('hello').textContent=returning?('Welcome back, '+profile.name+' — everything is right where you left it.'):'Cook what you have. Waste nothing.';
+  /* the counter was only ever redrawn by an action, so a restored total showed
+     as $0 until you did something */
+  $('savedChip').textContent='est. $'+saved+' saved';
   go('pantry');
   if(returning)toast('Signed in as '+profile.name);
 }
@@ -677,7 +712,7 @@ function signOut(){
 }
 async function clearData(){
   pantry=[];prepped=[];cookbook=[];saved=0;cookedCount=0;list=[];
-  if(hasStore){try{await window.storage.delete(KEY);}catch(e){}}
+  if(hasStore){try{await STORE.del(KEY);}catch(e){}}
   renderPantry(); updateStats(); toast('All data cleared');
 }
 
