@@ -29,7 +29,10 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 .note{max-width:280px;font-size:13.5px;color:#4A5C57;line-height:1.7}
 .note b{display:block;font-size:15px;color:#22312E;margin-bottom:6px}
 .note ol{padding-left:18px;display:flex;flex-direction:column;gap:8px}
-@media (max-width:840px){.note{display:none}body{padding:0}.phone{width:100%;max-width:420px;height:100vh;border-radius:0;padding:0;box-shadow:none}.screen{border-radius:0}.notch{display:none}}
+/* .stage is a flex item sized by its content, so .phone{width:100%} below had
+   nothing to resolve against and collapsed the whole prototype to zero width.
+   Shelfie hangs .phone straight off body and never hit this. */
+@media (max-width:840px){.note{display:none}body{padding:0}.stage{width:100%;gap:0}.phone{width:100%;max-width:420px;height:100vh;border-radius:0;padding:0;box-shadow:none}.screen{border-radius:0}.notch{display:none}}
 
 /* views */
 .view{position:absolute;inset:0;display:none;flex-direction:column;overflow-y:auto;padding-bottom:122px}
