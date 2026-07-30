@@ -433,7 +433,7 @@ function renderSidebar(){
 function renderWorkspace(){
   if(!$('gridEl'))return;                          // not the work page
   $('gridEl').innerHTML=CASES.map((c,i)=>`
-    <button class="workcard${i===0?' workcard--lead':''}" style="--acc:${c.acc}" onclick="openCase(${i})">
+    <button class="workcard" style="--acc:${c.acc}" onclick="openCase(${i})">
       <div class="thumb">${c.motif}</div>
       <div class="wc-body">
         <div class="wc-tag"><i></i>${c.type}</div>
