@@ -236,6 +236,10 @@ code{font-family:var(--sg);font-size:.88em;background:var(--card);border:1px sol
      Stacked, with the label as an eyebrow above the name — the same place the
      card puts it — and free to wrap. */
   .list .row{grid-template-columns:1fr;gap:5px;padding:18px 2px}
+  /* Every row is then exactly three lines — label, name, one-liner. Only
+     Shelfie's hook wrapped at 13.5px, and it clears the width at 12.5.
+     Measured, not guessed: at 13px it still wraps. */
+  .list .row .hook{font-size:12.5px}
   .list .row .r-type{grid-row:1;white-space:normal;font-size:10.5px;letter-spacing:.14em}
   .list .row .r-name{grid-row:2}
   .topbar{
