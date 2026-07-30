@@ -154,6 +154,37 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 .btn-block{display:block;width:calc(100% - 44px);margin:14px 22px}
 .err{display:none;margin:6px 22px;background:var(--red-bg);border-radius:14px;padding:12px 16px;font-size:13px;color:var(--red);line-height:1.5}
 
+/* shopping list */
+.seg .cnt{display:inline-block;margin-left:6px;background:var(--ink-3);color:#fff;font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:999px;min-width:18px}
+.seg .cnt:empty{display:none}
+.seg button.on .cnt{background:var(--green)}
+.addline{display:flex;gap:8px;margin:12px 22px 4px}
+.addline input{flex:1;min-width:0;padding:11px 14px;border:1.5px solid var(--line);border-radius:14px;font-size:14px;font-family:var(--sans);background:#fff}
+.addline input:focus{border-color:var(--green);outline:none}
+.addline button{flex:0 0 46px;border-radius:14px;background:var(--green);color:#fff;font-size:20px;font-weight:700}
+.addline button:hover{background:var(--green-deep)}
+.lrow{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 13px;display:flex;align-items:center;gap:11px;margin-bottom:8px}
+.lrow .box{flex:0 0 24px;height:24px;border:2px solid #C3D2C8;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;color:transparent}
+.lrow .box:hover{border-color:var(--green)}
+.lrow .nm{font-size:14.5px;font-weight:700}
+.lrow .why{font-size:11.5px;color:var(--ink-3);margin-top:1px}
+.lrow .why b{color:var(--green-deep);font-weight:700}
+.lrow .del{margin-left:auto;color:var(--ink-3);font-size:15px;padding:4px 2px 4px 8px}
+.lrow .del:hover{color:var(--red)}
+.lrow.got{opacity:.55}
+.lrow.got .box{background:var(--green);border-color:var(--green);color:#fff}
+.lrow.got .nm{text-decoration:line-through}
+.gothead{display:flex;align-items:center;gap:8px;margin:16px 0 8px}
+.gothead b{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.gothead button{margin-left:auto;font-size:12px;font-weight:700;color:var(--green-deep);text-decoration:underline;text-underline-offset:3px}
+.listnote{margin:4px 22px 0;font-size:12.5px;color:var(--ink-2);line-height:1.55}
+.listnote b{color:var(--ink)}
+.btn-list{display:block;width:100%;border:1.5px solid var(--amber);color:var(--amber);background:var(--amber-bg);font-size:13.5px;font-weight:700;padding:11px;border-radius:12px;text-align:center;margin-bottom:9px}
+.btn-list:hover{background:#F8E6C6}
+.btn-list.done{border-color:var(--line);background:var(--paper);color:var(--ink-3);cursor:default}
+.item .buy{color:var(--ink-3);font-size:14px;padding:4px 2px 4px 8px}
+.item .buy:hover{color:var(--green-deep)}
+
 /* cook segments */
 .seg{display:flex;background:#EDF1EE;border-radius:999px;padding:4px;margin:6px 22px 4px}
 .seg button{flex:1;padding:9px;border-radius:999px;font-size:13.5px;font-weight:700;color:var(--ink-2)}
@@ -310,7 +341,19 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
         <button class="avatar" id="avBtn" onclick="go('acct')" aria-label="Account">·</button>
       </div>
     </div>
+    <div class="seg" role="tablist">
+      <button class="on" id="segHave" onclick="setPanTab('have')">🧺 What I have<span class="cnt" id="cntHave"></span></button>
+      <button id="segNeed" onclick="setPanTab('need')">🛒 What I need<span class="cnt" id="cntNeed"></span></button>
+    </div>
     <div id="pantryList"></div>
+    <div id="needList" style="display:none">
+      <div class="addline">
+        <input id="lName" placeholder="Something else to pick up…" autocomplete="off" onkeydown="if(event.key==='Enter')addTypedList()">
+        <button onclick="addTypedList()" aria-label="Add to list">＋</button>
+      </div>
+      <p class="listnote" id="listNote"></p>
+      <div id="listRows"></div>
+    </div>
   </div>
 
   <!-- ADD -->
@@ -492,7 +535,7 @@ let pantry=[
   {name:"Soy sauce",emoji:"🫙",qty:"1 bottle",days:365}
 ];
 let prepped=[], cookbook=[], saved=0, cookedCount=0, servings=1, detected=[], pendingRecipe=null;
-let src='receipt', typedDays=2, menu=[];
+let src='receipt', typedDays=2, menu=[], list=[], panTab='have';
 const $=id=>document.getElementById(id);
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
 function escA(s){return esc(s).replace(/"/g,'&quot;');}
@@ -500,7 +543,7 @@ function escA(s){return esc(s).replace(/"/g,'&quot;');}
 let signedIn=false;
 async function persist(){
   if(!hasStore)return;
-  try{ await window.storage.set(KEY, JSON.stringify({profile,signedIn,pantry,prepped,cookbook,saved,cookedCount,menu})); setSync(true); }
+  try{ await window.storage.set(KEY, JSON.stringify({profile,signedIn,pantry,prepped,cookbook,saved,cookedCount,menu,list})); setSync(true); }
   catch(e){ setSync(false); }
 }
 async function restore(){
@@ -511,7 +554,7 @@ async function restore(){
     if(r&&r.value){
       const s=JSON.parse(r.value);
       profile=s.profile||null; signedIn=!!s.signedIn; pantry=s.pantry||pantry; prepped=s.prepped||[];
-      cookbook=s.cookbook||[]; saved=s.saved||0; cookedCount=s.cookedCount||0; menu=s.menu||[];
+      cookbook=s.cookbook||[]; saved=s.saved||0; cookedCount=s.cookedCount||0; menu=s.menu||[]; list=s.list||[];
       if(profile&&signedIn){ enterApp(true); }
       else if(profile){ showLoginMode(); }
     }
@@ -563,7 +606,7 @@ function logIn(){
 }
 async function startFresh(){
   profile=null; signedIn=false;
-  pantry=[];prepped=[];cookbook=[];saved=0;cookedCount=0;
+  pantry=[];prepped=[];cookbook=[];saved=0;cookedCount=0;list=[];
   if(hasStore){try{await window.storage.delete(KEY);}catch(e){}}
   rollName();
   $('loginBox').style.display='none';
@@ -594,7 +637,7 @@ function signOut(){
   toast('Signed out — log back in with your email');
 }
 async function clearData(){
-  pantry=[];prepped=[];cookbook=[];saved=0;cookedCount=0;
+  pantry=[];prepped=[];cookbook=[];saved=0;cookedCount=0;list=[];
   if(hasStore){try{await window.storage.delete(KEY);}catch(e){}}
   renderPantry(); updateStats(); toast('All data cleared');
 }
@@ -608,7 +651,7 @@ function go(k){
   $({pantry:'vPantry',add:'vAdd',cook:'vCook',acct:'vAcct',import:'vImport'}[k]).classList.add('on');
   $('tPantry').classList.toggle('on',k==='pantry');
   $('tCook').classList.toggle('on',k==='cook'||k==='import');
-  if(k==='pantry')renderPantry();
+  if(k==='pantry'){renderPantry();renderList();updateCounts();}
   if(k==='cook'){renderCookIntro();renderMenuChips();renderBook();}
   if(k==='acct')updateStats();
 }
@@ -635,6 +678,7 @@ function lifeLabel(d){
 }
 function lifeClass(d){return d<=1?'d0':(d<=3?'d1':'d2');}
 function renderPantry(){
+  updateCounts();
   const el=$('pantryList');
   if(!pantry.length&&!prepped.length){el.innerHTML='<div class="empty-pan"><div class="big">🧺</div><b>Nothing tracked yet.</b><br>Tap ＋ below and scan the receipt from your<br>last grocery run — it takes one photo.</div>';return;}
   const soon=pantry.filter(p=>p.days<=3).sort((a,b)=>a.days-b.days);
@@ -643,7 +687,7 @@ function renderPantry(){
   const prow=(p,i)=>`<div class="item prepitem"><span class="em">🍱</span><div><div class="nm">${esc(p.name)}</div><div class="qt">${p.portions} portion${p.portions>1?'s':''} ready to eat</div></div><span class="life dp">eat within ${p.days}d</span><button class="del" aria-label="Eat one portion" onclick="eatPrep(${i})">✓</button></div>`;
   const row=p=>{const i=pantry.indexOf(p);
     const sub=[p.qty,p.price?'$'+Number(p.price).toFixed(2):''].filter(Boolean).join(' · ');
-    return `<div class="item">${ingThumb(p)}<div><div class="nm">${esc(p.name)}</div><div class="qt">${esc(sub)}</div></div><span class="life ${lifeClass(p.days)}">${lifeLabel(p.days)}</span><button class="del" aria-label="Remove ${esc(p.name)}" onclick="delItem(${i})">✕</button></div>`;};
+    return `<div class="item">${ingThumb(p)}<div><div class="nm">${esc(p.name)}</div><div class="qt">${esc(sub)}</div></div><span class="life ${lifeClass(p.days)}">${lifeLabel(p.days)}</span><button class="buy" aria-label="Add ${escA(p.name)} to shopping list" title="Add to shopping list" onclick="buyAgain(${i})">🛒</button><button class="del" aria-label="Remove ${escA(p.name)}" onclick="delItem(${i})">✕</button></div>`;};
   const grp=(cls,title,html,n)=>n?`<div class="grp"><div class="grp-h ${cls}"><b>${title}</b><span class="n">${n}</span></div>${html}</div>`:'';
   el.innerHTML=
     grp('prep','🍱 Prepped &amp; ready',prepped.map(prow).join(''),prepped.length)+
@@ -651,6 +695,99 @@ function renderPantry(){
     grp('fresh','✦ Fresh',fresh.map(row).join(''),fresh.length)+
     grp('staple','◆ Staples',staple.map(row).join(''),staple.length);
 }
+/* ---------- shopping list ---------- */
+/* The pantry answers "what do I have"; this answers "what don't I", which is
+   why they are two halves of one tab rather than two places. Every entry keeps
+   the reason it exists — a recipe name, or "ran out" — because that reason is
+   what makes a list in a shop readable a day after you wrote it. */
+function setPanTab(t){
+  panTab=t;
+  $('segHave').classList.toggle('on',t==='have');
+  $('segNeed').classList.toggle('on',t==='need');
+  $('pantryList').style.display=t==='have'?'block':'none';
+  $('needList').style.display=t==='need'?'block':'none';
+  if(t==='need')renderList();
+}
+function onList(name){
+  const n=norm(name);
+  return list.some(l=>{const ln=norm(l.name);return ln===n||ln.includes(n)||n.includes(ln);});
+}
+/* Already in the pantry, or already written down: either way, don't add it twice.
+   `restock` opts out of the pantry check — "running low" is about something you
+   still have, so the check that protects recipe imports would silently eat it. */
+function addToList(names,why,restock){
+  const added=[];
+  names.forEach(nm=>{
+    const name=String(nm).trim();
+    if(!name||onList(name))return;
+    if(!restock&&haveIngredient(name))return;
+    list.push({name,why:why||'',forRecipe:!restock,got:false});
+    added.push(name);
+  });
+  updateCounts(); renderList(); persist();
+  return added;
+}
+function addTypedList(){
+  const v=$('lName').value.trim();
+  if(!v){toast('Type what you need first');return;}
+  const added=addToList([v],'you added it',true);
+  $('lName').value='';
+  toast(added.length?v+' is on the list':v+' is already on the list');
+}
+function addMissingFrom(names,dish){
+  const added=addToList(names,dish);
+  if(!added.length){toast('Already on your list');return false;}
+  toast(added.length+(added.length>1?' things':' thing')+' added for '+dish);
+  return true;
+}
+function addRecMissing(i){
+  const rc=window._recs[i];
+  if(addMissingFrom(rc.missing||[],rc.name)){
+    const b=$('lbtn'+i); if(b){b.textContent='✓ On your shopping list';b.classList.add('done');}
+  }
+}
+function addBookMissing(i){
+  const r=cookbook[i];
+  if(addMissingFrom(missingFor(r),r.name)){
+    const b=$('blbtn'+i); if(b){b.textContent='✓ On your shopping list';b.classList.add('done');}
+  }
+}
+function buyAgain(i){
+  const p=pantry[i];
+  const added=addToList([p.name],'running low',true);
+  toast(added.length?p.name+' added to your list':p.name+' is already on the list');
+}
+function toggleGot(i){ list[i].got=!list[i].got; renderList(); updateCounts(); persist(); }
+function delListItem(i){ const n=list[i].name; list.splice(i,1); renderList(); updateCounts(); persist(); toast('Removed '+n); }
+function clearGot(){ list=list.filter(l=>!l.got); renderList(); updateCounts(); persist(); }
+function renderList(){
+  const todo=list.map((l,i)=>({l,i})).filter(x=>!x.l.got);
+  const got=list.map((l,i)=>({l,i})).filter(x=>x.l.got);
+  const row=({l,i})=>`<div class="lrow${l.got?' got':''}">
+      <button class="box" onclick="toggleGot(${i})" aria-label="${l.got?'Not got yet':'Got it'}" aria-pressed="${l.got}">✓</button>
+      <div><div class="nm">${esc(l.name)}</div>${l.why?`<div class="why">${l.forRecipe?'for ':''}<b>${esc(l.why)}</b></div>`:''}</div>
+      <button class="del" onclick="delListItem(${i})" aria-label="Remove ${escA(l.name)}">✕</button>
+    </div>`;
+  $('listRows').innerHTML= (list.length?'':`<div class="empty-pan"><div class="big">🛒</div><b>Nothing to buy yet.</b><br>When a recipe needs something you don't have,<br>one tap puts it here — and your next receipt<br>ticks it off by itself.</div>`)
+    + (todo.length?`<div class="grp">${todo.map(row).join('')}</div>`:'')
+    + (got.length?`<div class="grp"><div class="gothead"><b>In the basket</b><button onclick="clearGot()">Clear ${got.length}</button></div>${got.map(row).join('')}</div>`:'');
+  const note=$('listNote');
+  if(note)note.innerHTML=list.length?`<b>${todo.length}</b> still to pick up. Scan the receipt when you get back and everything you bought comes off this list on its own.`:'';
+}
+function updateCounts(){
+  $('cntHave').textContent=pantry.length||'';
+  $('cntNeed').textContent=list.filter(l=>!l.got).length||'';
+}
+/* The loop closes here: what you just bought leaves the list without being asked. */
+function tickOffList(bought){
+  const before=list.length;
+  list=list.filter(l=>!bought.some(b=>{
+    const bn=norm(b.name), ln=norm(l.name);
+    return bn===ln||bn.includes(ln)||ln.includes(bn);
+  }));
+  return before-list.length;
+}
+
 function delItem(i){
   const p=pantry[i]; pantry.splice(i,1);
   /* A receipt-scanned item knows its real price, so the counter stops guessing. */
@@ -917,7 +1054,9 @@ function commitReview(){
   const picks=detected.filter(d=>!d.off&&d.name.trim());
   if(!picks.length)return;
   pantry=pantry.concat(picks.map(p=>({name:p.name.trim(),emoji:p.emoji,qty:p.qty,price:p.price,days:p.days})));
-  toast(picks.length+(picks.length>1?' items':' item')+' added to pantry');
+  const ticked=tickOffList(picks);
+  toast(picks.length+(picks.length>1?' items':' item')+' added to pantry'
+    +(ticked?` \u00b7 ${ticked} ticked off your list`:''));
   resetAdd();
   renderPantry(); persist(); go('pantry');
 }
@@ -1001,9 +1140,16 @@ function previewImport(rec){
         <div class="uses">${(rec.ingredients||[]).map(g=>{const has=!miss.includes(g.name);return `<span class="${has?'':'miss'}">${has?'':'+ '}${esc(g.name)}</span>`;}).join('')}</div>
         <ol class="steps">${(rec.steps||[]).slice(0,6).map((s,n)=>`<li><b>${n+1}</b><span>${esc(s)}</span></li>`).join('')}</ol>
         ${rec.source?`<div class="src-line">Source: ${esc(rec.source)}</div>`:''}
+        ${miss.length?`<button class="btn-list" id="ilbtn" onclick="addImportMissing()">🛒 Put the missing ${miss.length===1?'one':miss.length} on my shopping list</button>`:''}
         <button class="btn-made" onclick="saveRecipe()">Save to my cookbook</button>
       </div>
     </div>`;
+}
+function addImportMissing(){
+  if(!pendingRecipe)return;
+  if(addMissingFrom(missingFor(pendingRecipe),pendingRecipe.name)){
+    const b=$('ilbtn'); if(b){b.textContent='✓ On your shopping list';b.classList.add('done');}
+  }
 }
 function saveRecipe(){
   cookbook.unshift(pendingRecipe);
@@ -1014,11 +1160,20 @@ function saveRecipe(){
 }
 
 /* ---------- missing-ingredient engine ---------- */
-const PANTRY_ASSUMED=['water','salt','pepper','oil','sugar'];
+/* Assumed always-in-the-kitchen words. Matched per token and only when EVERY
+   token is one of them: "salt and pepper" and "olive oil" are assumed, but
+   "sesame oil" is a real purchase. Substring matching used to swallow it — the
+   card would say "buy sesame oil" while the shopping list quietly skipped it. */
+const PANTRY_ASSUMED=['water','salt','pepper','oil','sugar','black','white','sea','kosher',
+  'ground','olive','vegetable','cooking','canola','neutral','and','or','to','taste','a','of','some','pinch'];
 function norm(s){return String(s).toLowerCase().replace(/e?s\b/g,'').trim();}
+function isAssumed(name){
+  const w=norm(name).split(/[^a-z]+/).filter(Boolean);
+  return w.length>0&&w.every(x=>PANTRY_ASSUMED.includes(x));
+}
 function haveIngredient(name){
   const n=norm(name);
-  if(PANTRY_ASSUMED.some(a=>n.includes(a)))return true;
+  if(isAssumed(name))return true;
   return pantry.concat(prepped.map(p=>({name:p.name}))).some(p=>{
     const pn=norm(p.name);
     return pn.includes(n)||n.includes(pn)||pn.split(' ').some(w=>w.length>3&&n.includes(w));
@@ -1049,7 +1204,8 @@ function renderBook(){
         <div class="uses">${(r.ingredients||[]).map(g=>{const has=!miss.includes(g.name);return `<span class="${has?'':'miss'}">${has?'✓ ':'+ buy '}${esc(g.name)}${g.qty?' · '+esc(g.qty):''}</span>`;}).join('')}</div>
         <ol class="steps">${(r.steps||[]).map((s,n)=>`<li><b>${n+1}</b><span>${esc(s)}</span></li>`).join('')}</ol>
         ${r.source?`<div class="src-line">Source: ${esc(r.source)}</div>`:''}
-        ${miss.length?'':`<button class="btn-made" onclick="cookSaved(${i})">I made this</button>`}
+        ${miss.length?`<button class="btn-list" id="blbtn${i}" onclick="addBookMissing(${i})">🛒 Put the missing ${miss.length===1?'one':miss.length} on my shopping list</button>`
+                     :`<button class="btn-made" onclick="cookSaved(${i})">I made this</button>`}
         <button class="rdel" onclick="delRecipe(${i})">Remove from cookbook</button>
       </div>
     </div>`).join('');
@@ -1150,6 +1306,7 @@ async function getRecipes(){
           <ol class="steps">${(rc.steps||[]).map((s,n)=>`<li><b>${n+1}</b><span>${esc(s)}</span></li>`).join('')}</ol>
           ${(servings>1&&rc.prep_note)?`<div class="prepnote"><b>🍱 Make-ahead</b>${esc(rc.prep_note)}</div>`:''}
           ${rc.tip?`<div class="tip"><b>Tip · </b>${esc(rc.tip)}</div>`:''}
+          ${(rc.missing&&rc.missing.length)?`<button class="btn-list" id="lbtn${i}" onclick="addRecMissing(${i})">🛒 Put the missing ${rc.missing.length===1?'one':rc.missing.length} on my shopping list</button>`:''}
           <button class="btn-made" id="made${i}" onclick="madeIt(${i})">I made this${servings>1?' — save '+(servings-1)+' portion'+(servings>2?'s':'')+' for later':''}</button>
         </div>
       </div>`).join('');
