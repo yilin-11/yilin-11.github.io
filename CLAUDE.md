@@ -16,10 +16,25 @@ python3 -m http.server 8000    # then open http://localhost:8000
 
 | Path | Status | What it is |
 | --- | --- | --- |
-| `index.html` | **active** | The portfolio's markup — head, sidebar, workspace shell and the empty viewer dialog (~130 lines) |
-| `styles.css` | **active** | Every style on the site (~215 lines) |
-| `app.js` | **active** | The `CASES` data and everything that renders it (~420 lines) |
+| `index.html` | **active** | The work page — head, sidebar shell, workspace and the empty viewer dialog (~110 lines) |
+| `about/index.html` | **active** | The About page, served at `/about/` (~115 lines) |
+| `404.html` | **active** | Not-found page. GitHub Pages serves it for any unmatched path (~75 lines) |
+| `styles.css` | **active** | Every style on the site (~290 lines) |
+| `app.js` | **active** | The `CASES` data and everything that renders it (~595 lines) |
 | `prototypes/*.html` | **active** | Three self-contained interactive prototypes linked from the first three case studies |
+
+**There are three HTML pages and they share one shell.** The `<head>`, the theme
+script and the sidebar markup are duplicated in each — there is no build step to
+factor them out, and the theme script *must* stay inline in every page or that
+page flashes. Keep them in sync by hand. What is deliberately **not** duplicated
+is the sidebar's contents: `renderSidebar()` builds it from `CASES`, so adding a
+case is still a one-line edit to that array.
+
+Assets in `about/index.html` and `404.html` are referenced root-absolute
+(`/styles.css`, `/app.js`, `/favicon.svg`) because `/about/` is a directory —
+relative paths there would resolve to `/about/styles.css`. This is safe because
+the site is a **user site** served from the domain root; it would break if the
+repo ever became a project site served from `/repo/`.
 
 The old CUNY coursework (`mmp210/`, `mmp240/`, `citymail/`) used to sit at the repo root. It now lives only on the `archive/coursework` branch and is no longer served, since Pages publishes `main`. Treat it as a frozen artifact: don't restore it to `main`, and don't "modernize" it if you are asked to work on that branch — it contains intentional oddities (e.g. the misspelled `mmp240/craigslist_redesign/stlyes.css`, p5.js 0.5.6 from CDN in `mmp210/memes` and `mmp210/self-portrait` vs. a vendored `p5.js` in `mmp210/midterm-project`).
 
@@ -27,7 +42,9 @@ The old CUNY coursework (`mmp210/`, `mmp240/`, `citymail/`) used to sit at the r
 
 Three files, no build step: `index.html` links `styles.css` in the head and `app.js` at the end of the body. The one exception is a short inline script in `<head>` that resolves the theme into `data-theme` before the body paints — it stays inline on purpose, since an external file would paint first and flash.
 
-**All case-study content lives in the `CASES` array** at the top of `app.js`, and the DOM is generated from it. To add or edit a case, edit that array — never the generated markup.
+**All case-study content lives in the `CASES` array** at the top of `app.js`, and the DOM is generated from it. To add or edit a case, edit that array — never the generated markup. That now includes the sidebar: `renderSidebar()` writes the "Selected work" list into `#worknav` on every page, so the case list is not written down anywhere else.
+
+Each page declares itself with `<body data-page="home|about|404">`, read once into `PAGE`. It decides two things: whether the sidebar's case links open the viewer or navigate, and whether the `?case=` deep link is honoured. Anything that only exists on the work page — `renderWorkspace()`, the viewer keydown handler — guards on the element being present rather than on `PAGE`, so a new page cannot break by forgetting a branch.
 
 Each case object:
 
@@ -48,7 +65,8 @@ Rendering flow (`app.js`):
 
 - `renderWorkspace()` builds the grid and list views from the same `CASES` data; `setView('grid'|'list')` just flips `[data-view]` on `#workspace` and CSS shows/hides the right container.
 - `openCase(i)` fills the full-screen `#viewer` dialog; `stepCase(±1)` wraps around the array; Esc / ← / → are wired globally but only while the viewer is open.
-- View changes go through `document.startViewTransition?…:…` — keep the fallback branch when adding transitions.
+- **`/?case=N` opens a case on load**, which is what the sidebar links from `/about/` and `/404.html` rely on, and it gives a case a shareable URL. `closeCase()` strips the parameter with `history.replaceState` so a refresh does not reopen what was just closed. Watch the guard: `URLSearchParams.get()` returns `null` when absent and `Number(null)` is `0`, so testing the number alone opens case 01 on every plain visit — the null check is the whole thing.
+- View changes go through **`withTransition(fn)`**, which keeps the no-support fallback in one place and swallows the rejection a *skipped* transition produces. Transitions get skipped routinely — another starts, or one fires while the page is still loading, which is exactly what `/?case=N` does — and an unhandled rejection logs an `AbortError` for something that is not a fault. Use the helper rather than calling `document.startViewTransition` directly.
 - The accent color is threaded by setting `style="--acc:${c.acc}"` on a wrapper element; child CSS reads `var(--acc)`. Follow this rather than inlining color values.
 
 Chapter HTML uses a fixed set of styled blocks — reuse them instead of inventing new ones:
@@ -60,7 +78,19 @@ Chapter HTML uses a fixed set of styled blocks — reuse them instead of inventi
 
 ### Head assets
 
+`/about/` sets its own `og:title`, `og:description` and `og:url` but **reuses the
+same `og.png`** — the card is the site's, not the page's. `404.html` is
+`noindex` and carries no OG tags at all.
+
 `og.png` (1200×630), `favicon.svg`, and `apple-touch-icon.png` sit at the repo root and are referenced from `<head>` with absolute `https://yilin-11.github.io/…` URLs for the Open Graph tags (relative URLs are not resolved by most crawlers). `og.png` bakes in the name, the tagline, and a dot-and-label for every case, so **if the `<title>`, the sidebar `.disc` line, or the case list changes, the image is now stale** — it is generated with Pillow from the site's own tokens (paper/ink/line colors, the `.reg-mini` corner mark, each case accent color) and has to be redrawn, not edited. No generator script is checked in; redraw it at 1200×630 with Pillow using Arial Bold and Times New Roman Italic from `/System/Library/Fonts/Supplemental/`, and keep `og:image:alt` in sync with the names on the card.
+
+### Where the info content lives
+
+**Contact is not a page.** It was sixteen words at the bottom of the home page's scroll, and as a destination it made someone navigate away at the exact moment they had decided to get in touch. It now sits in the sidebar footer (`.foot-status` / `.foot-links` / `.foot-place`) on every page, plus a fuller section on `/about/`. If you add a channel, add it to the footer in all three pages **and** to the About section.
+
+**About is a page because its value is the prose.** `/about/` carries its own `<title>`, `description`, `canonical` and OG tags, and its content is written as markup rather than generated from JS — it is the one page a crawler is served that is worth indexing on its own. Do not move it into `CASES` or render it from JavaScript.
+
+The old `#about` / `#contact` anchors redirect to `/about/` from `app.js`. Keep that until nothing links to them.
 
 ### Conventions to preserve
 

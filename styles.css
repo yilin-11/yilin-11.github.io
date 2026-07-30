@@ -31,19 +31,37 @@ button{font-family:var(--sg);cursor:pointer;border:none;background:none;color:in
   background:var(--paper);
 }
 .who h1{font-weight:700;font-size:19px;letter-spacing:.02em;text-transform:uppercase}
+.who h1 a,.t-name a{text-decoration:none}
 .who .disc{font-family:var(--ss);font-style:italic;font-size:14.5px;color:var(--ink-2);margin-top:2px}
 .reg-mini{width:14px;height:14px;border-top:1.5px solid var(--ink);border-left:1.5px solid var(--ink);margin-bottom:18px}
 nav.worknav{margin-top:40px;display:flex;flex-direction:column;gap:2px}
 nav.worknav .navlab{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px}
+/* The case entries used to be <button>s and the info links <a>s, which is the
+   only reason they looked different — anchors carry the browser's underline.
+   They are all links now, and all nav items, so they all look like one. */
 nav.worknav a,nav.worknav button{
   text-align:left;font-size:14.5px;padding:9px 0;color:var(--ink-2);
+  text-decoration:none;
   transition:color .15s;display:flex;gap:9px;min-height:44px;align-items:center;
 }
 nav.worknav a:hover,nav.worknav button:hover{color:var(--ink)}
 nav.worknav .num{font-size:10.5px;color:var(--ink-3);letter-spacing:.06em}
 nav.worknav .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.side .foot{margin-top:auto;font-size:12px;color:var(--ink-3);line-height:1.8}
+/* The current page in the sidebar. The dot already carries the case colour,
+   so the state is weight and ink rather than another colour. */
+nav.worknav a[aria-current="page"]{color:var(--ink);font-weight:500}
+
+/* ---- sidebar contact ----
+   Contact lives here rather than on a page of its own, so it is on screen at
+   every scroll position instead of being a destination someone has to leave
+   the work for. */
+.side .foot{margin-top:auto;font-size:12px;color:var(--ink-3);line-height:1.7}
 .side .foot a{text-decoration:underline;text-underline-offset:3px}
+.foot-status{color:var(--ink-2);font-family:var(--ss);font-size:13px;line-height:1.55}
+.foot-links{display:flex;flex-wrap:wrap;gap:4px 12px;margin:11px 0 9px}
+.foot-links a{color:var(--ink-2);min-height:auto}
+.foot-links a:hover{color:var(--ink)}
+.foot-place{font-size:11.5px;letter-spacing:.04em}
 
 .topbar{display:none}
 
@@ -92,6 +110,7 @@ nav.worknav .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .workspace[data-view="list"] .list{display:flex}
 
 section.page{max-width:640px;margin-top:72px;scroll-margin-top:40px}
+section.page--lead{margin-top:0}
 section.page h2{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);margin-bottom:16px;display:flex;align-items:center;gap:12px}
 section.page h2::after{content:"";flex:1;height:1px;background:var(--line)}
 section.page p{font-family:var(--ss);font-size:16.5px;line-height:1.75;color:var(--ink-2)}

@@ -399,7 +399,39 @@ function renderWires(list){
       <figcaption><b>${w.t}</b> — ${w.cap}</figcaption>
     </figure>`).join('')}</div>`;
 }
+/* Which page this is. The sidebar is shared by every page; the workspace,
+   the viewer and the view toggle only exist on the work page. */
+const PAGE=document.body.dataset.page||'home';
+
+/* ---------- sidebar ----------
+   Built from CASES rather than written out in each page's markup. It used to
+   be five hand-written buttons in index.html, which was already one list too
+   many next to CASES; with a second page it would have been two.
+
+   The case entries are real links to /?case=N, so they work from any page and
+   survive a middle-click. On the work page a listener turns them back into
+   openCase() so nothing navigates. */
+function renderSidebar(){
+  const nav=$('worknav');
+  if(!nav)return;
+  nav.innerHTML=
+    `<span class="navlab">Selected work</span>`+
+    CASES.map((c,i)=>`<a class="navcase" href="/?case=${i}" data-case="${i}">`+
+      `<span class="num">${String(i+1).padStart(2,'0')}</span>`+
+      `<span class="dot" style="background:${c.acc}"></span>${c.plain}</a>`).join('')+
+    `<span class="navlab" style="margin-top:28px">Info</span>`+
+    `<a href="/about/"${PAGE==='about'?' aria-current="page"':''}>About</a>`;
+
+  nav.querySelectorAll('a').forEach(a=>{
+    const n=a.dataset.case;
+    if(n===undefined){a.addEventListener('click',()=>toggleDrawer(false));return;}
+    if(PAGE!=='home')return;                       // let it navigate home
+    a.addEventListener('click',e=>{e.preventDefault();toggleDrawer(false);openCase(Number(n));});
+  });
+}
+
 function renderWorkspace(){
+  if(!$('gridEl'))return;                          // not the work page
   $('gridEl').innerHTML=CASES.map((c,i)=>`
     <button class="workcard" style="--acc:${c.acc}" onclick="openCase(${i})">
       <div class="thumb">${c.motif}</div>
@@ -416,13 +448,26 @@ function renderWorkspace(){
       <span class="r-type">${c.type}</span>
     </button>`).join('');
 }
+/* ---------- view transitions ----------
+   One wrapper for all four of them, so the no-support fallback is written
+   once. The catch matters: a transition that gets skipped — because another
+   starts, or because this one fired while the page was still loading, which
+   is exactly what /?case=N does — rejects .ready. Nothing is broken and there
+   is nothing to handle, but an unhandled rejection still logs an AbortError. */
+function withTransition(fn){
+  if(!document.startViewTransition)return fn();
+  const t=document.startViewTransition(fn);
+  if(t&&t.ready&&t.ready.catch)t.ready.catch(()=>{});
+  return t;
+}
+
 function setView(v){
   const change=()=>{
     $('workspace').dataset.view=v;
     $('vtGrid').setAttribute('aria-pressed',v==='grid');
     $('vtList').setAttribute('aria-pressed',v==='list');
   };
-  document.startViewTransition?document.startViewTransition(change):change();
+  withTransition(change);
 }
 
 let current=0,lastFocus=null;
@@ -470,7 +515,7 @@ function openCase(i){
     $('viewer').scrollTop=0;
     document.body.style.overflow='hidden';
   };
-  document.startViewTransition?document.startViewTransition(fill):fill();
+  withTransition(fill);
   toggleDrawer(false);
   setTimeout(()=>$('viewer').querySelector('.v-actions button:last-child').focus(),80);
 }
@@ -484,11 +529,14 @@ function closeCase(){
   const done=()=>{
     $('viewer').classList.remove('open');document.body.style.overflow='';
     if(lastFocus&&lastFocus.isConnected)lastFocus.focus();
+    /* Drop ?case= so a refresh lands on the work page rather than
+       reopening the case that was just closed. */
+    if(location.search)history.replaceState(null,'',location.pathname);
   };
-  document.startViewTransition?document.startViewTransition(done):done();
+  withTransition(done);
 }
 document.addEventListener('keydown',e=>{
-  if(!$('viewer').classList.contains('open'))return;
+  if(!$('viewer')||!$('viewer').classList.contains('open'))return;
   if(e.key==='Escape')closeCase();
   if(e.key==='ArrowRight')stepCase(1);
   if(e.key==='ArrowLeft')stepCase(-1);
@@ -505,7 +553,9 @@ function toggleDrawer(force){
 function applyTheme(t,remember){
   document.documentElement.setAttribute('data-theme',t);
   if(remember){try{localStorage.setItem('yl-theme',t)}catch(e){}}
-  const b=$('themeBtn'), toLight=t==='dark';
+  const b=$('themeBtn');
+  if(!b)return;                                    // the attribute is what matters
+  const toLight=t==='dark';
   b.textContent=toLight?'☀':'☾';
   b.setAttribute('aria-label',toLight?'Switch to the light theme':'Switch to the dark theme');
   b.title=b.getAttribute('aria-label');
@@ -513,7 +563,7 @@ function applyTheme(t,remember){
 function toggleTheme(){
   const next=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
   const change=()=>applyTheme(next,true);
-  document.startViewTransition?document.startViewTransition(change):change();
+  withTransition(change);
 }
 applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light',false);
 try{
@@ -522,4 +572,23 @@ try{
     if(stored!=='light'&&stored!=='dark')applyTheme(e.matches?'dark':'light',false);
   });
 }catch(e){}
+/* The two info sections used to live on this page as #about and #contact.
+   Anything still pointing at those anchors goes to the page that replaced
+   them rather than to a silent no-op. */
+if(PAGE==='home'&&(location.hash==='#about'||location.hash==='#contact')){
+  location.replace('/about/');
+}
+
+renderSidebar();
 renderWorkspace();
+
+/* /?case=N opens that case straight away, which is what the sidebar links
+   from other pages rely on — and it gives a case a shareable URL. */
+if(PAGE==='home'){
+  /* get() returns null when the parameter is absent, and Number(null) is 0 —
+     so testing the number alone opens case 01 on every plain visit. The
+     null check is the whole guard. */
+  const raw=new URLSearchParams(location.search).get('case');
+  const n=raw===null?NaN:Number(raw);
+  if(Number.isInteger(n)&&n>=0&&n<CASES.length)openCase(n);
+}

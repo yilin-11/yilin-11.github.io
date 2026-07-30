@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Not found — Yi Lin</title>
+<meta name="robots" content="noindex">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<script>
+/* Same inline theme resolution as every other page — see index.html. */
+(function(){
+  var t=null;
+  try{t=localStorage.getItem('yl-theme')}catch(e){}
+  if(t!=='light'&&t!=='dark'){
+    t=window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+  }
+  document.documentElement.setAttribute('data-theme',t);
+})();
+</script>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body data-page="404">
+
+<header class="topbar">
+  <span class="t-name"><a href="/">Yi Lin</a></span>
+  <button class="burger" aria-label="Open menu" aria-expanded="false" onclick="toggleDrawer()"><span></span><span></span><span></span></button>
+</header>
+<div class="scrim" onclick="toggleDrawer(false)"></div>
+
+<div class="app">
+  <aside class="side" id="side">
+    <div class="who">
+      <div class="reg-mini" aria-hidden="true"></div>
+      <h1><a href="/">Yi Lin</a></h1>
+      <p class="disc">UX/UI Design + Product Design</p>
+    </div>
+    <nav class="worknav" id="worknav" aria-label="Sections"></nav>
+    <div class="foot">
+      <p class="foot-status">Open to UX/UI and product design roles in New York.</p>
+      <div class="foot-links">
+        <a href="https://artyilin.com" target="_blank" rel="noopener">Website</a>
+        <a href="https://www.linkedin.com/in/yilin11/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://artyilin.com/contact/" target="_blank" rel="noopener">Get in touch</a>
+      </div>
+      <p class="foot-place">Based in New York City</p>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="ws-head">
+      <h2>404</h2>
+      <div class="ws-tools">
+        <button class="themebtn" id="themeBtn" onclick="toggleTheme()"></button>
+      </div>
+    </div>
+
+    <section class="page page--lead">
+      <p><b>That page isn't here.</b> It may have moved — the About and Contact sections used to live on the home page and now sit at <a href="/about/" style="text-decoration:underline;text-underline-offset:3px">/about/</a>.</p>
+      <div class="contact-row">
+        <a href="/">See selected work</a>
+        <a href="/about/">About</a>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>

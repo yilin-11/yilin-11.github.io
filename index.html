@@ -42,7 +42,7 @@
 </script>
 <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body data-page="home">
 
 <header class="topbar">
   <span class="t-name">Yi Lin</span>
@@ -57,20 +57,20 @@
       <h1>Yi Lin</h1>
       <p class="disc">UX/UI Design + Product Design</p>
     </div>
-    <nav class="worknav" aria-label="Work">
-      <span class="navlab">Selected work</span>
-      <button onclick="openCase(0)"><span class="num">01</span><span class="dot" style="background:var(--cuny)"></span>CUNY Arts</button>
-      <button onclick="openCase(1)"><span class="num">02</span><span class="dot" style="background:var(--nolimit)"></span>No Limit</button>
-      <button onclick="openCase(2)"><span class="num">03</span><span class="dot" style="background:var(--shelfie)"></span>Shelfie</button>
-      <button onclick="openCase(3)"><span class="num">04</span><span class="dot" style="background:var(--mutuo)"></span>Mutuo</button>
-      <button onclick="openCase(4)"><span class="num">05</span><span class="dot" style="background:var(--foredge)"></span>Foredge</button>
-      <span class="navlab" style="margin-top:28px">Info</span>
-      <a href="#about" onclick="toggleDrawer(false)">About</a>
-      <a href="#contact" onclick="toggleDrawer(false)">Contact</a>
-    </nav>
+    <!-- Filled by renderSidebar() from CASES, so the case list is written
+         down once rather than once per page. -->
+    <nav class="worknav" id="worknav" aria-label="Sections"></nav>
+    <!-- Contact is here rather than on a page of its own. It was sixteen
+         words at the bottom of a scroll; as a destination it made someone
+         navigate away at the exact moment they had decided to get in touch. -->
     <div class="foot">
-      Based in New York City<br>
-      <a href="https://artyilin.com" target="_blank" rel="noopener">artyilin.com</a>
+      <p class="foot-status">Open to UX/UI and product design roles in New York.</p>
+      <div class="foot-links">
+        <a href="https://artyilin.com" target="_blank" rel="noopener">Website</a>
+        <a href="https://www.linkedin.com/in/yilin11/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://artyilin.com/contact/" target="_blank" rel="noopener">Get in touch</a>
+      </div>
+      <p class="foot-place">Based in New York City</p>
     </div>
   </aside>
 
@@ -90,24 +90,6 @@
       <div class="list" id="listEl"></div>
     </div>
 
-    <section class="page" id="about">
-      <h2>About</h2>
-      <p><b>I'm a maker and digital designer who helps people build things they didn't think they could.</b> My work runs from responsive redesigns to mobile apps to products that fold AI into everyday routines.</p>
-      <p>I hold a B.A. in Digital Design (Magna Cum Laude) from City College. Three instincts carry across everything here: reduce the cost of the first step, design the failure states, and make progress visible.</p>
-      <p>Every case here follows the same spine — <b>Research → Pain points → IA → Wireframes → Validation</b> — and none of them stops at frames. Three shipped as interactive prototypes; the last two are full-stack apps, deployed and running.</p>
-      <p><b>Those two I designed and built with an AI coding agent.</b> That changes the pace, not the job. Code arrives faster than anyone can read it, so the discipline moves to deciding what to keep: on Mutuo, nothing counted as fixed until a failing test said it was; on Foredge, every way the app can fail got a drawn state instead of a blank screen. I use AI to get to a running app — the decisions inside it are still mine to defend.</p>
-    </section>
-
-    <section class="page" id="contact">
-      <h2>Contact</h2>
-      <p>Open to UX/UI and product design roles in New York.</p>
-      <div class="contact-row">
-        <!-- <a href="mailto:hello@artyilin.com">Email</a> -->
-        <a href="https://artyilin.com" target="_blank" rel="noopener">Website</a>
-        <a href="https://www.linkedin.com/in/yilin11/" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="https://artyilin.com/contact/" target="_blank" rel="noopener">Contact</a>
-      </div>
-    </section>
   </main>
 </div>
 

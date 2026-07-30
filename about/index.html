@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About — Yi Lin</title>
+<meta name="description" content="Yi Lin is a New York–based UX/UI and product designer with a B.A. in Digital Design from City College. Three instincts carry across the work: reduce the cost of the first step, design the failure states, make progress visible.">
+<link rel="canonical" href="https://yilin-11.github.io/about/">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<meta property="og:type" content="profile">
+<meta property="og:url" content="https://yilin-11.github.io/about/">
+<meta property="og:title" content="About — Yi Lin">
+<meta property="og:description" content="New York–based UX/UI and product designer. Every case follows the same spine — Research, Pain points, IA, Wireframes, Validation — and none of them stops at frames.">
+<meta property="og:image" content="https://yilin-11.github.io/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Yi Lin — UX/UI & Product Designer. Selected work: CUNY Arts, No Limit, Shelfie, Mutuo, Foredge.">
+<meta property="og:site_name" content="Yi Lin">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="About — Yi Lin">
+<meta name="twitter:description" content="New York–based UX/UI and product designer. Every case follows the same spine — Research, Pain points, IA, Wireframes, Validation — and none of them stops at frames.">
+<meta name="twitter:image" content="https://yilin-11.github.io/og.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<script>
+/* Runs before the body paints: a stored choice wins, otherwise the system's.
+   Without this the page would flash the light default at anyone on dark.
+   Duplicated from index.html on purpose — an external file would paint first
+   and flash, which is the whole reason it is inline. */
+(function(){
+  var t=null;
+  try{t=localStorage.getItem('yl-theme')}catch(e){}
+  if(t!=='light'&&t!=='dark'){
+    t=window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+  }
+  document.documentElement.setAttribute('data-theme',t);
+})();
+</script>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body data-page="about">
+
+<header class="topbar">
+  <span class="t-name"><a href="/">Yi Lin</a></span>
+  <button class="burger" aria-label="Open menu" aria-expanded="false" onclick="toggleDrawer()"><span></span><span></span><span></span></button>
+</header>
+<div class="scrim" onclick="toggleDrawer(false)"></div>
+
+<div class="app">
+  <aside class="side" id="side">
+    <div class="who">
+      <div class="reg-mini" aria-hidden="true"></div>
+      <h1><a href="/">Yi Lin</a></h1>
+      <p class="disc">UX/UI Design + Product Design</p>
+    </div>
+    <!-- Filled by renderSidebar() from CASES, so the case list is written
+         down once rather than once per page. -->
+    <nav class="worknav" id="worknav" aria-label="Sections"></nav>
+    <div class="foot">
+      <p class="foot-status">Open to UX/UI and product design roles in New York.</p>
+      <div class="foot-links">
+        <a href="https://artyilin.com" target="_blank" rel="noopener">Website</a>
+        <a href="https://www.linkedin.com/in/yilin11/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://artyilin.com/contact/" target="_blank" rel="noopener">Get in touch</a>
+      </div>
+      <p class="foot-place">Based in New York City</p>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="ws-head">
+      <h2>About</h2>
+      <div class="ws-tools">
+        <button class="themebtn" id="themeBtn" onclick="toggleTheme()"></button>
+      </div>
+    </div>
+
+    <!-- Written out as markup rather than generated from JS. This is the one
+         page whose value is the prose itself, so it has to be in the HTML a
+         crawler is served, not assembled after it. -->
+    <section class="page page--lead">
+      <p><b>I'm a maker and digital designer who helps people build things they didn't think they could.</b> My work runs from responsive redesigns to mobile apps to products that fold AI into everyday routines.</p>
+      <p>I hold a B.A. in Digital Design (Magna Cum Laude) from City College. Three instincts carry across everything here: reduce the cost of the first step, design the failure states, and make progress visible.</p>
+      <p>Every case here follows the same spine — <b>Research → Pain points → IA → Wireframes → Validation</b> — and none of them stops at frames. Three shipped as interactive prototypes; the last two are full-stack apps, deployed and running.</p>
+      <p><b>Those two I designed and built with an AI coding agent.</b> That changes the pace, not the job. Code arrives faster than anyone can read it, so the discipline moves to deciding what to keep: on Mutuo, nothing counted as fixed until a failing test said it was; on Foredge, every way the app can fail got a drawn state instead of a blank screen. I use AI to get to a running app — the decisions inside it are still mine to defend.</p>
+    </section>
+
+    <section class="page">
+      <h2>Get in touch</h2>
+      <p>Open to UX/UI and product design roles in New York, and happy to talk through any of the work here.</p>
+      <div class="contact-row">
+        <!-- <a href="mailto:hello@artyilin.com">Email</a> -->
+        <a href="https://artyilin.com" target="_blank" rel="noopener">Website</a>
+        <a href="https://www.linkedin.com/in/yilin11/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://artyilin.com/contact/" target="_blank" rel="noopener">Contact form</a>
+      </div>
+    </section>
+
+    <section class="page">
+      <h2>The work</h2>
+      <p>Five case studies, each one taken from research through to something you can open and use.</p>
+      <div class="contact-row">
+        <a href="/">See selected work</a>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>
