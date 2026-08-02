@@ -7,34 +7,79 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<script>
+/* Resolved before the stylesheet so the first paint is already the right
+   theme — an external file would paint light first and flash. Dark unless the
+   user has explicitly chosen otherwise, including when this script never runs:
+   the dark values live on :root itself, and light is the override. */
+(function(){var t=null;try{t=localStorage.getItem('shelfie-theme');}catch(e){}
+ document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark');})();
+</script>
 <style>
+/* Dark is the default: this is an app you open in a kitchen at dinnertime, and
+   every colour here is a custom property, so the light theme is one override
+   block rather than a second stylesheet. Two rules keep the pairs honest —
+   `--green` is always a surface that white sits on, `--green-deep` is always
+   text; anything that was both got split into `--green-hover`. */
 :root{
-  --green:#177245; --green-deep:#0E5232; --green-bg:#E7F3EC;
-  --lime:#8FC03C; --lime-deep:#4F7314; --lime-bg:#F2F8E4;
-  --amber:#B26B00; --amber-bg:#FCF0DC;
-  --red:#B03A2E; --red-bg:#FBE9E6;
-  --prep:#5B4AA6; --prep-bg:#EDEAF8;
-  --ink:#1F2823; --ink-2:#5B6862; --ink-3:#93A09A;
-  --paper:#F7F8F6; --card:#fff; --line:#E5E9E6;
+  color-scheme:dark;
+  --green:#22945C; --green-hover:#2BAA6C; --green-deep:#6FD39C; --green-bg:#152A20; --green-bg-2:#1E3A2C; --green-edge:#2E5A43;
+  --lime:#A8D95A; --lime-deep:#C6E88A; --lime-bg:#1E2A12;
+  --amber:#E2A44A; --amber-bg:#2E2314; --amber-bg-2:#3C2E17;
+  --red:#E87764; --red-bg:#311C18;
+  --prep:#A99AE8; --prep-bg:#221E33; --prep-line:#3A3358; --prep-card:#1B1926;
+  --ink:#E9EFEB; --ink-2:#A2AFA8; --ink-3:#78857F;
+  --paper:#101613; --paper-0:rgba(16,22,19,0); --card:#19211D; --line:#2A342E;
+  --stage:#070C09; --seg-bg:#121915; --seg-on:#2B362F; --dash:#3D4A43; --box-line:#46534C; --disabled:#39453F;
+  --top:#1C2621; --glow:rgba(43,170,108,.20); --dot:rgba(190,225,205,.030); --glass:rgba(28,38,32,.92); --glass-ink:var(--ink);
+  --toast-bg:#E9EFEB; --toast-fg:#101613;
+  --tabbar-h:72px;             /* what the tab bar actually occupies — what a floating bar must sit flush on */
+  --tabh:92px;                 /* the scroll clearance beneath it, so the last row is never under the bar */
   --sans:'DM Sans',system-ui,sans-serif; --disp:'Bricolage Grotesque',var(--sans);
 }
+:root[data-theme="light"]{
+  color-scheme:light;
+  --green:#177245; --green-hover:#0E5232; --green-deep:#0E5232; --green-bg:#E7F3EC; --green-bg-2:#D3E8DC; --green-edge:#A9CDB9;
+  --lime:#8FC03C; --lime-deep:#4F7314; --lime-bg:#F2F8E4;
+  --amber:#B26B00; --amber-bg:#FCF0DC; --amber-bg-2:#F8E6C6;
+  --red:#B03A2E; --red-bg:#FBE9E6;
+  --prep:#5B4AA6; --prep-bg:#EDEAF8; --prep-line:#D8D2EE; --prep-card:#FBFAFE;
+  --ink:#1F2823; --ink-2:#5B6862; --ink-3:#93A09A;
+  --paper:#F7F8F6; --paper-0:rgba(247,248,246,0); --card:#fff; --line:#E5E9E6;
+  --stage:#E9EDEA; --seg-bg:#EDF1EE; --seg-on:#fff; --dash:#C8D3CC; --box-line:#C3D2C8; --disabled:#B9C6BF;
+  --top:#fff; --glow:rgba(23,114,69,.10); --dot:rgba(31,40,35,.035); --glass:rgba(255,255,255,.94); --glass-ink:var(--ink);
+  --toast-bg:#1F2823; --toast-fg:#fff;
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--sans);background:#E9EDEA;color:var(--ink);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+body{font-family:var(--sans);background:var(--stage);color:var(--ink);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
 button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 :focus-visible{outline:2px solid var(--green);outline-offset:2px}
 .phone{width:396px;height:800px;background:#101512;border-radius:46px;padding:12px;box-shadow:0 30px 80px rgba(15,40,28,.28)}
-.screen{position:relative;width:100%;height:100%;background:var(--paper);border-radius:36px;overflow:hidden;display:flex;flex-direction:column}
+.screen{position:relative;width:100%;height:100%;border-radius:36px;overflow:hidden;display:flex;flex-direction:column;
+  background:var(--paper);background-image:radial-gradient(var(--dot) 1px,transparent 1px);background-size:22px 22px}
 @media (max-width:840px){body{padding:0}.phone{width:100%;max-width:440px;height:100vh;border-radius:0;padding:0;box-shadow:none}.screen{border-radius:0}}
-.view{position:absolute;inset:0;display:none;flex-direction:column;overflow-y:auto;padding-bottom:92px}
+.view{position:absolute;inset:0;display:none;flex-direction:column;overflow-y:auto;padding-bottom:var(--tabh)}
 .view.on{display:flex}
 .view>*{flex-shrink:0}
 .view::-webkit-scrollbar{display:none}
-.head{padding:52px 22px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+/* The top of the screen gets its own surface. On a dark theme a header that
+   shares the page background has no edge at all — the phone, the status bar
+   area and the first row of content read as one black field. */
+.head{min-height:97px;padding:38px 22px 13px;display:flex;align-items:flex-end;justify-content:space-between;gap:10px;
+  border-bottom:1px solid var(--line);background:var(--top);
+  background-image:radial-gradient(120% 150% at 86% -30%,var(--glow) 0%,transparent 58%)}
 .head .lg{font-family:var(--disp);font-weight:700;font-size:23px;letter-spacing:-.01em}
 .head .lg span{color:var(--green)}
-.head .sub{font-size:12.5px;color:var(--ink-2)}
+.head>div:first-child{min-width:0}
+/* one line, always — the slot is next to the savings chip and the avatar, and
+   anything that wraps here shoves the whole screen down */
+.head .sub{font-size:12.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .avatar{width:38px;height:38px;border-radius:50%;background:var(--green);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.saved-chip{background:var(--green-bg);color:var(--green-deep);font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;white-space:nowrap}
+/* The running total sits in the subtitle slot rather than in a pill beside the
+   title: it is what this screen is about, and a badge floated next to the
+   avatar read as a notification rather than as the number being earned. */
+.head .saved-line{color:var(--green-deep);font-weight:700}
+
 
 /* auth */
 #vAuth{background:linear-gradient(180deg,var(--green-bg) 0%,var(--paper) 46%);padding:0 26px;justify-content:center}
@@ -43,48 +88,99 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 .auth-logo{font-family:var(--disp);font-weight:700;font-size:40px;text-align:center;letter-spacing:-.02em}
 .auth-logo span{color:var(--green)}
 .auth-sub{text-align:center;font-size:14px;color:var(--ink-2);margin:6px 0 26px;line-height:1.6}
-.uname-box{background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:13px}
+.uname-box{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:13px}
 .uname-box .lab{font-size:11.5px;font-weight:700;color:var(--ink-3);display:block}
 .uname-box .un{font-family:var(--disp);font-size:19px;font-weight:700}
 .dice{margin-left:auto;font-size:21px;padding:6px;border-radius:10px}
 .dice:hover{background:var(--green-bg)}
 .field{margin-bottom:13px}
 .field label{display:block;font-size:12.5px;font-weight:700;color:var(--ink-2);margin-bottom:6px}
-.field input,.field textarea{width:100%;padding:13px 16px;border:1.5px solid var(--line);border-radius:14px;font-size:14.5px;font-family:var(--sans);background:#fff}
+.field input,.field textarea{width:100%;padding:13px 16px;border:1.5px solid var(--line);border-radius:14px;font-size:14.5px;font-family:var(--sans);background:var(--card);color:var(--ink)}
 .field input:focus,.field textarea:focus{border-color:var(--green);outline:none}
 .btn-main{display:block;width:100%;background:var(--green);color:#fff;font-size:15.5px;font-weight:700;padding:15px;border-radius:16px;text-align:center;transition:background .15s}
-.btn-main:hover{background:var(--green-deep)}
-.btn-main:disabled{background:#B9C6BF;cursor:default}
-.demo-card{margin-top:14px;border:1.5px solid #A9CDB9;border-radius:16px;padding:13px 14px;background:var(--green-bg)}
+.btn-main:hover{background:var(--green-hover)}
+.btn-main:disabled{background:var(--disabled);cursor:default}
+.demo-card{margin-top:14px;border:1.5px solid var(--green-edge);border-radius:16px;padding:13px 14px;background:var(--green-bg)}
 .dc-top{display:flex;gap:10px;align-items:flex-start;margin-bottom:11px}
 .dc-top .ic{font-size:19px;line-height:1.2}
 .dc-top b{display:block;font-family:var(--disp);font-size:14.5px}
 .dc-top span span,.dc-top div span{display:block;font-size:12px;color:var(--green-deep);line-height:1.5;margin-top:1px}
-.btn-demo{display:block;width:100%;background:#fff;border:1.5px solid var(--green);color:var(--green-deep);font-size:14px;font-weight:700;padding:11px;border-radius:13px}
+.btn-demo{display:block;width:100%;background:var(--card);border:1.5px solid var(--green);color:var(--green-deep);font-size:14px;font-weight:700;padding:11px;border-radius:13px}
 .btn-demo:hover{background:var(--green);color:#fff}
 .auth-note{font-size:12px;color:var(--ink-3);text-align:center;margin-top:14px;line-height:1.6}
 .storage-warn{display:none;margin-top:14px;background:var(--amber-bg);border-radius:12px;padding:10px 14px;font-size:12px;color:var(--amber);line-height:1.55}
 
+/* setup progress — the first step arrives already ticked */
+.gg{margin:2px 22px 4px;background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:13px 14px 8px;display:none}
+.gg.show{display:block}
+.gg-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:9px}
+.gg-h b{font-family:var(--disp);font-size:13.5px}
+.gg-h span{font-size:12px;font-weight:700;color:var(--green-deep)}
+.gg-bar{height:7px;border-radius:999px;background:var(--paper);overflow:hidden;margin-bottom:6px}
+.gg-bar i{display:block;height:100%;border-radius:999px;background:var(--green);transition:width .5s cubic-bezier(.2,.7,.2,1)}
+.gg-step{display:flex;align-items:center;gap:10px;width:100%;text-align:left;min-height:44px;padding:5px 2px;font-size:12.5px;color:var(--ink-2);line-height:1.45}
+.gg-step .tk{width:19px;height:19px;border-radius:50%;border:1.5px solid var(--line);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;color:transparent;flex-shrink:0}
+/* A finished step is a receipt, not a target — it shrinks to a line so the
+   remaining ones keep the height, and the whole card keeps off the fold. */
+.gg-step.done{color:var(--ink-3);min-height:0;padding:2px;font-size:12px}
+.gg-step.done .tk{width:16px;height:16px;font-size:9px}
+.gg-step.done .tk{background:var(--green);border-color:var(--green);color:#fff}
+.gg-step .chev{margin-left:auto;color:var(--ink-3);font-size:16px}
+.gg-step:not(.done):hover{color:var(--green-deep)}
+
+/* what inaction costs, next to what the shelf is worth */
+.riskbar{background:var(--amber-bg);border-radius:14px;padding:11px 13px;margin-bottom:9px;font-size:12.5px;color:var(--amber);line-height:1.6}
+.riskbar .go{display:block;margin-top:6px;font-weight:700;color:var(--amber);text-decoration:underline;text-underline-offset:3px}
+.anchor{font-size:12px;color:var(--ink-2);line-height:1.6;margin-top:11px}
+.anchor b{color:var(--ink);font-weight:700}
+
+/* the account ask, raised only once there is something to lose */
+.sheet{position:absolute;inset:0;z-index:80;display:none;align-items:flex-end;background:rgba(16,32,24,.5)}
+.sheet.show{display:flex}
+.sheet-card{width:100%;background:var(--card);border-radius:24px 24px 0 0;padding:22px 22px 24px;max-height:94%;overflow-y:auto}
+.sheet-card h3{font-family:var(--disp);font-size:19px;line-height:1.32;margin-bottom:7px}
+.sheet-lede{font-size:13px;color:var(--ink-2);line-height:1.6;margin-bottom:13px}
+.sheet-worth{background:var(--paper);border-radius:14px;padding:13px 14px;margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sheet-worth b{font-family:var(--disp);font-size:16px;display:block}
+.sheet-worth span{font-size:11px;color:var(--ink-2)}
+.sheet-cost{font-size:11.5px;color:var(--ink-3);text-align:center;margin-top:10px;line-height:1.6}
+.sheet-skip{display:block;width:100%;min-height:44px;margin-top:8px;font-size:13px;font-weight:700;color:var(--ink-3);text-decoration:underline;text-underline-offset:3px}
+.sheet-skip:hover{color:var(--ink-2)}
+
 /* pantry */
 .grp{padding:6px 22px 2px}
 .grp-h{display:flex;align-items:center;gap:8px;margin:12px 0 8px}
-.grp-h b{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.grp-h b{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:inherit}
+.grp-h::after{content:'';flex:1;height:1px;background:currentColor;opacity:.24;border-radius:1px}
 .grp-h .n{font-size:12px;color:var(--ink-3);font-weight:500}
-.grp-h.prep b{color:var(--prep)}.grp-h.soon b{color:var(--amber)}
-.grp-h.fresh b{color:var(--green-deep)}.grp-h.staple b{color:var(--ink-3)}
-.item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 14px;display:flex;align-items:center;gap:12px;margin-bottom:8px}
-.item.prepitem{border-color:#D8D2EE;background:#FBFAFE}
+.grp-h.prep{color:var(--prep)}.grp-h.soon{color:var(--amber)}
+.grp-h.fresh{color:var(--green-deep)}.grp-h.staple{color:var(--ink-3)}
+.item{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 14px;display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.item::before{content:'';position:absolute;left:0;top:11px;bottom:11px;width:3px;border-radius:0 3px 3px 0;background:var(--edge,transparent)}
+.grp.prep{--edge:var(--prep)}.grp.soon{--edge:var(--amber)}.grp.fresh{--edge:var(--green)}.grp.staple{--edge:var(--line)}
+.item.prepitem{border-color:var(--prep-line);background:var(--prep-card)}
 .item .em,.rev .em{position:relative;flex-shrink:0;width:42px;height:42px;border-radius:11px;overflow:hidden;background:var(--green-bg);display:flex;align-items:center;justify-content:center;font-size:20px}
 .item .em img,.rev .em img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .item .em i,.rev .em i{font-style:normal}
 .rev .em{width:38px;height:38px;border-radius:10px}
-.item .nm{font-size:14.5px;font-weight:700}
-.item .qt{font-size:12px;color:var(--ink-2)}
-.item .life{margin-left:auto;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}
-.life.d0{background:var(--red-bg);color:var(--red)}
-.life.d1{background:var(--amber-bg);color:var(--amber)}
-.life.d2{background:var(--green-bg);color:var(--green-deep)}
-.life.dp{background:var(--prep-bg);color:var(--prep)}
+/* The name gets the whole width of the row. It used to share one line with the
+   shelf-life pill, which does not shrink — so "Jasmine rice" broke across two
+   lines and the price broke across a third, for a row holding four words. */
+.item .body{flex:1;min-width:0}
+.item .nm{font-size:14.5px;font-weight:700;line-height:1.3}
+.item .line{display:flex;align-items:baseline;gap:6px;margin-top:3px}
+.item .qt{font-size:12px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Shelf life joins the line it belongs to. It is a fact about the item, like
+   the weight and the price, so it reads with them instead of holding its own
+   pill between the text and the buttons — colour carries the urgency, and the
+   heading above already says which of the three shelves this is. */
+.item .life{font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0}
+.item .life.sep::before{content:'·';color:var(--ink-3);font-weight:500;margin-right:6px}
+.item .acts{display:flex;align-items:center;flex-shrink:0;margin-left:auto;padding-left:8px}
+.life.d0{color:var(--red)}
+.life.d1{color:var(--amber)}
+.life.d2{color:var(--green-deep)}
+.life.dp{color:var(--prep)}
 .item .del{color:var(--ink-3);font-size:15px;padding:4px 2px 4px 6px}
 .item .del:hover{color:var(--red)}
 .empty-pan{margin:40px 22px;text-align:center;color:var(--ink-2);font-size:14px;line-height:1.7}
@@ -92,31 +188,33 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 .empty-pan b{color:var(--ink)}
 
 /* add to pantry — source picker */
-.srcs{padding:2px 22px 0;display:flex;flex-direction:column;gap:8px}
+.srcs{padding:14px 22px 0;display:flex;flex-direction:column;gap:8px}
 .src{display:flex;gap:11px;align-items:flex-start;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:12px 14px;transition:border-color .12s,background .12s}
-.src:hover{border-color:#A9CDB9}
+.src:hover{border-color:var(--green-edge)}
 .src .ic{font-size:20px;line-height:1.25;width:24px;text-align:center;flex-shrink:0}
 .src .tx{min-width:0}
 .src b{font-family:var(--disp);font-size:14.5px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .src em{font-style:normal;font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;background:var(--green-bg);color:var(--green-deep);padding:3px 7px;border-radius:999px}
 .src small{display:block;font-size:12px;color:var(--ink-2);line-height:1.5;margin-top:3px}
 .src.on{border-color:var(--green);background:var(--green-bg)}
-.src.on em{background:#fff}
+.src.on em{background:var(--card)}
 .src.on small{color:var(--green-deep)}
 .src:not(.on) small{display:none}
 .pane{display:none}
 .pane.on{display:block}
 
 /* typed entry */
-.mform{margin:12px 22px 0}
+.mform{margin:16px 22px 0}
 .mform label{display:block;font-size:12.5px;font-weight:700;color:var(--ink-2);margin-bottom:6px}
-.mform input{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:14px;font-size:14.5px;font-family:var(--sans);background:#fff;margin-bottom:13px}
+.mform input{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:14px;font-size:14.5px;font-family:var(--sans);background:var(--card);color:var(--ink);margin-bottom:13px}
 .mform input:focus{border-color:var(--green);outline:none}
 .lifechips{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
-.lifechips button{border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:9px 6px;text-align:center;font-size:13px;font-weight:700;color:var(--ink)}
+.lifechips button{border:1.5px solid var(--line);background:var(--card);border-radius:14px;padding:9px 6px;text-align:center;font-size:13px;font-weight:700;color:var(--ink)}
 .lifechips button span{display:block;font-size:10.5px;font-weight:500;color:var(--ink-3);margin-top:2px}
 .lifechips button.on{border-color:var(--green);background:var(--green-bg);color:var(--green-deep)}
 .lifechips button.on span{color:var(--green-deep)}
+.lifehint{display:none;font-size:11.5px;font-weight:700;color:var(--green-deep);margin:-8px 0 13px}
+.lifehint.show{display:block}
 
 /* shared review step */
 .review{margin:0 22px;display:none}
@@ -128,26 +226,44 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 .rev.off{opacity:.42}
 .rev input[type=checkbox]{width:18px;height:18px;accent-color:var(--green);flex-shrink:0}
 .rev .f{flex:1;min-width:0}
-.rev .nm{width:100%;border:none;border-bottom:1px dashed #C8D3CC;background:none;font-family:var(--sans);font-size:14px;font-weight:700;color:var(--ink);padding:2px 0}
+.rev .nm{width:100%;border:none;border-bottom:1px dashed var(--dash);background:none;font-family:var(--sans);font-size:14px;font-weight:700;color:var(--ink);padding:2px 0}
 .rev .nm:focus{outline:none;box-shadow:inset 0 -1.5px 0 var(--green)}
 .rev .sub{display:flex;align-items:center;gap:9px;margin-top:2px}
-.rev .qt{border:none;border-bottom:1px dashed #C8D3CC;background:none;font-family:var(--sans);font-size:12px;color:var(--ink-2);width:66px;padding:1px 0}
+.rev .qt{border:none;border-bottom:1px dashed var(--dash);background:none;font-family:var(--sans);font-size:12px;color:var(--ink-2);width:66px;padding:1px 0}
 .rev .qt:focus{outline:none;box-shadow:inset 0 -1.5px 0 var(--green)}
 .rev .days{display:flex;align-items:center;background:var(--paper);border-radius:999px;padding:2px}
 .rev .days button{width:30px;height:30px;border-radius:50%;font-size:15px;font-weight:700;color:var(--ink-2);line-height:1}
-.rev .days button:hover{background:#fff;color:var(--green-deep)}
+.rev .days button:hover{background:var(--card);color:var(--green-deep)}
 .rev .days b{font-size:11.5px;font-weight:700;min-width:34px;text-align:center}
 .rev .pr{font-size:11.5px;font-weight:700;color:var(--ink-3);margin-left:auto;flex-shrink:0}
 .addrow{width:100%;border:1.5px dashed var(--line);border-radius:14px;padding:11px;font-size:13px;font-weight:700;color:var(--ink-2)}
 .addrow:hover{border-color:var(--green);color:var(--green-deep)}
+/* The commit button pins itself to the bottom of the scroller while the review
+   is on screen, so a long haul never has to be scrolled to the end to be
+   accepted — and typing more items never buries the way out. It rides on a
+   fade rather than floating loose over the rows it would otherwise cover. */
+.revbar{position:absolute;left:0;right:0;bottom:var(--tabbar-h);z-index:55;display:none;padding:12px 22px;background:var(--paper)}
+/* a soft edge above the bar instead of a gradient inside it — a half-faded
+   button showing through the bar's own padding reads as a rendering fault */
+.revbar::before{content:'';position:absolute;left:0;right:0;bottom:100%;height:24px;pointer-events:none;
+  background:linear-gradient(180deg,var(--paper-0) 0%,var(--paper) 100%)}
+.revbar.show{display:block}
+/* the last row has to clear the bar that now floats over the bottom of the list */
+#vAdd.reviewing{padding-bottom:calc(var(--tabh) + 80px)}
+.revbar .btn-main{box-shadow:0 8px 22px rgba(15,40,28,.20)}
+.revbar .btn-main:disabled{box-shadow:none}
+/* Once something is waiting to go in, "add another" stops competing with it:
+   one solid button on the screen, and it is the one that finishes the job. */
+#vAdd.reviewing .mform .btn-main{background:var(--card);color:var(--green-deep);border:1.5px solid var(--green)}
+#vAdd.reviewing .mform .btn-main:hover{background:var(--green-bg)}
 .err .fallback{display:block;margin-top:9px;font-weight:700;color:var(--red);text-decoration:underline;text-underline-offset:3px}
 
 /* photo / receipt capture */
-.snap-hero{margin:10px 22px;background:var(--green-bg);border:1.5px dashed #A9CDB9;border-radius:20px;padding:28px 20px;text-align:center;cursor:pointer;display:block}
+.snap-hero{margin:16px 22px 12px;background:var(--green-bg);border:1.5px dashed var(--green-edge);border-radius:20px;padding:24px 20px;text-align:center;cursor:pointer;display:block}
 .snap-hero:hover{border-color:var(--green)}
-.snap-hero .ic{font-size:36px;margin-bottom:8px}
-.snap-hero b{font-family:var(--disp);font-size:17px;display:block;margin-bottom:4px}
-.snap-hero p{font-size:13px;color:var(--ink-2);line-height:1.6}
+.snap-hero .ic{font-size:34px;margin-bottom:6px}
+.snap-hero b{font-family:var(--disp);font-size:17px;display:block;margin-bottom:6px}
+.snap-hero p{font-size:13px;color:var(--ink-2);line-height:1.65;max-width:31ch;margin:0 auto}
 /* once there is a list to review, the capture prompt steps out of its way */
 #vAdd.reviewing .snap-hero{padding:13px 20px}
 #vAdd.reviewing .snap-hero .ic{font-size:20px;margin-bottom:2px}
@@ -166,12 +282,12 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 .seg .cnt:empty{display:none}
 .seg button.on .cnt{background:var(--green)}
 .addline{display:flex;gap:8px;margin:12px 22px 4px}
-.addline input{flex:1;min-width:0;padding:11px 14px;border:1.5px solid var(--line);border-radius:14px;font-size:14px;font-family:var(--sans);background:#fff}
+.addline input{flex:1;min-width:0;padding:11px 14px;border:1.5px solid var(--line);border-radius:14px;font-size:14px;font-family:var(--sans);background:var(--card);color:var(--ink)}
 .addline input:focus{border-color:var(--green);outline:none}
 .addline button{flex:0 0 46px;border-radius:14px;background:var(--green);color:#fff;font-size:20px;font-weight:700}
-.addline button:hover{background:var(--green-deep)}
+.addline button:hover{background:var(--green-hover)}
 .lrow{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 13px;display:flex;align-items:center;gap:11px;margin-bottom:8px}
-.lrow .box{flex:0 0 24px;height:24px;border:2px solid #C3D2C8;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;color:transparent}
+.lrow .box{flex:0 0 24px;height:24px;border:2px solid var(--box-line);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;color:transparent}
 .lrow .box:hover{border-color:var(--green)}
 .lrow .nm{font-size:14.5px;font-weight:700}
 .lrow .why{font-size:11.5px;color:var(--ink-3);margin-top:1px}
@@ -187,7 +303,7 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 .listnote{margin:4px 22px 0;font-size:12.5px;color:var(--ink-2);line-height:1.55}
 .listnote b{color:var(--ink)}
 .btn-list{display:block;width:100%;border:1.5px solid var(--amber);color:var(--amber);background:var(--amber-bg);font-size:13.5px;font-weight:700;padding:11px;border-radius:12px;text-align:center;margin-bottom:9px}
-.btn-list:hover{background:#F8E6C6}
+.btn-list:hover{background:var(--amber-bg-2)}
 .btn-list.done{border-color:var(--line);background:var(--paper);color:var(--ink-3);cursor:default}
 .item .buy{color:var(--ink-3);font-size:14px;padding:4px 2px 4px 8px}
 .item .buy:hover{color:var(--green-deep)}
@@ -201,8 +317,8 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 .rd-hero{position:relative;height:250px;flex-shrink:0;background:var(--green-bg)}
 .rd-hero img{width:100%;height:100%;object-fit:cover;display:block}
 .rd-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,26,18,.34) 0%,rgba(0,0,0,0) 38%)}
-.rd-back{position:absolute;top:48px;left:16px;z-index:3;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.94);font-size:17px;font-weight:700;color:var(--ink);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.18)}
-.rd-save{position:absolute;top:48px;right:16px;z-index:3;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.94);font-size:17px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.rd-back{position:absolute;top:48px;left:16px;z-index:3;width:38px;height:38px;border-radius:50%;background:var(--glass);font-size:17px;font-weight:700;color:var(--glass-ink);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.rd-save{position:absolute;top:48px;right:16px;z-index:3;width:38px;height:38px;border-radius:50%;background:var(--glass);font-size:17px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.18)}
 .rd-save.on{background:var(--green);color:#fff}
 .rd-body{padding:18px 22px 26px}
 .rd-body h2{font-family:var(--disp);font-size:24px;line-height:1.2;margin-bottom:8px}
@@ -218,31 +334,54 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 .rd-trust b{color:var(--ink);font-weight:700}
 .rd-trust .ic{font-size:14px;line-height:1.3;flex-shrink:0}
 .rd-sec{margin-bottom:20px}
-.rd-sec h3{font-family:var(--disp);font-size:15px;margin-bottom:9px}
+.rd-sec h3{font-family:var(--disp);font-size:15px;margin-bottom:9px;display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.rd-sec h3 .cnt{font-family:var(--sans);font-size:11.5px;font-weight:700;color:var(--ink-3)}
+/* Ingredients read as a recipe's ingredient list — one per line, amount in a
+   right-hand column — rather than as a bag of tags. A missing line is its own
+   button: the shortfall can go to the shopping list one item at a time, not
+   only all at once from the bar. */
+.ings{display:flex;flex-direction:column}
+.ing-row{display:flex;align-items:center;gap:11px;width:100%;text-align:left;min-height:44px;padding:7px 2px;border-bottom:1px solid var(--line);font-size:13.5px}
+.ing-row:last-child{border-bottom:none}
+.ing-row .mk{flex-shrink:0;width:21px;height:21px;border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;background:var(--green-bg);color:var(--green-deep)}
+.ing-row.miss .mk{background:var(--amber-bg);color:var(--amber)}
+.ing-row .tx{flex:1;min-width:0}
+.ing-row .tx b{font-weight:600}
+.ing-row.miss .tx b{font-weight:700}
+.ing-row .st{display:block;font-style:normal;font-size:11px;font-weight:700;color:var(--amber);margin-top:1px}
+.ing-row .qty{flex-shrink:0;font-size:12.5px;font-weight:600;color:var(--ink-3);text-align:right}
+.ing-row.miss:hover .mk{background:var(--amber);color:#fff}
+.ing-row.listed .mk{background:var(--green-bg);color:var(--green-deep)}
+.ing-row.listed .st{color:var(--green-deep)}
+.ing-row.listed .tx b{font-weight:600}
 .rd-bar{position:sticky;bottom:0;margin-top:auto;background:var(--card);border-top:1px solid var(--line);padding:12px 22px 26px;display:flex;gap:10px;align-items:center}
 .rd-bar .btn-made{margin:0;flex:1}
 .rd-bar .btn-list{margin:0;flex:0 0 auto;width:auto;padding:11px 14px}
 
 /* cook segments */
-.seg{display:flex;background:#EDF1EE;border-radius:999px;padding:4px;margin:6px 22px 4px}
+.seg{display:flex;background:var(--seg-bg);border-radius:999px;padding:4px;margin:6px 22px 4px}
 .seg button{flex:1;padding:9px;border-radius:999px;font-size:13.5px;font-weight:700;color:var(--ink-2)}
-.seg button.on{background:#fff;color:var(--green-deep);box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.seg button.on{background:var(--seg-on);color:var(--green-deep);box-shadow:0 1px 4px rgba(0,0,0,.07)}
 .cook-intro{margin:8px 22px 4px;font-size:13.5px;color:var(--ink-2);line-height:1.6}
 .cook-intro b{color:var(--ink)}
 .serv-label{margin:12px 22px 8px;font-size:13px;font-weight:700}
 /* menu preferences: a picker inside the cooking flow, not a settings screen */
-.mchips{display:flex;gap:9px;margin:0 0 6px;padding:2px 22px 4px;overflow-x:auto;scrollbar-width:none}
-.mchips::-webkit-scrollbar{display:none}
-.mtile{position:relative;flex:0 0 108px;height:74px;border-radius:14px;overflow:hidden;border:2px solid transparent;background:var(--green-bg);text-align:left;display:block}
+/* Five lanes, all five on screen. A horizontal scroller cut the last tile in
+   half at the phone's edge, which reads as a rendering fault rather than as an
+   invitation to swipe — and a lane nobody sees is a lane nobody picks. */
+.mchips{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:0 0 6px;padding:2px 22px 4px}
+.mtile{position:relative;height:74px;border-radius:14px;overflow:hidden;border:2px solid transparent;background:var(--green-bg);text-align:left;display:block}
 .mtile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .mtile::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 30%,rgba(10,26,18,.72) 100%)}
-.mtile .lab{position:absolute;left:8px;right:8px;bottom:7px;z-index:2;color:#fff;font-size:11.5px;font-weight:700;line-height:1.25;text-shadow:0 1px 3px rgba(0,0,0,.45)}
+/* Two per row, so every label fits on one line — a lane called "Filling &
+   cheap" that breaks across two lines stops reading as one idea. */
+.mtile .lab{position:absolute;left:9px;right:9px;bottom:8px;z-index:2;color:#fff;font-size:12.5px;font-weight:700;line-height:1.25;text-shadow:0 1px 3px rgba(0,0,0,.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mtile .tick{position:absolute;top:6px;right:6px;z-index:2;width:20px;height:20px;border-radius:50%;background:var(--lime);color:#12280f;font-size:12px;font-weight:700;display:none;align-items:center;justify-content:center}
 .mtile.on{border-color:var(--lime)}
 .mtile.on .tick{display:flex}
 .mhint{margin:0 22px 4px;font-size:12px;color:var(--ink-3);font-weight:600}
 .serv{display:flex;gap:8px;margin:0 22px}
-.serv button{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:10px 6px;text-align:center;transition:all .12s}
+.serv button{flex:1;border:1.5px solid var(--line);background:var(--card);border-radius:14px;padding:10px 6px;text-align:center;transition:all .12s}
 .serv button b{display:block;font-family:var(--disp);font-size:17px}
 .serv button span{font-size:10.5px;color:var(--ink-2);font-weight:600;line-height:1.3;display:block;margin-top:2px}
 .serv button.on{border-color:var(--green);background:var(--green-bg)}
@@ -269,40 +408,46 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 .rec .meta .ok{background:var(--green-bg);color:var(--green-deep);font-weight:700}
 .rec .meta .tag{background:var(--lime-bg);color:var(--lime-deep);font-weight:700;letter-spacing:.02em}
 .rec .chev{margin-left:auto;color:var(--ink-3);transition:transform .2s;align-self:center}
-.uses{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.uses span{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--green-bg);color:var(--green-deep)}
-.uses span.miss{background:var(--amber-bg);color:var(--amber)}
-.steps{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:12px}
-.steps li{display:flex;gap:10px;font-size:13.5px;line-height:1.55}
-.steps li b{flex-shrink:0;width:20px;height:20px;border-radius:50%;background:var(--green-bg);color:var(--green-deep);font-size:11px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+/* Steps tick off as you cook — the one thing you always lose when you look up
+   from the pan is which line you were on. Transient by design: it is about the
+   next ten minutes, not something worth remembering between sessions. */
+.steps{list-style:none;display:flex;flex-direction:column;gap:2px;margin-bottom:12px}
+.steps .strow{display:flex;gap:10px;width:100%;text-align:left;font-size:13.5px;line-height:1.55;padding:7px 2px;min-height:44px;align-items:flex-start}
+.steps b{flex-shrink:0;width:20px;height:20px;border-radius:50%;background:var(--green-bg);color:var(--green-deep);font-size:11px;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:background .15s}
+.steps .strow:hover b{background:var(--green-bg-2)}
+.steps .strow.done{color:var(--ink-3)}
+.steps .strow.done b{background:var(--green);color:#fff;font-size:12px}
+.steps .strow.done span{text-decoration:line-through;text-decoration-color:var(--dash)}
 .prepnote{font-size:12.5px;color:var(--prep);background:var(--prep-bg);border-radius:10px;padding:9px 12px;line-height:1.55;margin-bottom:10px}
 .prepnote b{display:block;margin-bottom:2px}
 .tip{font-size:12.5px;color:var(--ink-2);background:var(--paper);border-radius:10px;padding:9px 12px;line-height:1.55;margin-bottom:12px}
 .tip b{color:var(--green-deep)}
 .btn-made{display:block;width:100%;background:var(--green);color:#fff;font-size:14px;font-weight:700;padding:12px;border-radius:12px;text-align:center}
-.btn-made:hover{background:var(--green-deep)}
+.btn-made:hover{background:var(--green-hover)}
 .btn-made.done{background:var(--prep-bg);color:var(--prep);cursor:default}
 .src-line{font-size:12px;color:var(--ink-3);margin-bottom:10px;word-break:break-all}
 .rec .rdel{font-size:12.5px;font-weight:700;color:var(--red);margin-top:10px}
+.rd-body .rdel{display:block;width:100%;min-height:44px;margin-top:6px;border-top:1px solid var(--line);padding-top:14px;font-size:13px;font-weight:700;color:var(--ink-3);text-align:center}
+.rd-body .rdel:hover{color:var(--red)}
 .cook-empty{margin:30px 22px;text-align:center;font-size:14px;color:var(--ink-2);line-height:1.7}
 .cook-empty .big{font-size:38px;margin-bottom:8px}
-.import-btn{margin:10px 22px 4px;background:#fff;border:1.5px dashed #A9CDB9;border-radius:16px;padding:14px;font-size:14px;font-weight:700;color:var(--green-deep);width:calc(100% - 44px);display:flex;align-items:center;justify-content:center;gap:8px}
+.import-btn{margin:10px 22px 4px;background:var(--card);border:1.5px dashed var(--green-edge);border-radius:16px;padding:14px;font-size:14px;font-weight:700;color:var(--green-deep);width:calc(100% - 44px);display:flex;align-items:center;justify-content:center;gap:8px}
 .import-btn:hover{border-color:var(--green);background:var(--green-bg)}
 
 /* import view */
 .imp-tabs{display:flex;gap:8px;margin:8px 22px 12px}
-.imp-tabs button{flex:1;border:1.5px solid var(--line);border-radius:12px;padding:9px;font-size:12.5px;font-weight:700;color:var(--ink-2);background:#fff}
+.imp-tabs button{flex:1;border:1.5px solid var(--line);border-radius:12px;padding:9px;font-size:12.5px;font-weight:700;color:var(--ink-2);background:var(--card)}
 .imp-tabs button.on{border-color:var(--green);background:var(--green-bg);color:var(--green-deep)}
 .imp-pane{margin:0 22px;display:none}
 .imp-pane.on{display:block}
-.imp-pane textarea{width:100%;min-height:130px;padding:13px 15px;border:1.5px solid var(--line);border-radius:14px;font-size:14px;font-family:var(--sans);resize:vertical;background:#fff}
+.imp-pane textarea{width:100%;min-height:130px;padding:13px 15px;border:1.5px solid var(--line);border-radius:14px;font-size:14px;font-family:var(--sans);resize:vertical;background:var(--card);color:var(--ink)}
 .imp-pane textarea:focus{border-color:var(--green);outline:none}
 .imp-hint{font-size:12px;color:var(--ink-3);line-height:1.6;margin-top:8px}
 .back-row{padding:0 22px;display:flex}
 .back-btn{font-size:13.5px;font-weight:700;color:var(--green-deep)}
 
 /* account */
-.acct-card{margin:12px 22px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px}
+.acct-card{margin:12px 22px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px}
 .acct-top{display:flex;align-items:center;gap:14px;margin-bottom:14px}
 .acct-top .avatar{width:54px;height:54px;font-size:18px}
 .acct-top b{font-family:var(--disp);font-size:17px;display:block}
@@ -311,7 +456,7 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 .stat{background:var(--paper);border-radius:14px;padding:12px 6px;text-align:center}
 .stat b{font-family:var(--disp);font-size:18px;display:block}
 .stat span{font-size:10px;color:var(--ink-2);font-weight:600;line-height:1.3;display:block;margin-top:2px}
-.slist{margin:0 22px 12px;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.slist{margin:0 22px 12px;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
 .sitem{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line);width:100%;text-align:left;font-size:14.5px;font-weight:600;color:var(--ink)}
 .sitem:last-child{border-bottom:none}
 .sitem .chev{margin-left:auto;color:var(--ink-3)}
@@ -322,16 +467,18 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 .sync-dot.off{background:var(--amber)}
 
 /* tabs */
-.tabbar{position:absolute;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:none;align-items:flex-end;padding:8px 6px 20px;z-index:50}
+.tabbar{position:absolute;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);display:none;align-items:flex-end;padding:8px 6px 20px;z-index:50}
 .tabbar.show{display:flex}
-.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:700;color:var(--ink-3);padding-top:6px}
+.tab{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:700;color:var(--ink-3);padding-top:6px}
+.tab::before{content:'';position:absolute;top:-2px;left:50%;transform:translateX(-50%);width:16px;height:3px;border-radius:0 0 3px 3px;background:transparent;transition:background .15s}
+.tab.on::before{background:var(--green-deep)}
 .tab.on{color:var(--green-deep)}
 .tab svg{width:21px;height:21px}
 .tab-snap{flex:0 0 78px;display:flex;justify-content:center}
 .snap-fab{width:58px;height:58px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;margin-top:-26px;box-shadow:0 8px 20px rgba(23,114,69,.35)}
-.snap-fab:hover{background:var(--green-deep)}
+.snap-fab:hover{background:var(--green-hover)}
 .snap-fab svg{width:25px;height:25px}
-.toast{position:absolute;left:50%;bottom:104px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;font-weight:600;padding:10px 18px;border-radius:999px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:70;white-space:nowrap;max-width:88%;overflow:hidden;text-overflow:ellipsis}
+.toast{position:absolute;left:50%;bottom:104px;transform:translateX(-50%);background:var(--toast-bg);color:var(--toast-fg);font-size:13px;font-weight:600;padding:10px 18px;border-radius:999px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:70;white-space:nowrap;max-width:88%;overflow:hidden;text-overflow:ellipsis}
 .toast.show{opacity:1}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -346,20 +493,18 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
     <p class="auth-sub">Scan the receipt. Snap the rest.<br>Cook what you have, know what's missing.</p>
     <div id="signupBox">
       <div class="uname-box">
-        <div><span class="lab">Your username</span><span class="un" id="unameTxt">—</span></div>
+        <div><span class="lab">Your kitchen</span><span class="un" id="unameTxt">—</span></div>
         <button class="dice" onclick="rollName()" aria-label="Generate a new username">🎲</button>
       </div>
-      <div class="field"><label for="aMail">Email</label><input id="aMail" type="email" placeholder="you@example.com" required></div>
-      <div class="err" id="authErr" style="margin:0 0 12px"></div>
-      <button class="btn-main" onclick="signUp()">Start cooking</button>
+      <button class="btn-main" onclick="startGuest()">Start cooking →</button>
+      <p class="auth-note">Nothing to fill in. No email, no password.<br>Scan a receipt, cook something — add an email later, only when you have something worth keeping.</p>
       <div class="demo-card">
         <div class="dc-top">
           <span class="ic">🥕</span>
-          <div><b>Demo account</b><span>demo@shelfie.app · a week of groceries already in it</span></div>
+          <div><b>Or open the demo kitchen</b><span>demo@shelfie.app · a week of groceries already in it</span></div>
         </div>
         <button class="btn-demo" onclick="demoIn()">Log in as the demo →</button>
       </div>
-      <p class="auth-note">No real name needed — you're just a username here.<br>You'll only type your email this once: after that we sign you in automatically, and it's how you get back in if you ever sign out.</p>
     </div>
     <div id="loginBox" style="display:none">
       <div class="uname-box">
@@ -377,12 +522,10 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
   <!-- PANTRY -->
   <div class="view" id="vPantry">
     <div class="head">
-      <div><div class="lg">Shel<span>fie</span></div><div class="sub" id="hello">Cook what you have. Waste nothing.</div></div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <div class="saved-chip" id="savedChip">est. $0 saved</div>
-        <button class="avatar" id="avBtn" onclick="go('acct')" aria-label="Account">·</button>
-      </div>
+      <div><div class="lg">Shel<span>fie</span></div><div class="sub saved-line" id="savedLine">est. $0 saved</div></div>
+      <button class="avatar" id="avBtn" onclick="go('acct')" aria-label="Account">·</button>
     </div>
+    <div class="gg" id="gg"></div>
     <div class="seg" role="tablist">
       <button class="on" id="segHave" onclick="setPanTab('have')">🧺 What I have<span class="cnt" id="cntHave"></span></button>
       <button id="segNeed" onclick="setPanTab('need')">🛒 What I need<span class="cnt" id="cntNeed"></span></button>
@@ -400,7 +543,7 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
 
   <!-- ADD -->
   <div class="view" id="vAdd">
-    <div class="head"><div><div class="lg">Add to pantry</div><div class="sub">Three ways in — take whichever is fastest</div></div></div>
+    <div class="head"><div><div class="lg">Add to pantry</div><div class="sub">Two ways in — take whichever is faster</div></div></div>
 
     <div class="srcs">
       <button class="src on" id="srcReceipt" aria-pressed="true" onclick="setSrc('receipt')">
@@ -408,14 +551,9 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
         <span class="tx"><b>Scan the receipt<em>fastest</em></b>
         <small>Exact names, quantities and prices, straight off the paper — including everything already bagged.</small></span>
       </button>
-      <button class="src" id="srcPhoto" aria-pressed="false" onclick="setSrc('photo')">
-        <span class="ic">📸</span>
-        <span class="tx"><b>Photograph the food</b>
-        <small>Market produce, a gift, leftovers, the open fridge — whatever came home without a receipt.</small></span>
-      </button>
       <button class="src" id="srcType" aria-pressed="false" onclick="setSrc('type')">
         <span class="ic">✍️</span>
-        <span class="tx"><b>Type one in</b>
+        <span class="tx"><b>Type it in</b>
         <small>Slower, but it never fails and it is always here — one item, four taps.</small></span>
       </button>
     </div>
@@ -424,26 +562,16 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
       <label class="snap-hero" for="recFile">
         <div class="ic">🧾</div>
         <b>Photograph your receipt</b>
-        <p>Flatten it and shoot top to bottom.<br>AI reads each line, skips the bags and tax, and expands<br>the store's shorthand back into real food names.</p>
+        <p>Flatten it and shoot top to bottom. AI reads every line, skips the bags and the tax, and expands the store's shorthand back into real food names.</p>
       </label>
       <input type="file" id="recFile" accept="image/*" capture="environment" style="display:none" onchange="onPhoto(this,'receipt')">
       <div class="preview" id="recPreview"><img id="recImg" alt="Your grocery receipt"></div>
     </div>
 
-    <div class="pane" id="panePhoto">
-      <label class="snap-hero" for="file">
-        <div class="ic">📸</div>
-        <b>Photograph your haul</b>
-        <p>Lay the groceries on the counter — or shoot the open fridge.<br>AI identifies each item and estimates its shelf life.</p>
-      </label>
-      <input type="file" id="file" accept="image/*" capture="environment" style="display:none" onchange="onPhoto(this,'grocery')">
-      <div class="preview" id="preview"><img id="previewImg" alt="Your grocery photo"></div>
-    </div>
-
     <div class="pane" id="paneType">
       <div class="mform">
         <label for="mName">What did you get?</label>
-        <input id="mName" placeholder="e.g. Chicken thighs" autocomplete="off">
+        <input id="mName" placeholder="e.g. Chicken thighs" autocomplete="off" oninput="suggestLife(this.value)">
         <label for="mQty">How much of it?</label>
         <input id="mQty" placeholder="e.g. 4 pieces — or leave it blank" autocomplete="off">
         <label>Good for about</label>
@@ -453,6 +581,7 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
           <button data-d="10" onclick="setLife(this)">10 days<span>dairy, bread</span></button>
           <button data-d="180" onclick="setLife(this)">6 months<span>staples, cans, rice</span></button>
         </div>
+        <p class="lifehint" id="lifeHint"></p>
         <button class="btn-main" onclick="addTyped()">Put it on the list ↓</button>
       </div>
     </div>
@@ -465,9 +594,12 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
       <p class="rev-note" id="revNote">Correct anything that is wrong, uncheck what you don't want, and set how long you expect it to last.</p>
       <div id="revList"></div>
       <button class="addrow" onclick="addBlankRow()">＋ Add something it missed</button>
-      <button class="btn-main btn-block" id="revBtn" onclick="commitReview()">Add to pantry</button>
     </div>
   </div>
+  <!-- the commit bar lives beside the view, not inside its scroll, so it is
+       always exactly one tab-bar above the bottom no matter how far down the
+       review runs -->
+  <div class="revbar" id="revBar"><button class="btn-main btn-block" id="revBtn" onclick="commitReview()">Add to pantry</button></div>
 
   <!-- COOK -->
   <div class="view" id="vCook">
@@ -521,7 +653,7 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
     <div class="imp-pane" id="paneShot">
       <label class="snap-hero" for="shotFile" style="margin:0">
         <div class="ic">🖼</div><b>Upload a recipe screenshot</b>
-        <p>A screengrab from a video, a photo of a cookbook page,<br>or a saved image — AI reads it into your cookbook.</p>
+        <p>A screengrab from a video, a photo of a cookbook page, or a saved image — AI reads it into your cookbook.</p>
       </label>
       <input type="file" id="shotFile" accept="image/*" style="display:none" onchange="onPhoto(this,'recipe')">
       <div class="preview" id="shotPreview" style="margin:12px 0 0"><img id="shotImg" alt="Recipe screenshot"></div>
@@ -553,14 +685,17 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
         <div class="stat"><b id="stPrep">0</b><span>meals<br>cooked</span></div>
         <div class="stat"><b id="stSaved">$0</b><span>est.<br>saved</span></div>
       </div>
+      <p class="anchor" id="acAnchor"></p>
     </div>
     <div class="sync-line"><span class="sync-dot" id="syncDot"></span><span id="syncTxt">Synced — everything restores automatically</span></div>
     <div class="slist">
+      <button class="sitem" id="saveRow" style="display:none" onclick="openSave()">Keep this kitchen for good<span class="val">Guest — not backed up</span><span class="chev">›</span></button>
       <button class="sitem" onclick="rollName();applyProfile();persist();toast('New username: '+profile.name)">Shuffle my username<span class="val" id="unVal">—</span><span class="chev">›</span></button>
+      <button class="sitem" onclick="toggleTheme()">Appearance<span class="val" id="themeVal">Dark</span><span class="chev">›</span></button>
       <button class="sitem" onclick="go('cook');setCookMode('ai')">Menu preferences<span class="val" id="menuVal">Anything goes</span><span class="chev">›</span></button>
       <button class="sitem" onclick="toast('Expiry reminders — next iteration')">Expiry reminders<span class="val">On</span><span class="chev">›</span></button>
       <button class="sitem" onclick="clearData()">Clear my data<span class="chev">›</span></button>
-      <button class="sitem danger" onclick="signOut()">Sign out</button>
+      <button class="sitem danger" id="outRow" onclick="signOut()">Sign out</button>
     </div>
   </div>
 
@@ -570,6 +705,19 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none}
     <div class="tab-snap"><button class="snap-fab" aria-label="Add to pantry" onclick="go('add')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></div>
     <button class="tab" id="tCook" onclick="go('cook')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v3M12 2v4M16 3v3M5 10h14l-1 10a1.5 1.5 0 0 1-1.5 1.3h-9A1.5 1.5 0 0 1 6 20z"/></svg>Cook</button>
   </nav>
+  <!-- KEEP-IT SHEET — the only place an email is ever asked for -->
+  <div class="sheet" id="saveSheet" role="dialog" aria-modal="true" aria-labelledby="saveTitle" onclick="if(event.target===this)dismissSave()">
+    <div class="sheet-card">
+      <h3 id="saveTitle">Everything you just built lives in this browser only</h3>
+      <p class="sheet-lede" id="saveLede"></p>
+      <div class="sheet-worth" id="saveWorth"></div>
+      <div class="field"><label for="sMail">Your email</label><input id="sMail" type="email" placeholder="you@example.com"></div>
+      <div class="err" id="saveErr" style="margin:0 0 12px"></div>
+      <button class="btn-main" onclick="signUp()">Keep all of it</button>
+      <p class="sheet-cost" id="saveCost"></p>
+      <button class="sheet-skip" onclick="dismissSave()">Not now — I'll risk losing it</button>
+    </div>
+  </div>
   <div class="toast" id="toast"></div>
 </div></div>
 
@@ -614,12 +762,18 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
 function escA(s){return esc(s).replace(/"/g,'&quot;');}
 
 let signedIn=false;
+/* `guest` is an account with everything except an email. The app is fully
+   usable in it, because asking for an address before the product has done
+   anything is asking to be paid before delivering. `addedOwn` and `nagged`
+   are what the keep-it prompt reads: it fires once, after a real haul. */
+let guest=false, addedOwn=false, nagged=false;
 async function persist(){
   if(!hasStore)return;
-  try{ await STORE.set(KEY, JSON.stringify({profile,signedIn,pantry,prepped,cookbook,saved,cookedCount,menu,list})); setSync(true); }
+  try{ await STORE.set(KEY, JSON.stringify({profile,signedIn,guest,addedOwn,nagged,pantry,prepped,cookbook,saved,cookedCount,servings,menu,list})); setSync(true); }
   catch(e){ setSync(false); }
 }
 async function restore(){
+  applyTheme(curTheme());
   rollName();
   if(!hasStore){ $('storeWarn').style.display='block'; return; }
   try{
@@ -628,6 +782,8 @@ async function restore(){
       const s=JSON.parse(r.value);
       profile=s.profile||null; signedIn=!!s.signedIn; pantry=s.pantry||pantry; prepped=s.prepped||[];
       cookbook=s.cookbook||[]; saved=s.saved||0; cookedCount=s.cookedCount||0; menu=s.menu||[]; list=s.list||[];
+      guest=!!s.guest; addedOwn=!!s.addedOwn; nagged=!!s.nagged;
+      servings=s.servings||1; applyServings();
       if(profile&&signedIn){ enterApp(true); }
       else if(profile){ showLoginMode(); }
     }
@@ -656,17 +812,61 @@ function rollName(){
 }
 
 /* ---------- auth ---------- */
+/* The way in is not a form. A username already exists, so the first screen has
+   nothing to fill in and one button on it — the account is created by pressing
+   it, and the email is a later, optional upgrade. */
+function startGuest(){
+  profile={name:uname,mail:''}; guest=true; signedIn=true; addedOwn=false; nagged=false;
+  persist(); enterApp(false);
+  toast('Your kitchen is open — nothing to fill in');
+}
+/* Reached only from the keep-it sheet, once the account holds something worth
+   losing. */
 function signUp(){
-  const mail=$('aMail').value.trim();
-  const err=$('authErr');
+  const mail=$('sMail').value.trim();
+  const err=$('saveErr');
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)){
     err.textContent='Enter a valid email — it\u2019s how you\u2019ll get back into your account.';
     err.style.display='block'; return;
   }
   err.style.display='none';
-  profile={name:uname,mail}; signedIn=true;
-  persist(); enterApp(false);
+  profile={name:profile?profile.name:uname,mail}; guest=false; signedIn=true;
+  closeSave(); persist(); applyProfile(); renderGoal(); updateStats();
+  toast('Kept — '+mail+' brings this kitchen back on any device');
 }
+/* ---------- the keep-it sheet ---------- */
+/* The ask is framed by what is already on the table, not by what an account
+   would add: the numbers on this sheet are the user's own work, and one email
+   is a deliberately small price to read directly underneath them. */
+function openSave(){
+  if(!guest){toast('Already saved to '+profile.mail);return;}
+  $('saveLede').innerHTML='Clear this browser, switch phones, or open Shelfie anywhere else and <b>every number below goes back to zero</b>. Nothing has been backed up yet.';
+  $('saveWorth').innerHTML=[
+    [pantry.length,'items tracked'],
+    [money(pantryValue()),'of food on the shelf'],
+    [cookbook.length,'recipes saved'],
+    ['$'+saved,'est. kept from the bin']
+  ].map(([b,s])=>`<div><b>${b}</b><span>${s}</span></div>`).join('');
+  $('saveCost').innerHTML='One email address. No password, no name, no card — it is only how you get back in.';
+  $('saveErr').style.display='none';
+  $('sMail').value='';
+  $('saveSheet').classList.add('show');
+  setTimeout(()=>$('sMail').focus(),90);
+}
+function closeSave(){$('saveSheet').classList.remove('show');}
+function dismissSave(){
+  nagged=true; persist(); closeSave();
+  toast('Staying a guest — nothing is backed up');
+}
+/* Raised once, and only after a haul or a meal has actually landed. Asking on
+   the way in would be asking before anything had been delivered. */
+function maybeAskToKeep(){
+  if(!guest||nagged)return;
+  if(!addedOwn&&!cookedCount&&!cookbook.length)return;
+  nagged=true; persist();
+  setTimeout(openSave,750);
+}
+
 /* A demo account, because the email is the case study's argument and not a
    toll gate on a prototype. It is deliberately mid-use rather than empty:
    something is expiring, a meal is prepped, two recipes are saved and the
@@ -703,14 +903,13 @@ const DEMO={
   saved:17, cookedCount:4, menu:['quick']
 };
 function demoIn(){
-  $('authErr').style.display='none';
   const d=JSON.parse(JSON.stringify(DEMO));   // a fresh copy, so poking about never edits the template
   profile=d.profile; pantry=d.pantry; prepped=d.prepped; cookbook=d.cookbook;
   list=d.list; saved=d.saved; cookedCount=d.cookedCount; menu=d.menu;
   signedIn=true; uname=profile.name;
+  guest=false; addedOwn=true; nagged=true;   // a mid-use account has nothing left to set up
   persist(); enterApp(false);
-  $('hello').textContent='Demo account — poke at anything, nothing here is real.';
-  toast('Signed in to the demo');
+  toast('Signed in to the demo — nothing here is real');
 }
 function logIn(){
   const mail=$('lMail').value.trim().toLowerCase();
@@ -723,31 +922,60 @@ function logIn(){
   signedIn=true; persist(); enterApp(true);
 }
 async function startFresh(){
-  profile=null; signedIn=false;
+  profile=null; signedIn=false; guest=false; addedOwn=false; nagged=false;
   pantry=[];prepped=[];cookbook=[];saved=0;cookedCount=0;list=[];
   if(hasStore){try{await STORE.del(KEY);}catch(e){}}
   rollName();
   $('loginBox').style.display='none';
   $('signupBox').style.display='block';
-  $('aMail').value='';
-  toast('Fresh start — pick a username and add your email');
+  toast('Fresh start — roll a name and go');
 }
 function applyProfile(){
   const ini=profile.name.slice(0,2).toUpperCase();
   $('avBtn').textContent=ini; $('avBig').textContent=ini;
-  $('acName').textContent=profile.name; $('acMail').textContent=profile.mail;
+  $('acName').textContent=profile.name;
+  $('acMail').textContent=profile.mail||'Guest kitchen — no email on it';
   $('unVal').textContent=profile.name;
+  /* A guest has no email to sign out of and back into, so the row that would
+     lose them everything is not offered — the row that keeps it is. */
+  $('saveRow').style.display=guest?'flex':'none';
+  $('outRow').style.display=guest?'none':'flex';
 }
 function enterApp(returning){
   $('vAuth').classList.remove('on');
   $('tabbar').classList.add('show');
   applyProfile();
-  $('hello').textContent=returning?('Welcome back, '+profile.name+' — everything is right where you left it.'):'Cook what you have. Waste nothing.';
+  /* The pantry header carries no strapline at all. A greeting wrapped to four
+     lines and pushed the shelf down the screen, and the tagline underneath it
+     was selling the app to someone already inside it — the toast says who is
+     signed in, and the pantry gets the space back. */
   /* the counter was only ever redrawn by an action, so a restored total showed
      as $0 until you did something */
-  $('savedChip').textContent='est. $'+saved+' saved';
+  renderSaved();
+  applyServings();
   go('pantry');
   if(returning)toast('Signed in as '+profile.name);
+}
+/* ---------- setup progress ---------- */
+/* The first step is ticked before the user has done anything in the app,
+   because they have: they have an account and a kitchen name. A bar that opens
+   at 25% is finished far more often than the same four steps opening at 0. */
+function renderGoal(){
+  const el=$('gg'); if(!el||!profile)return;
+  const steps=[
+    {t:`Kitchen named — <b>${esc(profile.name)}</b>`, done:true, go:''},
+    {t:'Add a haul of your own — one receipt does it', done:addedOwn, go:"go('add')"},
+    {t:'Cook something, or save a recipe you like', done:cookedCount>0||cookbook.length>0, go:"go('cook')"},
+    {t:'Keep it on any device with an email', done:!guest, go:'openSave()'}
+  ];
+  const done=steps.filter(s=>s.done).length, pct=Math.round(done/steps.length*100);
+  if(done===steps.length){ el.classList.remove('show'); el.innerHTML=''; return; }
+  el.classList.add('show');
+  el.innerHTML=`<div class="gg-h"><b>Your kitchen is set up</b><span>${pct}%</span></div>
+    <div class="gg-bar"><i style="width:${pct}%"></i></div>
+    ${steps.map(s=>s.done
+      ? `<div class="gg-step done"><span class="tk">✓</span><span>${s.t}</span></div>`
+      : `<button class="gg-step" onclick="${s.go}"><span class="tk">✓</span><span>${s.t}</span><span class="chev">›</span></button>`).join('')}`;
 }
 function signOut(){
   signedIn=false; persist();
@@ -758,9 +986,25 @@ function signOut(){
   toast('Signed out — log back in with your email');
 }
 async function clearData(){
-  pantry=[];prepped=[];cookbook=[];saved=0;cookedCount=0;list=[];
+  pantry=[];prepped=[];cookbook=[];saved=0;cookedCount=0;list=[];addedOwn=false;
   if(hasStore){try{await STORE.del(KEY);}catch(e){}}
-  renderPantry(); updateStats(); toast('All data cleared');
+  renderPantry(); renderGoal(); updateStats(); toast('All data cleared');
+}
+
+/* ---------- theme ---------- */
+/* Kept in localStorage rather than in the account: it is a property of the
+   phone you are holding, not of who is signed in, and it has to be readable
+   synchronously by the head script before anything paints. */
+function curTheme(){return document.documentElement.getAttribute('data-theme')==='light'?'light':'dark';}
+function applyTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  try{localStorage.setItem('shelfie-theme',t);}catch(e){}
+  const el=$('themeVal'); if(el)el.textContent=t==='dark'?'Dark':'Light';
+}
+function toggleTheme(){
+  const next=curTheme()==='dark'?'light':'dark';
+  applyTheme(next);
+  toast(next==='dark'?'Dark mode on':'Light mode on');
 }
 
 /* ---------- nav ---------- */
@@ -772,9 +1016,10 @@ function go(k){
   $({pantry:'vPantry',add:'vAdd',cook:'vCook',acct:'vAcct',import:'vImport',recipe:'vRecipe'}[k]).classList.add('on');
   /* the detail screen carries its own bottom bar, so the tabs step aside */
   $('tabbar').classList.toggle('show',k!=='recipe');
+  $('revBar').classList.toggle('show',k==='add'&&detected.length>0);
   $('tPantry').classList.toggle('on',k==='pantry');
   $('tCook').classList.toggle('on',k==='cook'||k==='import');
-  if(k==='pantry'){renderPantry();renderList();updateCounts();}
+  if(k==='pantry'){renderPantry();renderList();updateCounts();renderGoal();}
   if(k==='cook'){renderCookIntro();renderMenuChips();renderBook();}
   if(k==='acct')updateStats();
 }
@@ -793,12 +1038,31 @@ function setImp(m){
   $('paneShot').classList.toggle('on',m==='shot');
 }
 
+/* ---------- what the shelf is worth ---------- */
+/* Receipt-scanned items carry their real price; anything typed or photographed
+   gets a flat guess, which is why every figure the UI prints from these is
+   labelled "est.". A number on its own means nothing to anyone — each one is
+   shown against a bigger one it can be read as a fraction of. */
+const TAKEOUT=18;                                    // one delivery dinner, the thing cooking competes with
+function itemValue(p){return Number(p.price)||3;}
+function pantryValue(){return pantry.reduce((n,p)=>n+itemValue(p),0);}
+function riskValue(){return pantry.filter(p=>p.days<=3).reduce((n,p)=>n+itemValue(p),0);}
+function money(n){return '$'+(Math.round(n)===n?n:n.toFixed(2));}
+/* The header used to repeat the app's own name at somebody already inside it.
+   It carries the running total instead — the one number the whole product is
+   arguing for, in the slot every other screen uses for its subtitle. */
+function renderSaved(){const el=$('savedLine');if(el)el.textContent='est. $'+saved+' saved';}
+
 /* ---------- pantry ---------- */
+/* The pill is a badge, not a sentence. "~12 months left" was wider than the
+   food it described and squeezed every name on the shelf; the group heading
+   above it already says whether this is urgent, fresh or a staple. Same
+   vocabulary as the review step's counter, so one thing is learned once. */
 function lifeLabel(d){
-  if(d<=0)return 'eat today';
-  if(d===1)return '1 day left';
-  if(d>=60)return '~'+Math.round(d/30)+' months left';
-  return d+' days left';
+  if(d<=0)return 'today';
+  if(d===1)return '1 day';
+  if(d>=60)return Math.round(d/30)+' mo';
+  return d+'d';
 }
 function lifeClass(d){return d<=1?'d0':(d<=3?'d1':'d2');}
 function renderPantry(){
@@ -808,14 +1072,31 @@ function renderPantry(){
   const soon=pantry.filter(p=>p.days<=3).sort((a,b)=>a.days-b.days);
   const fresh=pantry.filter(p=>p.days>3&&p.days<=30).sort((a,b)=>a.days-b.days);
   const staple=pantry.filter(p=>p.days>30);
-  const prow=(p,i)=>`<div class="item prepitem"><span class="em">🍱</span><div><div class="nm">${esc(p.name)}</div><div class="qt">${p.portions} portion${p.portions>1?'s':''} ready to eat</div></div><span class="life dp">eat within ${p.days}d</span><button class="del" aria-label="Eat one portion" onclick="eatPrep(${i})">✓</button></div>`;
+  const prow=(p,i)=>`<div class="item prepitem"><span class="em">🍱</span>
+      <div class="body"><div class="nm">${esc(p.name)}</div>
+        <div class="line"><span class="qt">${p.portions} portion${p.portions>1?'s':''} ready</span><span class="life dp sep">eat in ${p.days}d</span></div>
+      </div>
+      <div class="acts"><button class="del" aria-label="Eat one portion" onclick="eatPrep(${i})">✓</button></div></div>`;
   const row=p=>{const i=pantry.indexOf(p);
     const sub=[p.qty,p.price?'$'+Number(p.price).toFixed(2):''].filter(Boolean).join(' · ');
-    return `<div class="item">${ingThumb(p)}<div><div class="nm">${esc(p.name)}</div><div class="qt">${esc(sub)}</div></div><span class="life ${lifeClass(p.days)}">${lifeLabel(p.days)}</span><button class="buy" aria-label="Add ${escA(p.name)} to shopping list" title="Add to shopping list" onclick="buyAgain(${i})">🛒</button><button class="del" aria-label="Remove ${escA(p.name)}" onclick="delItem(${i})">✕</button></div>`;};
-  const grp=(cls,title,html,n)=>n?`<div class="grp"><div class="grp-h ${cls}"><b>${title}</b><span class="n">${n}</span></div>${html}</div>`:'';
+    return `<div class="item">${ingThumb(p)}
+      <div class="body"><div class="nm">${esc(p.name)}</div>
+        <div class="line">${sub?`<span class="qt">${esc(sub)}</span>`:''}<span class="life ${lifeClass(p.days)}${sub?' sep':''}">${lifeLabel(p.days)}</span></div>
+      </div>
+      <div class="acts">
+        <button class="buy" aria-label="Add ${escA(p.name)} to shopping list" title="Add to shopping list" onclick="buyAgain(${i})">🛒</button>
+        <button class="del" aria-label="Remove ${escA(p.name)}" onclick="delItem(${i})">✕</button>
+      </div></div>`;};
+  const grp=(cls,title,html,n)=>n?`<div class="grp ${cls}"><div class="grp-h ${cls}"><b>${title}</b><span class="n">${n}</span></div>${html}</div>`:'';
+  /* "Use soon" as a gain — cook these and eat well — moves nobody. The same
+     shelf priced, and read against what the whole shelf cost, is a loss with a
+     number on it, and the only button that prevents it sits inside the bar. */
+  const risk=riskValue(), worth=pantryValue();
+  const days=soon.length?Math.max(1,Math.min(...soon.map(s=>s.days))):0;
+  const riskbar=soon.length?`<div class="riskbar"><b>${money(risk)} of the ${money(worth)}</b> on your shelf goes in the bin ${days<=1?'today':'within '+days+' days'} unless something gets cooked.<button class="go" onclick="go('cook')">Cook one of these first ›</button></div>`:'';
   el.innerHTML=
     grp('prep','🍱 Prepped &amp; ready',prepped.map(prow).join(''),prepped.length)+
-    grp('soon','⏳ Use soon',soon.map(row).join(''),soon.length)+
+    grp('soon','⏳ Use soon',riskbar+soon.map(row).join(''),soon.length)+
     grp('fresh','✦ Fresh',fresh.map(row).join(''),fresh.length)+
     grp('staple','◆ Staples',staple.map(row).join(''),staple.length);
 }
@@ -889,6 +1170,7 @@ function renderList(){
 function updateCounts(){
   $('cntHave').textContent=pantry.length||'';
   $('cntNeed').textContent=list.filter(l=>!l.got).length||'';
+
 }
 /* The loop closes here: what you just bought leaves the list without being asked. */
 function tickOffList(bought){
@@ -908,24 +1190,24 @@ function delItem(i){
     saved+=c;
     toast(p.price?`Nice — $${Number(p.price).toFixed(2)} rescued instead of binned`:'Nice — used before it expired');
   }else toast('Removed '+p.name);
-  $('savedChip').textContent='est. $'+saved+' saved';
+  renderSaved();
   renderPantry(); persist();
 }
 function eatPrep(i){
   const p=prepped[i]; p.portions--; saved+=4;
   toast('Enjoy! One '+p.name+' portion eaten — est. $4 vs takeout');
   if(p.portions<=0)prepped.splice(i,1);
-  $('savedChip').textContent='est. $'+saved+' saved';
+  renderSaved();
   renderPantry(); persist();
 }
 
-/* ---------- add to pantry: three sources, one review ---------- */
-/* Receipt, photo and typing all land in the same editable `detected` list.
+/* ---------- add to pantry: two sources, one review ---------- */
+/* The receipt scan and typing both land in the same editable `detected` list.
    Nothing reaches the pantry until it has been through that list, and no
    source is a dead end: when a scan fails the error offers the typed path. */
 function setSrc(s){
   src=s;
-  [['receipt','srcReceipt','paneReceipt'],['photo','srcPhoto','panePhoto'],['type','srcType','paneType']]
+  [['receipt','srcReceipt','paneReceipt'],['type','srcType','paneType']]
     .forEach(([k,btn,pane])=>{
       $(btn).classList.toggle('on',k===s);
       $(btn).setAttribute('aria-pressed',String(k===s));
@@ -934,9 +1216,44 @@ function setSrc(s){
   $('snapErr').style.display='none';
   if(s==='type')setTimeout(()=>$('mName').focus(),60);
 }
+/* Shelf life is the one field on this form the user cannot look up — it is a
+   guess either way, and the app has a better-informed guess than they do. So
+   the name answers it as it is typed, and the job becomes checking an answer
+   rather than making a decision. Touching a chip ends the suggesting. */
+const LIFE=[
+  [/\brice\b|pasta|noodle|flour|sugar|\boil\b|sauce|vinegar|honey|canned|\bcan\b|bean|lentil|chickpea|black pepper|peppercorn|spice|\btea\b|coffee|cereal|oats|frozen|\bjam\b|peanut butter|syrup|stock|broth/,180],
+  [/milk|cheese|yog|butter|cream|\begg|bread|sourdough|baguette|brioche|loaf|pita|naan|croissant|bagel|tortilla|tofu|apple|orange|lemon|lime|carrot|cabbage|potato|onion|juice|ginger/,10],
+  [/spinach|lettuce|arugula|kale|herb|basil|cilantro|parsley|mushroom|berr|fish|salmon|shrimp|prawn|tuna|\bcod\b|scallop|ground |mince|chicken|pork|beef|steak|lamb|turkey|bacon|sausage|thigh|fillet/,2],
+  [/tomato|cucumber|pepper|broccoli|zucchini|avocado|banana|grape|corn|pear|peach|melon|cauliflower|asparagus|green bean|celery|salad|greens/,5]
+];
+function guessDays(name){
+  const n=String(name||'').toLowerCase();
+  const hit=LIFE.find(([re])=>re.test(n));
+  return hit?hit[1]:null;
+}
+let lifeTouched=false;
+function pickLife(d){
+  const btn=[...$('lifeChips').children].find(b=>+b.dataset.d===d);
+  if(!btn)return false;
+  [...$('lifeChips').children].forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); typedDays=d; return true;
+}
+const LIFE_DEFAULT=2;      // the chip the form ships with — err towards "use it sooner"
+function suggestLife(v){
+  const h=$('lifeHint');
+  if(lifeTouched)return;
+  const d=guessDays(v);
+  /* No match has to reset, not stand pat: leaving the previous item's answer in
+     place is how "ground beef" then "sourdough" quietly gave the bread a
+     two-day shelf life. An unrecognised name gets the default back. */
+  if(!v.trim()||!d||!pickLife(d)){pickLife(LIFE_DEFAULT);h.classList.remove('show');return;}
+  h.textContent='Filled in from the name — tap another if that’s wrong.';
+  h.classList.add('show');
+}
 function setLife(el){
   [...$('lifeChips').children].forEach(b=>b.classList.remove('on'));
   el.classList.add('on'); typedDays=+el.dataset.d;
+  lifeTouched=true; $('lifeHint').classList.remove('show');
 }
 
 /* Dish photos: a small fixed library keyed by what is in the name. A generated
@@ -989,6 +1306,9 @@ const ING=[[/chicken|thigh|breast|poultry|wing|turkey/,'chicken'],
   [/egg/,'eggs'],[/milk|cream|yogurt|yoghurt|butter/,'milk'],[/cheese|feta|parmesan|mozzarella/,'cheese'],
   [/bread|loaf|bagel|bun|tortilla|pita|toast/,'bread'],
   [/rice|quinoa|couscous|oat|flour|pasta|noodle|spaghetti/,'rice'],
+  /* Condiments outrank produce, or "chili oil" is matched by the chili and gets
+     a photo of fresh vegetables — same ordering rule as the shelf-life table. */
+  [/sauce|\boil\b|vinegar|soy sauce|paste|stock|broth|honey|syrup|jam|spice|salt|sugar/,'sauce'],
   [/spinach|kale|lettuce|greens|cabbage|bok choy|arugula|herb|cilantro|basil|scallion/,'greens'],
   [/tomato/,'tomato'],[/onion|shallot|garlic|ginger|leek/,'onion'],
   [/carrot|potato|beet|turnip|radish|squash|pumpkin|sweet potato/,'root'],
@@ -1020,13 +1340,8 @@ function onPhoto(inp,kind){
       return;
     }
     $('snapErr').style.display='none';
-    if(kind==='receipt'){
-      $('recImg').src=dataUrl;$('recPreview').style.display='block';
-      scanReceipt(dataUrl.split(',')[1]);
-    }else{
-      $('previewImg').src=dataUrl;$('preview').style.display='block';
-      scanGroceries(dataUrl.split(',')[1]);
-    }
+    $('recImg').src=dataUrl;$('recPreview').style.display='block';
+    scanReceipt(dataUrl.split(',')[1]);
   };
   img.src=URL.createObjectURL(f);
 }
@@ -1062,44 +1377,15 @@ async function scanReceipt(b64){
   }
 }
 
-/* ---------- grocery photo scan ---------- */
-async function scanGroceries(b64){
-  $('scanning').textContent='🧠 Recognizing your groceries';
-  $('scanning').insertAdjacentHTML('beforeend','<span class="dots"></span>');
-  $('scanning').style.display='block';
-  try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:[
-        {type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},
-        {type:'text',text:'Identify the grocery/food items in this photo. Respond with ONLY a JSON array, no markdown fences, no prose: [{"name":"item name","emoji":"one fitting emoji","qty":"estimated quantity like 2 or 500g or 1 bunch","days":estimated days until it should be used (integer; produce 2-7, meat/fish 2-3, dairy 7-14, eggs 21, pantry staples 180+)}]. Max 12 items. If no food is visible, return [].'}
-      ]}]})
-    });
-    const data=await r.json();
-    const txt=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
-    const jm=txt.match(/\[[\s\S]*\]/);
-    const rows=JSON.parse((jm?jm[0]:txt).replace(/```json|```/g,'').trim());
-    $('scanning').style.display='none';
-    if(!Array.isArray(rows)||!rows.length){
-      addErr("Couldn't spot any food in that photo — try better lighting or a closer shot.");return;
-    }
-    detected=rows.map(normRow);
-    showReview('From your photo',
-      `${detected.length} item${detected.length>1?'s':''} recognized. A photo can't see inside packaging or read weights, so check the quantities — and add anything still in the bag.`);
-  }catch(e){
-    $('scanning').style.display='none';
-    addErr("The scan didn't go through. Check your connection and try again.");
-  }
-}
-
 /* ---------- typed entry ---------- */
 function addTyped(){
   const name=$('mName').value.trim();
   if(!name){toast('Type what you got first');return;}
   detected.push(normRow({name,qty:$('mQty').value.trim(),days:typedDays,emoji:guessEmoji(name)}));
   $('mName').value='';$('mQty').value='';$('mName').focus();
+  lifeTouched=false; $('lifeHint').classList.remove('show');   // the next item gets its own suggestion
   showReview('Typed in','Keep going if you have more, then send the whole list in at once.');
-  toast(name+' added to the list below');
+  toast(name+' added — '+detected.length+' waiting to go in');
 }
 
 /* ---------- the review step everything passes through ---------- */
@@ -1108,14 +1394,22 @@ function normRow(d){
     emoji:d.emoji||guessEmoji(d.name||''),
     qty:d.qty?String(d.qty):'',
     price:(typeof d.price==='number'&&d.price>0)?d.price:null,
-    days:Math.max(1,parseInt(d.days)||3), off:false};
+    days:Math.max(1,parseInt(d.days)||3), off:false,
+    /* an `auto` row keeps re-answering its own shelf life from the name until
+       the user overrules it with the ± buttons */
+    auto:!!d.auto};
 }
 function showReview(from,note){
   $('revFrom').textContent=from;
   $('revNote').textContent=note;
   $('review').style.display='block';
+  $('revBar').classList.add('show');
   $('vAdd').classList.add('reviewing');
   renderReview();
+  /* A scan has no input to protect, so the result is brought to the user.
+     Typing does — scrolling away mid-entry would fight the person still
+     filling the form, which is what the sticky commit button is for. */
+  if(src!=='type')setTimeout(()=>$('review').scrollIntoView({behavior:'smooth',block:'nearest'}),60);
 }
 function renderReview(){
   $('revList').innerHTML=detected.map((d,i)=>`
@@ -1138,7 +1432,13 @@ function renderReview(){
   updateRevBtn();
 }
 function lifeShort(d){return d>=60?Math.round(d/30)+' mo':d+'d';}
-function editRow(i,k,v){detected[i][k]=v;}
+function editRow(i,k,v){
+  detected[i][k]=v;
+  if(k==='name'&&detected[i].auto){
+    const d=guessDays(v);
+    if(d){detected[i].days=d;const el=$('d'+i);if(el)el.textContent=lifeShort(d);}
+  }
+}
 function keepRow(i,on){
   detected[i].off=!on;
   $('rev'+i).classList.toggle('off',!on);
@@ -1148,10 +1448,11 @@ function bumpDays(i,dir){
   const cur=detected[i].days;
   const step=cur<=7?1:(cur<=30?7:30);
   detected[i].days=Math.max(1,cur+dir*step);
+  detected[i].auto=false;
   $('d'+i).textContent=lifeShort(detected[i].days);
 }
 function addBlankRow(){
-  detected.push(normRow({name:'',qty:'',days:5,emoji:'🛒'}));
+  detected.push(normRow({name:'',qty:'',days:5,emoji:'🛒',auto:true}));
   renderReview();
   const rows=document.querySelectorAll('#revList .nm');
   rows[rows.length-1].focus();
@@ -1167,18 +1468,21 @@ function commitReview(){
   if(!picks.length)return;
   pantry=pantry.concat(picks.map(p=>({name:p.name.trim(),emoji:p.emoji,qty:p.qty,price:p.price,days:p.days})));
   const ticked=tickOffList(picks);
+  addedOwn=true;
   toast(picks.length+(picks.length>1?' items':' item')+' added to pantry'
     +(ticked?` \u00b7 ${ticked} ticked off your list`:''));
   resetAdd();
-  renderPantry(); persist(); go('pantry');
+  renderPantry(); persist(); go('pantry'); maybeAskToKeep();
 }
 function resetAdd(){
   detected=[];
+  lifeTouched=false; $('lifeHint').classList.remove('show');
   $('review').style.display='none';
+  $('revBar').classList.remove('show');
   $('vAdd').classList.remove('reviewing');
   $('snapErr').style.display='none';
-  $('preview').style.display='none';$('recPreview').style.display='none';
-  $('file').value='';$('recFile').value='';
+  $('recPreview').style.display='none';
+  $('recFile').value='';
   $('mName').value='';$('mQty').value='';
 }
 /* No scan is a dead end: the failure message carries the typed path with it. */
@@ -1257,7 +1561,7 @@ function saveRecipe(){
   persist();
   toast('Saved — I\u2019ll always tell you what\u2019s missing');
   $('impPreview').innerHTML='';$('impText').value='';$('shotPreview').style.display='none';$('shotFile').value='';
-  go('cook'); setCookMode('book');
+  go('cook'); setCookMode('book'); maybeAskToKeep();
 }
 
 /* ---------- recipe detail ----------
@@ -1351,11 +1655,14 @@ function renderRecipe(){
     <div class="rd-facts">${facts}</div>
     <div class="rd-trust">${trust.join('')}</div>
     <div class="rd-sec">
-      <h3>What goes in</h3>
-      <div class="uses">${r.ing.map(g=>`<span class="${g.have?'':'miss'}">${g.have?'\u2713 ':'+ buy '}${esc(g.name)}${g.qty?' \u00b7 '+esc(g.qty):''}</span>`).join('')}</div>
+      <h3>What goes in<span class="cnt">${own} of ${r.ing.length} on your shelf</span></h3>
+      <div class="ings">${r.ing.map((g,n)=>g.have
+        ? `<div class="ing-row"><span class="mk">\u2713</span><span class="tx"><b>${esc(g.name)}</b></span><span class="qty">${esc(g.qty||'')}</span></div>`
+        : `<button class="ing-row miss" id="ing${n}" onclick="addOneMissing(${n})"><span class="mk">\uff0b</span><span class="tx"><b>${esc(g.name)}</b><i class="st">tap to put on your shopping list</i></span><span class="qty">${esc(g.qty||'')}</span></button>`
+      ).join('')}</div>
     </div>
     ${r.steps.length?`<div class="rd-sec"><h3>How</h3>
-      <ol class="steps">${r.steps.map((x,n)=>`<li><b>${n+1}</b><span>${esc(x)}</span></li>`).join('')}</ol></div>`:''}
+      <ol class="steps">${r.steps.map((x,n)=>`<li><button class="strow" data-n="${n+1}" aria-pressed="false" onclick="tickStep(this)"><b>${n+1}</b><span>${esc(x)}</span></button></li>`).join('')}</ol></div>`:''}
     ${r.prep_note?`<div class="prepnote"><b>\u{1F371} Make-ahead</b>${esc(r.prep_note)}</div>`:''}
     ${r.tip?`<div class="tip"><b>Tip \u00b7 </b>${esc(r.tip)}</div>`:''}
     ${curRecipe.kind==='book'?`<button class="rdel" onclick="delRecipe(${curRecipe.i})">Remove from cookbook</button>`:''}`;
@@ -1366,10 +1673,43 @@ function renderRecipe(){
   else bar.push(`<button class="btn-made" id="rdMade" onclick="detailMade()">I made this${(curRecipe.kind==='ai'&&servings>1)?` \u2014 save ${servings-1} for later`:''}</button>`);
   $('rdBar').innerHTML=bar.join('');
 }
+function tickStep(el){
+  const on=el.classList.toggle('done');
+  el.setAttribute('aria-pressed',String(on));
+  el.querySelector('b').textContent=on?'\u2713':el.dataset.n;
+}
+/* One missing ingredient at a time, from its own row \u2014 the bar's button still
+   sends the whole shortfall, but wanting three of the four is normal. */
+function addOneMissing(n){
+  const r=normRecipe(currentRaw(),curRecipe.kind);
+  const g=r.ing[n]; if(!g||g.have)return;
+  const row=$('ing'+n);
+  const added=addToList([g.name],r.name);
+  if(row){
+    row.classList.add('listed');
+    row.querySelector('.mk').textContent='\ud83d\uded2';
+    row.querySelector('.st').textContent=added.length?'on your shopping list':'already on your list';
+  }
+  toast(added.length?g.name+' added for '+r.name:g.name+' is already on your list');
+  syncListBtn(r);
+}
+/* Whether the bar's bulk button is still worth offering depends on the rows. */
+function syncListBtn(r){
+  const b=$('rdList'); if(!b)return;
+  const left=r.missing.filter(n=>!onList(n)).length;
+  if(!left){b.textContent='\u2713 on your list';b.classList.add('done');}
+  else b.textContent='\ud83d\uded2 '+left;
+}
 function detailMissing(){
   const raw=currentRaw(); const r=normRecipe(raw,curRecipe.kind);
   if(addMissingFrom(r.missing,r.name)){
     const b=$('rdList'); if(b){b.textContent='\u2713 on your list';b.classList.add('done');}
+    r.ing.forEach((g,n)=>{
+      const row=$('ing'+n); if(!row||g.have)return;
+      row.classList.add('listed');
+      row.querySelector('.mk').textContent='\ud83d\uded2';
+      row.querySelector('.st').textContent='on your shopping list';
+    });
   }
 }
 function detailMade(){
@@ -1429,9 +1769,9 @@ function renderBook(){
 function cookSaved(i){
   cookedCount++; saved+=4;
   cookbook[i].cooked=(cookbook[i].cooked||0)+1;
-  $('savedChip').textContent='est. $'+saved+' saved';
+  renderSaved();
   toast('Logged — est. $4 saved vs takeout');
-  persist();
+  persist(); renderGoal(); maybeAskToKeep();
 }
 function delRecipe(i){
   toast('Removed '+cookbook[i].name);
@@ -1439,10 +1779,18 @@ function delRecipe(i){
 }
 
 /* ---------- AI cook mode ---------- */
+/* How many people you cook for does not change week to week, so the answer you
+   gave last time is a better default than "1" — the screen opens on your own
+   habit instead of asking again. */
 function setServ(btn){
   servings=+btn.dataset.s;
   btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
+  persist();
+}
+function applyServings(){
+  const wrap=document.querySelector('.serv'); if(!wrap)return;
+  wrap.querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.s===servings));
 }
 /* ---------- menu preferences ---------- */
 /* Meal-kit apps let you pick a lane while you browse rather than burying diet
@@ -1490,8 +1838,10 @@ function renderCookIntro(){
   $('cookEmpty').style.display=pantry.length?'none':'block';
   $('cookBtn').style.display=pantry.length?'block':'none';
   $('cookIntro').innerHTML=pantry.length
-    ? (soon.length?`<b>${soon.map(s=>s.name).join(', ')}</b> ${soon.length>1?'are':'is'} expiring first — I'll build your meal around ${soon.length>1?'them':'it'}.`:`Everything's fresh. Let's cook something easy from what you have.`)
+    ? (soon.length?`<b>${soon.map(s=>s.name).join(', ')}</b> ${soon.length>1?'are':'is'} expiring first — about <b>${money(riskValue())}</b> of food. I'll build your meal around ${soon.length>1?'them':'it'}.`:`Everything's fresh. Let's cook something easy from what you have.`)
     :'';
+  /* The button names the loss it prevents, not the feature it runs. */
+  $('cookBtn').textContent=soon.length?`🍳 Rescue ${money(riskValue())} — what can I make?`:'🍳 What should I make?';
 }
 async function getRecipes(){
   $('cookErr').style.display='none';$('recipes').innerHTML='';
@@ -1548,8 +1898,8 @@ function madeIt(i){
     prepped.push({name:rc.name,portions:servings-1,days:3});
     toast((servings-1)+' portion'+(servings>2?'s':'')+' of '+rc.name+' added to Prepped');
   }else{saved+=4;toast('Logged — est. $4 saved vs takeout');}
-  $('savedChip').textContent='est. $'+saved+' saved';
-  persist();
+  renderSaved();
+  persist(); renderGoal(); maybeAskToKeep();
 }
 
 /* ---------- stats ---------- */
@@ -1559,7 +1909,17 @@ function updateStats(){
   $('stBook').textContent=cookbook.length;
   $('stPrep').textContent=cookedCount;
   $('stSaved').textContent='$'+saved;
-  $('savedChip').textContent='est. $'+saved+' saved';
+  renderSaved();
+  /* "$17 saved" alone is a number nobody can size. Against a delivery dinner
+     and against the food currently on the shelf, it becomes a fraction of
+     something the user already has a feel for. */
+  const meals=Math.round(saved/TAKEOUT*10)/10;
+  const shelf=pantry.length?` It sits against the <b>${money(pantryValue())}</b> of food on your shelf right now.`:'';
+  $('acAnchor').innerHTML=!saved
+    ? `Nothing counted yet. Use something up before it turns and it lands here, measured against the ~$${TAKEOUT} a delivery dinner would have cost.`
+    : meals>=1
+      ? `That is about <b>${meals}</b> delivery dinner${meals===1?'':'s'} you didn't order, at roughly $${TAKEOUT} each.${shelf}`
+      : `Not a delivery dinner yet — <b>$${saved}</b> of the ~$${TAKEOUT} one costs.${shelf}`;
 }
 
 restore();
